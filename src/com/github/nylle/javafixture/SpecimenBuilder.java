@@ -13,7 +13,7 @@ public class SpecimenBuilder<T> {
     this.instance = (T) EnhancedRandom.random(typeReference);
   }
 
-  public T build() {
+  public T create() {
     return instance;
   }
 

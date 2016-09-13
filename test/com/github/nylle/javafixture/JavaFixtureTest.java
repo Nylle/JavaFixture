@@ -15,7 +15,7 @@ public class JavaFixtureTest {
   public void canCreateInstance() {
     JavaFixture fixture = new JavaFixture();
 
-    TestDto result = fixture.create(TestDto.class).build();
+    TestDto result = fixture.create(TestDto.class);
 
     assertThat(result, notNullValue());
     assertThat(result, instanceOf(TestDto.class));
@@ -25,7 +25,7 @@ public class JavaFixtureTest {
   public void canCreateInstanceWithoutDefaultConstructor() {
     JavaFixture fixture = new JavaFixture();
 
-    AnotherTestDto result = fixture.create(AnotherTestDto.class).build();
+    AnotherTestDto result = fixture.create(AnotherTestDto.class);
 
     assertThat(result, notNullValue());
     assertThat(result, instanceOf(AnotherTestDto.class));
@@ -35,7 +35,7 @@ public class JavaFixtureTest {
   public void canOverrideBySetter() {
     JavaFixture fixture = new JavaFixture();
 
-    TestDto result = fixture.create(TestDto.class).with(x -> x.setHello("world")).build();
+    TestDto result = fixture.build(TestDto.class).with(x -> x.setHello("world")).create();
 
     assertThat(result.getHello(), is("world"));
   }
@@ -44,10 +44,10 @@ public class JavaFixtureTest {
   public void canCreateComplexModel() {
     JavaFixture fixture = new JavaFixture();
 
-    Contract result = fixture.create(Contract.class).build();
+    Contract result = fixture.build(Contract.class).create();
 
     assertThat(result, notNullValue());
-    assertThat(result, instanceOf(TestDto.class));
+    assertThat(result, instanceOf(Contract.class));
   }
 
 

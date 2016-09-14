@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -54,6 +55,39 @@ public class JavaFixtureTest {
     assertThat(result.get(0), instanceOf(TestDto.class));
     assertThat(result.get(1), instanceOf(TestDto.class));
     assertThat(result.get(2), instanceOf(TestDto.class));
+  }
+
+  @Test
+  public void canCreateManyWithCustomization() {
+    JavaFixture fixture = new JavaFixture();
+
+    List<TestDto> result = fixture.build(TestDto.class)
+      .with(x -> x.setHello("world"))
+      .with("integer", 3)
+      .without("publicField")
+      .createMany(3)
+      .collect(Collectors.toList());
+
+    TestDto first = result.get(0);
+    assertThat(first, instanceOf(TestDto.class));
+    assertThat(first.getHello(), is("world"));
+    assertThat(first.getInteger(), is(3));
+    assertThat(first.publicField, is(nullValue()));
+
+    TestDto second = result.get(1);
+    assertThat(second, instanceOf(TestDto.class));
+    assertThat(second.getHello(), is("world"));
+    assertThat(second.getInteger(), is(3));
+    assertThat(second.publicField, is(nullValue()));
+
+    TestDto third = result.get(2);
+    assertThat(third, instanceOf(TestDto.class));
+    assertThat(third.getHello(), is("world"));
+    assertThat(third.getInteger(), is(3));
+    assertThat(third.publicField, is(nullValue()));
+
+    assertThat(first.getPrimitive(), is(not(second.getPrimitive())));
+    assertThat(second.getPrimitive(), is(not(third.getPrimitive())));
   }
 
   @Test

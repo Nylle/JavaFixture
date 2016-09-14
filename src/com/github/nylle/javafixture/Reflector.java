@@ -6,14 +6,12 @@ import java.lang.reflect.Field;
 
 public class Reflector<T> {
   private final Class<T> typeReference;
-  private final T instance;
 
-  public Reflector(Class<T> typeReference, T instance) {
+  public Reflector(Class<T> typeReference) {
     this.typeReference = typeReference;
-    this.instance = instance;
   }
 
-  public void setField(String fieldName, Object value) {
+  public void setField(T instance, String fieldName, Object value) {
     try {
       Field field = typeReference.getDeclaredField(fieldName);
 

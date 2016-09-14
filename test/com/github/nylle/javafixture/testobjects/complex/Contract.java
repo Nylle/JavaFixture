@@ -109,4 +109,8 @@ public class Contract {
   public void setCategory(ContractCategory category) {
     this.category = category;
   }
+
+  public void addContractPosition(ContractPosition contractPosition) {
+    contractPositions.add(contractPosition);
+  }
 }

@@ -4,6 +4,7 @@ public class TestDto {
   private String hello;
   private int primitive;
   private Integer integer;
+  public String publicField;
 
   public String getHello() {
     return hello;

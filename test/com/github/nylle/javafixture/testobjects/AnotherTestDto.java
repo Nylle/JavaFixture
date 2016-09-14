@@ -1,9 +1,12 @@
 package com.github.nylle.javafixture.testobjects;
 
-public class AnotherTestDto {
-  private String hello;
+import java.util.List;
 
-  public AnotherTestDto(String hello) {
-    this.hello = hello;
+
+public class AnotherTestDto {
+  private List<String> strings;
+
+  public AnotherTestDto(List<String> strings) {
+    this.strings = strings;
   }
 }

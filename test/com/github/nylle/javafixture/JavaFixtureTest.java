@@ -25,6 +25,26 @@ import static org.junit.Assert.assertThat;
 
 public class JavaFixtureTest {
   @Test
+  public void canCreatePrimitives() {
+    JavaFixture fixture = new JavaFixture();
+
+    int integerResult = fixture.create(int.class);
+
+    assertThat(integerResult, notNullValue());
+    assertThat(integerResult, instanceOf(int.class));
+
+    boolean booleanResult = fixture.create(boolean.class);
+
+    assertThat(booleanResult, notNullValue());
+    assertThat(booleanResult, instanceOf(boolean.class));
+
+    char charResult = fixture.create(char.class);
+
+    assertThat(charResult, notNullValue());
+    assertThat(charResult, instanceOf(char.class));
+  }
+
+  @Test
   public void canCreateInstance() {
     JavaFixture fixture = new JavaFixture();
 

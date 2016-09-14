@@ -6,7 +6,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 
-public class Contract {
+public class Contract implements IContract {
   private Long id;
   private String companyWideId;
   private long contractNumber;
@@ -70,6 +70,7 @@ public class Contract {
     this.lastAssignedNumber = lastAssignedNumber;
   }
 
+  @Override
   public Set<ContractPosition> getContractPositions() {
     return contractPositions;
   }
@@ -110,6 +111,7 @@ public class Contract {
     this.category = category;
   }
 
+  @Override
   public void addContractPosition(ContractPosition contractPosition) {
     contractPositions.add(contractPosition);
   }

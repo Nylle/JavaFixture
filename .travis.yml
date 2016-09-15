@@ -21,4 +21,5 @@ deploy:
       repo: Nylle/JavaFixture
       tags: true
       jdk: oraclejdk8
-  - skip_cleanup: true
+  
+  skip_cleanup: true

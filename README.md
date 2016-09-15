@@ -119,12 +119,12 @@ TestDto:
 - myPublicField: int: 0
 
 
-## Perform Operation
+## Perform Multiple Operations
 ```java
 String child = fixture.create(String.class);
 ParentDto parent = fixture.build(ParentDto.class)
                           .with(x -> x.addChild(child))
-                          .with(x -> x.oldestChild = child)
+                          .with(x -> x.youngestChild = child)
                           .create();
 ```
 ### Sample Result
@@ -134,4 +134,4 @@ ParentDto:
     - String: "EZoYxaAeGkpzaDMZ"
     - String: "FCMuhGbBvVuAKGLlgCyPv"
     - String: "rgmGQsaf"
-- oldestChild: String: "rgmGQsaf"
+- youngestChild: String: "rgmGQsaf"

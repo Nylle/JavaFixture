@@ -7,10 +7,17 @@ before_install:
   - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
   - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
 deploy:
-  provider: script
-  script: ".travis/deploy.sh"
-  skip_cleanup: true
-  on:
-    repo: Nylle/JavaFixture
-    branch: master
-    jdk: oraclejdk8
+  -
+    provider: script
+    script: .travis/deploy.sh
+    on:
+      repo: Nylle/JavaFixture
+      branch: master
+      jdk: oraclejdk8
+  -
+    provider: script
+    script: .travis/deploy.sh
+    on:
+      repo: Nylle/JavaFixture
+      tags: true
+      jdk: oraclejdk8

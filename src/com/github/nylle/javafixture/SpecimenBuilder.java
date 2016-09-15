@@ -17,9 +17,9 @@ public class SpecimenBuilder<T> {
   private List<String> ignoredFields;
   private Map<String, Object> customFields;
 
-  public SpecimenBuilder(Class<?> typeReference) {
-    this.typeReference = (Class<T>) typeReference;
-    reflector = new Reflector<T>(this.typeReference);
+  public SpecimenBuilder(Class<T> typeReference) {
+    this.typeReference = typeReference;
+    reflector = new Reflector<>(typeReference);
     functions = new LinkedList<>();
     ignoredFields = new LinkedList<>();
     customFields = new HashMap<>();

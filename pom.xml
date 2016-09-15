@@ -129,6 +129,10 @@
         </repository>
     </distributionManagement>
 
+    <scm>
+        <developerConnection>scm:git:https://github.com/Nylle/JavaFixture.git</developerConnection>
+        <url>https://github.com/Nylle/JavaFixture</url>
+    </scm>
 
     <developers>
         <developer>

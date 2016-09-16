@@ -140,6 +140,11 @@
             <name>Jan Kockrow</name>
             <url>https://github.com/Nylle</url>
         </developer>
+        <developer>
+            <id>KuldeepG</id>
+            <name>Kuldeep Ghogre</name>
+            <url>https://github.com/KuldeepG</url>
+        </developer>
     </developers>
 
     <licenses>

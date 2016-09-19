@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Nylle/JavaFixture.svg?branch=master)](https://travis-ci.org/Nylle/JavaFixture)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|0.1.1|)
 
 # JavaFixture
 JavaFixture is the attempt to bring the incredibly easy usage of [Mark Seemann's AutoFixture for .NET](https://github.com/AutoFixture/AutoFixture) to the Java world using [Mahmoud Ben Hassine's Random Beans](https://github.com/benas/random-beans).
@@ -7,6 +8,15 @@ The purpose of both projects is to generate full object graphs for use in test s
 
 JavaFixture is simply wrapping [Random Beans](https://github.com/benas/random-beans) to provide a fluent API to customise your test objects during generation.
 
+# Getting Started
+```xml
+<dependency>
+    <groupId>com.github.nylle</groupId>
+    <artifactId>javafixture</artifactId>
+    <version>0.1.1</version>
+    <scope>test</scope>
+</dependency>
+```
 # Usage
 
 ## Create a Fixture
@@ -137,7 +147,3 @@ ParentDto:
     - String: "FCMuhGbBvVuAKGLlgCyPv"
     - String: "rgmGQsaf"
 - youngestChild: String: "rgmGQsaf"
-
-# Getting Started
-Currently there is no working release available.
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|0.1.0|)

@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/Nylle/JavaFixture.svg?branch=master)](https://travis-ci.org/Nylle/JavaFixture)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|0.1.1|)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|0.1.2|)
 
 # JavaFixture
 JavaFixture is the attempt to bring the incredibly easy usage of [Mark Seemann's AutoFixture for .NET](https://github.com/AutoFixture/AutoFixture) to the Java world using [Mahmoud Ben Hassine's Random Beans](https://github.com/benas/random-beans).
@@ -13,7 +13,7 @@ JavaFixture is simply wrapping [Random Beans](https://github.com/benas/random-be
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <scope>test</scope>
 </dependency>
 ```

@@ -46,7 +46,7 @@ ParentDto result = fixture.create(ParentDto.class);
 - ParentDto:
     - id: String: "ZsiFwiJrNVxAxdsCXpKcCizlnPhwX"
     - child: ChildDto:
-        - id: String:
+        - id: String: "AwkxdahMweGPnGXqMgiqAuHjhpdqyqU"
         - names: ArrayList:
             - String: "livkzLQQghkBpMGNOdUoqhVAGUirJ"
             - String: "KNbEismpNwD"
@@ -122,7 +122,7 @@ TestDto:
 ## Omit Primitive Field (will initialize with default value)
 ```java
 TestDto result = fixture.build(TestDto.class)
-                        .without("myPrivateField")
+                        .without("myPublicField")
                         .create();
 ```
 ### Sample Result

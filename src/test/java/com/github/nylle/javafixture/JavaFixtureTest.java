@@ -26,19 +26,17 @@ import static org.junit.Assert.assertThat;
 public class JavaFixtureTest {
   @Test
   public void canCreatePrimitives() {
-    JavaFixture fixture = new JavaFixture();
-
-    int integerResult = fixture.create(int.class);
+    int integerResult = JavaFixture.create(int.class);
 
     assertThat(integerResult, notNullValue());
     assertThat(integerResult, instanceOf(int.class));
 
-    boolean booleanResult = fixture.create(boolean.class);
+    boolean booleanResult = JavaFixture.create(boolean.class);
 
     assertThat(booleanResult, notNullValue());
     assertThat(booleanResult, instanceOf(boolean.class));
 
-    char charResult = fixture.create(char.class);
+    char charResult = JavaFixture.create(char.class);
 
     assertThat(charResult, notNullValue());
     assertThat(charResult, instanceOf(char.class));
@@ -46,9 +44,7 @@ public class JavaFixtureTest {
 
   @Test
   public void canCreateInstance() {
-    JavaFixture fixture = new JavaFixture();
-
-    TestDto result = fixture.create(TestDto.class);
+    TestDto result = JavaFixture.create(TestDto.class);
 
     assertThat(result, notNullValue());
     assertThat(result, instanceOf(TestDto.class));
@@ -56,9 +52,7 @@ public class JavaFixtureTest {
 
   @Test
   public void canCreateInstanceWithoutDefaultConstructor() {
-    JavaFixture fixture = new JavaFixture();
-
-    AnotherTestDto result = fixture.create(AnotherTestDto.class);
+    AnotherTestDto result = JavaFixture.create(AnotherTestDto.class);
 
     assertThat(result, notNullValue());
     assertThat(result, instanceOf(AnotherTestDto.class));
@@ -66,9 +60,7 @@ public class JavaFixtureTest {
 
   @Test
   public void canCreateMany() {
-    JavaFixture fixture = new JavaFixture();
-
-    List<TestDto> result = fixture.createMany(TestDto.class).collect(Collectors.toList());
+    List<TestDto> result = JavaFixture.createMany(TestDto.class).collect(Collectors.toList());
 
     assertThat(result, notNullValue());
     assertThat(result.size(), is(3));
@@ -79,9 +71,7 @@ public class JavaFixtureTest {
 
   @Test
   public void canCreateManyWithCustomization() {
-    JavaFixture fixture = new JavaFixture();
-
-    List<TestDto> result = fixture.build(TestDto.class)
+    List<TestDto> result = JavaFixture.build(TestDto.class)
       .with(x -> x.setHello("world"))
       .with("integer", 3)
       .without("publicField")
@@ -112,12 +102,10 @@ public class JavaFixtureTest {
 
   @Test
   public void canAddManyTo() {
-    JavaFixture fixture = new JavaFixture();
-
     List<TestDto> result = new ArrayList<>();
     result.add(new TestDto());
 
-    fixture.addManyTo(result, TestDto.class);
+    JavaFixture.addManyTo(result, TestDto.class);
 
     assertThat(result, notNullValue());
     assertThat(result.size(), is(4));
@@ -126,54 +114,42 @@ public class JavaFixtureTest {
 
   @Test
   public void canOverrideBySetter() {
-    JavaFixture fixture = new JavaFixture();
-
-    TestDto result = fixture.build(TestDto.class).with(x -> x.setHello("world")).create();
+    TestDto result = JavaFixture.build(TestDto.class).with(x -> x.setHello("world")).create();
 
     assertThat(result.getHello(), is("world"));
   }
 
   @Test
   public void canOverridePublicField() {
-    JavaFixture fixture = new JavaFixture();
-
-    TestDto result = fixture.build(TestDto.class).with(x -> x.publicField = "world").create();
+    TestDto result = JavaFixture.build(TestDto.class).with(x -> x.publicField = "world").create();
 
     assertThat(result.publicField, is("world"));
   }
 
   @Test
   public void canOverridePrivateField() {
-    JavaFixture fixture = new JavaFixture();
-
-    TestDto result = fixture.build(TestDto.class).with("hello", "world").create();
+    TestDto result = JavaFixture.build(TestDto.class).with("hello", "world").create();
 
     assertThat(result.getHello(), is("world"));
   }
 
   @Test
   public void canOmitPrivateField() {
-    JavaFixture fixture = new JavaFixture();
-
-    TestDto result = fixture.build(TestDto.class).without("hello").create();
+    TestDto result = JavaFixture.build(TestDto.class).without("hello").create();
 
     assertThat(result.getHello(), is(nullValue()));
   }
 
   @Test
   public void canOmitPrivatePrimitiveFieldAndInitializesDefaultValue() {
-    JavaFixture fixture = new JavaFixture();
-
-    TestDto result = fixture.build(TestDto.class).without("primitive").create();
+    TestDto result = JavaFixture.build(TestDto.class).without("primitive").create();
 
     assertThat(result.getPrimitive(), is(0));
   }
 
   @Test
   public void canCreateComplexModel() {
-    JavaFixture fixture = new JavaFixture();
-
-    Contract result = fixture.create(Contract.class);
+    Contract result = JavaFixture.create(Contract.class);
     assertThat(result, instanceOf(Contract.class));
     assertThat(result.getBaseContractPosition(), instanceOf(ContractPosition.class));
     assertThat(result.getAccountManager(), instanceOf(AccountManager.class));
@@ -191,10 +167,8 @@ public class JavaFixtureTest {
 
   @Test
   public void canPerformAction() {
-    JavaFixture fixture = new JavaFixture();
-
-    ContractPosition cp = fixture.create(ContractPosition.class);
-    Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x ->
+    ContractPosition cp = JavaFixture.create(ContractPosition.class);
+    Contract contract = JavaFixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x ->
       x.setBaseContractPosition(cp)).create();
 
     assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition()), is(true));

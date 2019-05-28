@@ -1,19 +1,5 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.testobjects.AnotherTestDto;
-import com.github.nylle.javafixture.testobjects.TestDto;
-import com.github.nylle.javafixture.testobjects.complex.AccountManager;
-import com.github.nylle.javafixture.testobjects.complex.Contract;
-import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
-import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Period;
-import org.junit.Test;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -21,6 +7,23 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.junit.Test;
+
+import com.github.nylle.javafixture.testobjects.AnotherTestDto;
+import com.github.nylle.javafixture.testobjects.TestDto;
+import com.github.nylle.javafixture.testobjects.complex.AccountManager;
+import com.github.nylle.javafixture.testobjects.complex.Contract;
+import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
+import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
 
 
 public class JavaFixtureTest {
@@ -82,11 +85,11 @@ public class JavaFixtureTest {
     JavaFixture fixture = new JavaFixture();
 
     List<TestDto> result = fixture.build(TestDto.class)
-      .with(x -> x.setHello("world"))
-      .with("integer", 3)
-      .without("publicField")
-      .createMany(3)
-      .collect(Collectors.toList());
+            .with(x -> x.setHello("world"))
+            .with("integer", 3)
+            .without("publicField")
+            .createMany(3)
+            .collect(Collectors.toList());
 
     TestDto first = result.get(0);
     assertThat(first, instanceOf(TestDto.class));
@@ -195,7 +198,7 @@ public class JavaFixtureTest {
 
     ContractPosition cp = fixture.create(ContractPosition.class);
     Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x ->
-      x.setBaseContractPosition(cp)).create();
+            x.setBaseContractPosition(cp)).create();
 
     assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition()), is(true));
   }

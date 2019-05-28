@@ -1,6 +1,5 @@
 package com.github.nylle.javafixture;
 
-import io.github.benas.randombeans.api.EnhancedRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,9 +7,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import io.github.benas.randombeans.api.EnhancedRandom;
+
 
 public class SpecimenBuilder<T> {
-  private static int DEFAULT_COLLECTION_SIZE = 3;
+  private static final int DEFAULT_COLLECTION_SIZE = 3;
   private final Class<T> typeReference;
   private final Reflector<T> reflector;
   private List<Consumer<T>> functions;
@@ -33,12 +34,12 @@ public class SpecimenBuilder<T> {
 
   public Stream<T> createMany() {
     return EnhancedRandom.randomStreamOf(DEFAULT_COLLECTION_SIZE, typeReference, ignoredFields.toArray(new String[0]))
-      .map(x -> customize(x));
+            .map(x -> customize(x));
   }
 
   public Stream<T> createMany(int size) {
     return EnhancedRandom.randomStreamOf(size, typeReference, ignoredFields.toArray(new String[0])).map(x ->
-      customize(x));
+            customize(x));
   }
 
   public SpecimenBuilder<T> with(Consumer<T> function) {

@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture.testobjects.complex;
 
-import org.joda.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 
 public class AccountManager {
   private Long id;

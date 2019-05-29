@@ -1,9 +1,8 @@
 package com.github.nylle.javafixture.testobjects.complex;
 
-import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.ReadablePeriod;
 
+import java.time.LocalDate;
+import java.time.Period;
 
 public class ContractPosition {
   private Long id;
@@ -15,11 +14,11 @@ public class ContractPosition {
   private Contract contract;
 
   public ContractPosition(int quantity, final LocalDate startDate,
-                          final ReadablePeriod remainingPeriod,
-                          final boolean billingIsPeriodic) {
+          final Period remainingPeriod,
+          final boolean billingIsPeriodic) {
     this.quantity = quantity;
     this.startDate = startDate;
-    this.remainingPeriod = remainingPeriod.toPeriod();
+    this.remainingPeriod = remainingPeriod;
     this.billingIsPeriodic = billingIsPeriodic;
   }
 

@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.testobjects.complex;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class Contract implements IContract {
     this.id = id;
     this.contractNumber = contractNumber;
     this.companyWideId = "009." + UUID.randomUUID().toString();
-    this.creationDate = new LocalDateTime();
+    this.creationDate = LocalDateTime.now();
     this.isConsistencyChecked = false;
     this.category = ContractCategory.STANDARD;
   }

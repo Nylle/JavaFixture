@@ -130,8 +130,9 @@
     </distributionManagement>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/Nylle/JavaFixture.git</developerConnection>
         <url>https://github.com/Nylle/JavaFixture</url>
+        <connection>scm:git:git@github.com:Nylle/JavaFixture.git</connection>
+        <developerConnection>scm:git:git@github.com:Nylle/JavaFixture.git</developerConnection>
     </scm>
 
     <developers>

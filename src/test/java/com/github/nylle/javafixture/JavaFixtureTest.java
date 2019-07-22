@@ -1,12 +1,6 @@
 package com.github.nylle.javafixture;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.nylle.javafixture.testobjects.AnotherTestDto;
 import com.github.nylle.javafixture.testobjects.TestDto;
@@ -27,24 +21,25 @@ import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
 
 
 public class JavaFixtureTest {
+
     @Test
     public void canCreatePrimitives() {
         JavaFixture fixture = new JavaFixture();
 
         int integerResult = fixture.create(int.class);
 
-        assertThat(integerResult, notNullValue());
-        assertThat(integerResult, instanceOf(int.class));
+        assertThat(integerResult).isNotNull();
+        assertThat(integerResult).isInstanceOf(Integer.class);
 
         boolean booleanResult = fixture.create(boolean.class);
 
-        assertThat(booleanResult, notNullValue());
-        assertThat(booleanResult, instanceOf(boolean.class));
+        assertThat(booleanResult).isNotNull();
+        assertThat(booleanResult).isInstanceOf(Boolean.class);
 
         char charResult = fixture.create(char.class);
 
-        assertThat(charResult, notNullValue());
-        assertThat(charResult, instanceOf(char.class));
+        assertThat(charResult).isNotNull();
+        assertThat(charResult).isInstanceOf(Character.class);
     }
 
     @Test
@@ -53,8 +48,8 @@ public class JavaFixtureTest {
 
         TestDto result = fixture.create(TestDto.class);
 
-        assertThat(result, notNullValue());
-        assertThat(result, instanceOf(TestDto.class));
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(TestDto.class);
     }
 
     @Test
@@ -63,8 +58,8 @@ public class JavaFixtureTest {
 
         AnotherTestDto result = fixture.create(AnotherTestDto.class);
 
-        assertThat(result, notNullValue());
-        assertThat(result, instanceOf(AnotherTestDto.class));
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(AnotherTestDto.class);
     }
 
     @Test
@@ -73,11 +68,11 @@ public class JavaFixtureTest {
 
         List<TestDto> result = fixture.createMany(TestDto.class).collect(Collectors.toList());
 
-        assertThat(result, notNullValue());
-        assertThat(result.size(), is(3));
-        assertThat(result.get(0), instanceOf(TestDto.class));
-        assertThat(result.get(1), instanceOf(TestDto.class));
-        assertThat(result.get(2), instanceOf(TestDto.class));
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.get(0)).isInstanceOf(TestDto.class);
+        assertThat(result.get(1)).isInstanceOf(TestDto.class);
+        assertThat(result.get(2)).isInstanceOf(TestDto.class);
     }
 
     @Test
@@ -92,25 +87,25 @@ public class JavaFixtureTest {
                 .collect(Collectors.toList());
 
         TestDto first = result.get(0);
-        assertThat(first, instanceOf(TestDto.class));
-        assertThat(first.getHello(), is("world"));
-        assertThat(first.getInteger(), is(3));
-        assertThat(first.publicField, is(nullValue()));
+        assertThat(first).isInstanceOf(TestDto.class);
+        assertThat(first.getHello()).isEqualTo("world");
+        assertThat(first.getInteger()).isEqualTo(3);
+        assertThat(first.publicField).isNull();
 
         TestDto second = result.get(1);
-        assertThat(second, instanceOf(TestDto.class));
-        assertThat(second.getHello(), is("world"));
-        assertThat(second.getInteger(), is(3));
-        assertThat(second.publicField, is(nullValue()));
+        assertThat(second).isInstanceOf(TestDto.class);
+        assertThat(second.getHello()).isEqualTo("world");
+        assertThat(second.getInteger()).isEqualTo(3);
+        assertThat(second.publicField).isNull();
 
         TestDto third = result.get(2);
-        assertThat(third, instanceOf(TestDto.class));
-        assertThat(third.getHello(), is("world"));
-        assertThat(third.getInteger(), is(3));
-        assertThat(third.publicField, is(nullValue()));
+        assertThat(third).isInstanceOf(TestDto.class);
+        assertThat(third.getHello()).isEqualTo("world");
+        assertThat(third.getInteger()).isEqualTo(3);
+        assertThat(third.publicField).isNull();
 
-        assertThat(first.getPrimitive(), is(not(second.getPrimitive())));
-        assertThat(second.getPrimitive(), is(not(third.getPrimitive())));
+        assertThat(first.getPrimitive()).isNotEqualTo(second.getPrimitive());
+        assertThat(second.getPrimitive()).isNotEqualTo(third.getPrimitive());
     }
 
     @Test
@@ -122,9 +117,9 @@ public class JavaFixtureTest {
 
         fixture.addManyTo(result, TestDto.class);
 
-        assertThat(result, notNullValue());
-        assertThat(result.size(), is(4));
-        assertThat(result.get(1), instanceOf(TestDto.class));
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(4);
+        assertThat(result.get(1)).isInstanceOf(TestDto.class);
     }
 
     @Test
@@ -133,7 +128,7 @@ public class JavaFixtureTest {
 
         TestDto result = fixture.build(TestDto.class).with(x -> x.setHello("world")).create();
 
-        assertThat(result.getHello(), is("world"));
+        assertThat(result.getHello()).isEqualTo("world");
     }
 
     @Test
@@ -142,7 +137,7 @@ public class JavaFixtureTest {
 
         TestDto result = fixture.build(TestDto.class).with(x -> x.publicField = "world").create();
 
-        assertThat(result.publicField, is("world"));
+        assertThat(result.publicField).isEqualTo("world");
     }
 
     @Test
@@ -151,7 +146,7 @@ public class JavaFixtureTest {
 
         TestDto result = fixture.build(TestDto.class).with("hello", "world").create();
 
-        assertThat(result.getHello(), is("world"));
+        assertThat(result.getHello()).isEqualTo("world");
     }
 
     @Test
@@ -160,7 +155,7 @@ public class JavaFixtureTest {
 
         TestDto result = fixture.build(TestDto.class).without("hello").create();
 
-        assertThat(result.getHello(), is(nullValue()));
+        assertThat(result.getHello()).isNull();
     }
 
     @Test
@@ -169,7 +164,7 @@ public class JavaFixtureTest {
 
         TestDto result = fixture.build(TestDto.class).without("primitive").create();
 
-        assertThat(result.getPrimitive(), is(0));
+        assertThat(result.getPrimitive()).isEqualTo(0);
     }
 
     @Test
@@ -177,19 +172,19 @@ public class JavaFixtureTest {
         JavaFixture fixture = new JavaFixture();
 
         Contract result = fixture.create(Contract.class);
-        assertThat(result, instanceOf(Contract.class));
-        assertThat(result.getBaseContractPosition(), instanceOf(ContractPosition.class));
-        assertThat(result.getAccountManager(), instanceOf(AccountManager.class));
-        assertThat(result.getContractPositions(), instanceOf(Set.class));
-        assertThat(result.getContractPositions().size(), greaterThan(0));
-        assertThat(result.getCategory(), instanceOf(ContractCategory.class));
-        assertThat(result.getCreationDate(), instanceOf(LocalDateTime.class));
+        assertThat(result).isInstanceOf(Contract.class);
+        assertThat(result.getBaseContractPosition()).isInstanceOf(ContractPosition.class);
+        assertThat(result.getAccountManager()).isInstanceOf(AccountManager.class);
+        assertThat(result.getContractPositions()).isInstanceOf(Set.class);
+        assertThat(result.getContractPositions().size()).isGreaterThan(0);
+        assertThat(result.getCategory()).isInstanceOf(ContractCategory.class);
+        assertThat(result.getCreationDate()).isInstanceOf(LocalDateTime.class);
 
         ContractPosition firstContractPosition = result.getContractPositions().iterator().next();
-        assertThat(firstContractPosition, instanceOf(ContractPosition.class));
-        assertThat(firstContractPosition.getContract(), instanceOf(Contract.class));
-        assertThat(firstContractPosition.getStartDate(), instanceOf(LocalDate.class));
-        assertThat(firstContractPosition.getRemainingPeriod(), instanceOf(Period.class));
+        assertThat(firstContractPosition).isInstanceOf(ContractPosition.class);
+        assertThat(firstContractPosition.getContract()).isInstanceOf(Contract.class);
+        assertThat(firstContractPosition.getStartDate()).isInstanceOf(LocalDate.class);
+        assertThat(firstContractPosition.getRemainingPeriod()).isInstanceOf(Period.class);
     }
 
     @Test
@@ -200,7 +195,7 @@ public class JavaFixtureTest {
         Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x ->
                 x.setBaseContractPosition(cp)).create();
 
-        assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition()), is(true));
+        assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
     }
 
 

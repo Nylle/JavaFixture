@@ -4,7 +4,7 @@ import java.util.Set;
 
 
 public interface IContract {
-  Set<ContractPosition> getContractPositions();
+    Set<ContractPosition> getContractPositions();
 
-  void addContractPosition(ContractPosition contractPosition);
+    void addContractPosition(ContractPosition contractPosition);
 }

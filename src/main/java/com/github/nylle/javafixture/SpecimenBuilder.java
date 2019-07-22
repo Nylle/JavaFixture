@@ -27,19 +27,17 @@ public class SpecimenBuilder<T> {
     }
 
     public T create() {
-        T instance = EnhancedRandom.random(typeReference, ignoredFields.toArray(new String[0]));
+        T instance = EnhancedRandom.random(typeReference);
         customize(instance);
         return instance;
     }
 
     public Stream<T> createMany() {
-        return EnhancedRandom.randomStreamOf(DEFAULT_COLLECTION_SIZE, typeReference, ignoredFields.toArray(new String[0]))
-                .map(x -> customize(x));
+        return EnhancedRandom.randomStreamOf(DEFAULT_COLLECTION_SIZE, typeReference).map(x -> customize(x));
     }
 
     public Stream<T> createMany(int size) {
-        return EnhancedRandom.randomStreamOf(size, typeReference, ignoredFields.toArray(new String[0])).map(x ->
-                customize(x));
+        return EnhancedRandom.randomStreamOf(size, typeReference).map(x -> customize(x));
     }
 
     public SpecimenBuilder<T> with(Consumer<T> function) {
@@ -48,7 +46,6 @@ public class SpecimenBuilder<T> {
     }
 
     public SpecimenBuilder<T> with(String fieldName, Object value) {
-        ignoredFields.add(fieldName);
         customFields.put(fieldName, value);
         return this;
     }
@@ -60,7 +57,9 @@ public class SpecimenBuilder<T> {
 
     private T customize(T instance) {
         customFields.entrySet().forEach(kvp -> reflector.setField(instance, kvp.getKey(), kvp.getValue()));
-        functions.forEach(x -> x.accept(instance));
+        ignoredFields.forEach(field -> reflector.unsetField(instance, field));
+        functions.forEach(f -> f.accept(instance));
         return instance;
     }
 }
+

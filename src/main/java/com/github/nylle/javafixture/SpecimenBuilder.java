@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import io.github.benas.randombeans.api.EnhancedRandom;
@@ -33,11 +34,11 @@ public class SpecimenBuilder<T> {
     }
 
     public Stream<T> createMany() {
-        return EnhancedRandom.randomStreamOf(DEFAULT_COLLECTION_SIZE, typeReference).map(x -> customize(x));
+        return IntStream.range(0, DEFAULT_COLLECTION_SIZE).boxed().map(x -> create());
     }
 
     public Stream<T> createMany(int size) {
-        return EnhancedRandom.randomStreamOf(size, typeReference).map(x -> customize(x));
+        return IntStream.range(0, size).boxed().map(x -> create());
     }
 
     public SpecimenBuilder<T> with(Consumer<T> function) {

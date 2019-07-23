@@ -2,8 +2,10 @@ package com.github.nylle.javafixture;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Queue;
 import java.util.Set;
@@ -46,12 +48,18 @@ public class Reflector<T> {
                 type == Byte.class || type == Boolean.class || type == String.class;
     }
 
-    public static <T> boolean isCollection(final Class<T> collectionInterface) {
-        return List.class.isAssignableFrom(collectionInterface) || NavigableSet.class.isAssignableFrom(collectionInterface)
-                || SortedSet.class.isAssignableFrom(collectionInterface) || Set.class.isAssignableFrom(collectionInterface)
-                || BlockingDeque.class.isAssignableFrom(collectionInterface) || Deque.class.isAssignableFrom(collectionInterface)
-                || TransferQueue.class.isAssignableFrom(collectionInterface) || BlockingQueue.class.isAssignableFrom(collectionInterface)
-                || Queue.class.isAssignableFrom(collectionInterface);
+    public static <T> boolean isCollection(final Class<T> type) {
+        return Collection.class.isAssignableFrom(type);
+
+//        return List.class.isAssignableFrom(type) || NavigableSet.class.isAssignableFrom(type)
+//                || SortedSet.class.isAssignableFrom(type) || Set.class.isAssignableFrom(type)
+//                || BlockingDeque.class.isAssignableFrom(type) || Deque.class.isAssignableFrom(type)
+//                || TransferQueue.class.isAssignableFrom(type) || BlockingQueue.class.isAssignableFrom(type)
+//                || Queue.class.isAssignableFrom(type);
+    }
+
+    public static <T> boolean isMap(final Class<T> type) {
+        return Map.class.isAssignableFrom(type);
     }
 
     private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {

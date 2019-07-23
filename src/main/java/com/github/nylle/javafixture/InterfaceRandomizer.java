@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
 
 import java.lang.reflect.InvocationHandler;
@@ -11,9 +12,7 @@ import java.util.Map;
 public class InterfaceRandomizer {
 
     public static <T> T random(final Class<T> type) {
-            return (T) Proxy.newProxyInstance(type.getClassLoader(),
-                    new Class[] { type },
-                    new GenericInvocationHandler<>(type));
+        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new GenericInvocationHandler<>(type));
     }
 
     static class GenericInvocationHandler<T> implements InvocationHandler {
@@ -21,7 +20,7 @@ public class InterfaceRandomizer {
         private Map<String, Object> values;
 
         GenericInvocationHandler(final Class<T> type) {
-            values = Arrays.stream(type.getDeclaredMethods())
+            values = stream(type.getDeclaredMethods())
                     .filter(x -> x.getReturnType() != void.class)
                     .collect(toMap(x -> x.getName(), x -> Randomizer.random(x.getReturnType())));
         }

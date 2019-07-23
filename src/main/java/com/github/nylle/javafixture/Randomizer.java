@@ -11,7 +11,7 @@ public class Randomizer {
     private static final int MAX_COLLECTION_SIZE = 10;
 
     final Random random = new Random();
-//    final CollectionFactory collectionFactory = new CollectionFactory();
+    final CollectionFactory collectionFactory = new CollectionFactory();
 
     public <T> T random(final Class<T> type) {
 
@@ -57,11 +57,13 @@ public class Randomizer {
         }
 
         if(Reflector.isMap(type)) {
-
+            //TODO: non-generic map or exception?
+            throw new RandomizerException("Unsupported type: "+ type);
         }
 
         if(Reflector.isCollection(type)) {
-//            var result = collectionFactory.create(type);
+            //TODO: non-generic collection or exception?
+            throw new RandomizerException("Unsupported type: "+ type);
         }
 
         if(type.isInterface()) {
@@ -74,6 +76,10 @@ public class Randomizer {
             final T result = type.getDeclaredConstructor().newInstance();
             for (Field field : type.getDeclaredFields()) {
                 try {
+                    if(Reflector.isCollection(field.getType())) {
+                        //collectionFactory.create(field.getType(), field.getGenericType(), this);
+                    }
+
                     field.setAccessible(true);
                     field.set(result, random(field.getType()));
                 } catch (SecurityException e) {

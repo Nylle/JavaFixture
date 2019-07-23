@@ -2,11 +2,9 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|0.1.2|)
 
 # JavaFixture
-JavaFixture is the attempt to bring the incredibly easy usage of [Mark Seemann's AutoFixture for .NET](https://github.com/AutoFixture/AutoFixture) to the Java world using [Mahmoud Ben Hassine's Random Beans](https://github.com/benas/random-beans).
+JavaFixture is the attempt to bring the incredibly easy usage of [Mark Seemann's AutoFixture for .NET](https://github.com/AutoFixture/AutoFixture) to the Java world.
 
-The purpose of both projects is to generate full object graphs for use in test suites. For additional details refer to the respective project pages.
-
-JavaFixture is simply wrapping [Random Beans](https://github.com/benas/random-beans) to provide a fluent API to customise your test objects during generation.
+The purpose of this project is to generate full object graphs for use in test suites.
 
 # Getting Started
 ```xml

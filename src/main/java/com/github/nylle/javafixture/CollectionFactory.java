@@ -1,5 +1,10 @@
 package com.github.nylle.javafixture;
 
+import static com.github.nylle.javafixture.Reflector.isParameterizedType;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,12 +26,23 @@ import java.util.concurrent.TransferQueue;
 
 public class CollectionFactory {
 
-    public <T> T create(final Class<T> type) {
-        //TODO: I'd be surprised if this works (just playing around)
-        return (T) createFromInterface(type);
+    public <T> T create(final Class<T> type, final Type genericType, final Randomizer randomizer) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        Collection collection = type.isInterface() ? createFromInterface(type) : (Collection<?>) type.getDeclaredConstructor().newInstance();
+
+        if (isParameterizedType(genericType)) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            Type elementType = parameterizedType.getActualTypeArguments()[0];
+            for (int i = 0; i < randomizer.randomLength(); i++) {
+                Object item = randomizer.random((Class<?>) elementType);
+                collection.add(item);
+            }
+        }
+
+        return (T) collection;
     }
 
-    Collection<?> createFromInterface(final Class<?> interfaceType) {
+    private Collection<?> createFromInterface(final Class<?> interfaceType) {
 
         if (List.class.isAssignableFrom(interfaceType)) {
             return new ArrayList<>();
@@ -64,7 +80,7 @@ public class CollectionFactory {
             return new LinkedList<>();
         }
 
-        return null;
+        throw new RandomizerException("Unsupported type: "+ interfaceType);
     }
 
 }

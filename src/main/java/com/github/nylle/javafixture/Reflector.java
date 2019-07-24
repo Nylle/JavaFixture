@@ -2,17 +2,11 @@ package com.github.nylle.javafixture;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Deque;
-import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
-import java.util.Queue;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TransferQueue;
 
 
 public class Reflector<T> {
@@ -50,16 +44,18 @@ public class Reflector<T> {
 
     public static <T> boolean isCollection(final Class<T> type) {
         return Collection.class.isAssignableFrom(type);
-
-//        return List.class.isAssignableFrom(type) || NavigableSet.class.isAssignableFrom(type)
-//                || SortedSet.class.isAssignableFrom(type) || Set.class.isAssignableFrom(type)
-//                || BlockingDeque.class.isAssignableFrom(type) || Deque.class.isAssignableFrom(type)
-//                || TransferQueue.class.isAssignableFrom(type) || BlockingQueue.class.isAssignableFrom(type)
-//                || Queue.class.isAssignableFrom(type);
     }
 
     public static <T> boolean isMap(final Class<T> type) {
         return Map.class.isAssignableFrom(type);
+    }
+
+    public static boolean isParameterizedType(final Type type) {
+        return type != null && type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
+    }
+
+    public static boolean isStatic(final Field field) {
+        return Modifier.isStatic(field.getModifiers());
     }
 
     private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {

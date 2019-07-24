@@ -8,8 +8,6 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import io.github.benas.randombeans.api.EnhancedRandom;
-
 
 public class SpecimenBuilder<T> {
     private static final int DEFAULT_COLLECTION_SIZE = 3;
@@ -18,6 +16,7 @@ public class SpecimenBuilder<T> {
     private List<Consumer<T>> functions;
     private List<String> ignoredFields;
     private Map<String, Object> customFields;
+    private Randomizer randomizer = new Randomizer();
 
     public SpecimenBuilder(Class<T> typeReference) {
         this.typeReference = typeReference;
@@ -28,7 +27,7 @@ public class SpecimenBuilder<T> {
     }
 
     public T create() {
-        T instance = EnhancedRandom.random(typeReference);
+        T instance = randomizer.random(typeReference);
         customize(instance);
         return instance;
     }

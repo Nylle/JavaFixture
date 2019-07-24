@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import com.github.nylle.javafixture.testobjects.AnotherTestDto;
-import com.github.nylle.javafixture.testobjects.TestDto;
+import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import com.github.nylle.javafixture.testobjects.complex.AccountManager;
 import com.github.nylle.javafixture.testobjects.complex.Contract;
 import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
@@ -46,10 +46,10 @@ public class JavaFixtureTest {
     public void canCreateInstance() {
         JavaFixture fixture = new JavaFixture();
 
-        TestDto result = fixture.create(TestDto.class);
+        TestPrimitive result = fixture.create(TestPrimitive.class);
 
         assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(TestDto.class);
+        assertThat(result).isInstanceOf(TestPrimitive.class);
     }
 
     @Test
@@ -66,40 +66,40 @@ public class JavaFixtureTest {
     public void canCreateMany() {
         JavaFixture fixture = new JavaFixture();
 
-        List<TestDto> result = fixture.createMany(TestDto.class).collect(Collectors.toList());
+        List<TestPrimitive> result = fixture.createMany(TestPrimitive.class).collect(Collectors.toList());
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(3);
-        assertThat(result.get(0)).isInstanceOf(TestDto.class);
-        assertThat(result.get(1)).isInstanceOf(TestDto.class);
-        assertThat(result.get(2)).isInstanceOf(TestDto.class);
+        assertThat(result.get(0)).isInstanceOf(TestPrimitive.class);
+        assertThat(result.get(1)).isInstanceOf(TestPrimitive.class);
+        assertThat(result.get(2)).isInstanceOf(TestPrimitive.class);
     }
 
     @Test
     public void canCreateManyWithCustomization() {
         JavaFixture fixture = new JavaFixture();
 
-        List<TestDto> result = fixture.build(TestDto.class)
+        List<TestPrimitive> result = fixture.build(TestPrimitive.class)
                 .with(x -> x.setHello("world"))
                 .with("integer", 3)
                 .without("publicField")
                 .createMany(3)
                 .collect(Collectors.toList());
 
-        TestDto first = result.get(0);
-        assertThat(first).isInstanceOf(TestDto.class);
+        TestPrimitive first = result.get(0);
+        assertThat(first).isInstanceOf(TestPrimitive.class);
         assertThat(first.getHello()).isEqualTo("world");
         assertThat(first.getInteger()).isEqualTo(3);
         assertThat(first.publicField).isNull();
 
-        TestDto second = result.get(1);
-        assertThat(second).isInstanceOf(TestDto.class);
+        TestPrimitive second = result.get(1);
+        assertThat(second).isInstanceOf(TestPrimitive.class);
         assertThat(second.getHello()).isEqualTo("world");
         assertThat(second.getInteger()).isEqualTo(3);
         assertThat(second.publicField).isNull();
 
-        TestDto third = result.get(2);
-        assertThat(third).isInstanceOf(TestDto.class);
+        TestPrimitive third = result.get(2);
+        assertThat(third).isInstanceOf(TestPrimitive.class);
         assertThat(third.getHello()).isEqualTo("world");
         assertThat(third.getInteger()).isEqualTo(3);
         assertThat(third.publicField).isNull();
@@ -112,21 +112,21 @@ public class JavaFixtureTest {
     public void canAddManyTo() {
         JavaFixture fixture = new JavaFixture();
 
-        List<TestDto> result = new ArrayList<>();
-        result.add(new TestDto());
+        List<TestPrimitive> result = new ArrayList<>();
+        result.add(new TestPrimitive());
 
-        fixture.addManyTo(result, TestDto.class);
+        fixture.addManyTo(result, TestPrimitive.class);
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(4);
-        assertThat(result.get(1)).isInstanceOf(TestDto.class);
+        assertThat(result.get(1)).isInstanceOf(TestPrimitive.class);
     }
 
     @Test
     public void canOverrideBySetter() {
         JavaFixture fixture = new JavaFixture();
 
-        TestDto result = fixture.build(TestDto.class).with(x -> x.setHello("world")).create();
+        TestPrimitive result = fixture.build(TestPrimitive.class).with(x -> x.setHello("world")).create();
 
         assertThat(result.getHello()).isEqualTo("world");
     }
@@ -135,7 +135,7 @@ public class JavaFixtureTest {
     public void canOverridePublicField() {
         JavaFixture fixture = new JavaFixture();
 
-        TestDto result = fixture.build(TestDto.class).with(x -> x.publicField = "world").create();
+        TestPrimitive result = fixture.build(TestPrimitive.class).with(x -> x.publicField = "world").create();
 
         assertThat(result.publicField).isEqualTo("world");
     }
@@ -144,7 +144,7 @@ public class JavaFixtureTest {
     public void canOverridePrivateField() {
         JavaFixture fixture = new JavaFixture();
 
-        TestDto result = fixture.build(TestDto.class).with("hello", "world").create();
+        TestPrimitive result = fixture.build(TestPrimitive.class).with("hello", "world").create();
 
         assertThat(result.getHello()).isEqualTo("world");
     }
@@ -153,7 +153,7 @@ public class JavaFixtureTest {
     public void canOmitPrivateField() {
         JavaFixture fixture = new JavaFixture();
 
-        TestDto result = fixture.build(TestDto.class).without("hello").create();
+        TestPrimitive result = fixture.build(TestPrimitive.class).without("hello").create();
 
         assertThat(result.getHello()).isNull();
     }
@@ -162,7 +162,7 @@ public class JavaFixtureTest {
     public void canOmitPrivatePrimitiveFieldAndInitializesDefaultValue() {
         JavaFixture fixture = new JavaFixture();
 
-        TestDto result = fixture.build(TestDto.class).without("primitive").create();
+        TestPrimitive result = fixture.build(TestPrimitive.class).without("primitive").create();
 
         assertThat(result.getPrimitive()).isEqualTo(0);
     }

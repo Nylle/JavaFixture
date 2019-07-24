@@ -31,16 +31,16 @@ import java.util.concurrent.TransferQueue;
 
 import org.junit.jupiter.api.Test;
 
-import com.github.nylle.javafixture.testobjects.TestDto;
+import com.github.nylle.javafixture.testobjects.TestPrimitive;
 
 public class ReflectorTest {
 
     @Test
     public void setField() {
 
-        var sut = new Reflector<>(TestDto.class);
+        var sut = new Reflector<>(TestPrimitive.class);
 
-        final TestDto instance = new TestDto();
+        final TestPrimitive instance = new TestPrimitive();
         instance.setHello("old");
 
         sut.setField(instance, "hello", "new");
@@ -51,9 +51,9 @@ public class ReflectorTest {
     @Test
     public void unsetField() {
 
-        var sut = new Reflector<>(TestDto.class);
+        var sut = new Reflector<>(TestPrimitive.class);
 
-        final TestDto instance = new TestDto();
+        final TestPrimitive instance = new TestPrimitive();
         instance.setHello("old");
         instance.setPrimitive(99);
 

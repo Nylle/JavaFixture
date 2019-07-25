@@ -1,12 +1,30 @@
-package com.github.nylle.javafixture;
+package com.github.nylle.javafixture.specimen;
+
+import com.github.nylle.javafixture.Reflector;
+import com.github.nylle.javafixture.Specimen;
+import com.github.nylle.javafixture.SpecimenException;
 
 import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.UUID;
 
-public class PrimitiveFactory {
+public class PrimitiveSpecimen<T> implements Specimen<T> {
 
-    public <T> T create(final Class<T> type, final Random random) {
+    private final Class<T> type;
+    private final Random random;
+
+    public PrimitiveSpecimen(final Class<T> type) {
+
+        if (!type.isPrimitive() && !Reflector.isBoxedOrString(type)) {
+            throw new IllegalArgumentException("type: " + type.getName());
+        }
+
+        this.type = type;
+        this.random = new Random();
+    }
+
+    @Override
+    public T create() {
         if (type.equals(String.class)) {
             return (T) UUID.randomUUID().toString();
         }
@@ -43,8 +61,7 @@ public class PrimitiveFactory {
             return (T) Double.valueOf(random.nextDouble());
         }
 
-        throw new RandomizerException("Unsupported type: "+ type);
-
+        throw new SpecimenException("Unsupported type: "+ type);
     }
 }
 

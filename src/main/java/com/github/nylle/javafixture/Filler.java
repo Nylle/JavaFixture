@@ -33,7 +33,7 @@ public class Filler {
             field.setAccessible(true);
             field.set(instance, value);
         } catch (IllegalAccessException e) {
-            throw new RandomizerException("Unable to set field " + field.getName() + " on object of type " + instance.getClass().getName(), e);
+            throw new SpecimenException("Unable to set field " + field.getName() + " on object of type " + instance.getClass().getName(), e);
         }
     }
 

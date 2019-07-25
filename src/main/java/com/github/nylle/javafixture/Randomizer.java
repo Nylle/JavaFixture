@@ -27,12 +27,12 @@ public class Randomizer {
 
         if(Reflector.isMap(type)) {
             //TODO: non-generic empty map or exception?
-            throw new RandomizerException("Unsupported type: "+ type);
+            throw new SpecimenException("Unsupported type: "+ type);
         }
 
         if(Reflector.isCollection(type)) {
             //TODO: non-generic empty collection or exception?
-            throw new RandomizerException("Unsupported type: "+ type);
+            throw new SpecimenException("Unsupported type: "+ type);
         }
 
         if(type.isInterface() && !Reflector.isCollection(type) && !Reflector.isMap(type)) {
@@ -62,14 +62,14 @@ public class Randomizer {
                         field.set(result, random(field.getType()));
                     }
                 } catch (SecurityException e) {
-                    throw new RandomizerException("Unable to access field " + field.getName() + " on object of type " + type.getName(), e);
+                    throw new SpecimenException("Unable to access field " + field.getName() + " on object of type " + type.getName(), e);
                 } catch (IllegalAccessException e) {
-                    throw new RandomizerException("Unable to set field " + field.getName() + " on object of type " + type.getName(), e);
+                    throw new SpecimenException("Unable to set field " + field.getName() + " on object of type " + type.getName(), e);
                 }
             }
             return result;
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            throw new RandomizerException("Unable to create object of type " + type.getName(), e);
+            throw new SpecimenException("Unable to create object of type " + type.getName(), e);
         }
     }
 

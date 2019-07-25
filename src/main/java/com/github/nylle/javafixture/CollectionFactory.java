@@ -80,7 +80,7 @@ public class CollectionFactory {
             return new LinkedList<>();
         }
 
-        throw new RandomizerException("Unsupported type: "+ interfaceType);
+        throw new SpecimenException("Unsupported type: "+ interfaceType);
     }
 
 }

@@ -6,6 +6,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PrimitiveSpecimenTest {
+    @Test
+    void typeIsRequired() {
+        assertThatThrownBy(() -> { new PrimitiveSpecimen<>(null); })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("type: null");
+    }
 
     @Test
     void onlyPrimitiveTypes() {

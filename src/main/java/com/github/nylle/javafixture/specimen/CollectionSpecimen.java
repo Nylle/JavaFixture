@@ -35,8 +35,8 @@ public class CollectionSpecimen<T,G> implements Specimen<T> {
 
     public CollectionSpecimen(final Class<T> type, final Class<G> genericType, final Context context, final SpecimenFactory specimenFactory) {
 
-        if (!Reflector.isCollection(type)) {
-            throw new IllegalArgumentException("type: " + type.getName());
+        if(type == null) {
+            throw new IllegalArgumentException("type: null");
         }
 
         if(genericType == null) {
@@ -49,6 +49,10 @@ public class CollectionSpecimen<T,G> implements Specimen<T> {
 
         if(specimenFactory == null) {
             throw new IllegalArgumentException("specimenFactory: null");
+        }
+
+        if (!Reflector.isCollection(type)) {
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

@@ -15,6 +15,10 @@ public class PrimitiveSpecimen<T> implements Specimen<T> {
 
     public PrimitiveSpecimen(final Class<T> type) {
 
+        if(type == null) {
+            throw new IllegalArgumentException("type: null");
+        }
+
         if (!type.isPrimitive() && !Reflector.isBoxedOrString(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }

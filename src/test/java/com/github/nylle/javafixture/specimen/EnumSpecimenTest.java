@@ -7,6 +7,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EnumSpecimenTest {
     @Test
+    void typeIsRequired() {
+        assertThatThrownBy(() -> { new EnumSpecimen<>(null); })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("type: null");
+    }
+
+    @Test
     void onlyEnumTypes() {
         assertThatThrownBy(() -> { new EnumSpecimen<>(Object.class); })
                 .isInstanceOf(IllegalArgumentException.class)

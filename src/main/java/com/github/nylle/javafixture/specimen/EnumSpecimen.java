@@ -11,6 +11,10 @@ public class EnumSpecimen<T> implements Specimen<T> {
 
     public EnumSpecimen(final Class<T> type) {
 
+        if(type == null) {
+            throw new IllegalArgumentException("type: null");
+        }
+
         if (!type.isEnum()) {
             throw new IllegalArgumentException("type: " + type.getName());
         }

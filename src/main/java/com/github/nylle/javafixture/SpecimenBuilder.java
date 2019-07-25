@@ -11,19 +11,19 @@ import java.util.stream.Stream;
 
 public class SpecimenBuilder<T> {
     private static final int DEFAULT_COLLECTION_SIZE = 3;
+
     private final Class<T> typeReference;
     private final Reflector<T> reflector;
-    private List<Consumer<T>> functions;
-    private List<String> ignoredFields;
-    private Map<String, Object> customFields;
+
+    private final List<Consumer<T>> functions = new LinkedList<>();
+    private final List<String> ignoredFields = new LinkedList<>();
+    private final Map<String, Object> customFields = new HashMap<>();
+
     private Randomizer randomizer = new Randomizer();
 
     public SpecimenBuilder(Class<T> typeReference) {
         this.typeReference = typeReference;
         reflector = new Reflector<>(typeReference);
-        functions = new LinkedList<>();
-        ignoredFields = new LinkedList<>();
-        customFields = new HashMap<>();
     }
 
     public T create() {

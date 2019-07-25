@@ -2,27 +2,20 @@ package com.github.nylle.javafixture;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Randomizer {
     private static final int MAX_COLLECTION_SIZE = 10;
 
-    final Random random = new Random();
     final CollectionFactory collectionFactory = new CollectionFactory();
-    final PrimitiveFactory primitiveFactory = new PrimitiveFactory();
-    final EnumFactory enumFactory = new EnumFactory();
+    final SpecimenFactory specimenFactory = new SpecimenFactory(new Context(new Configuration()));
     final ProxyFactory proxyFactory = new ProxyFactory();
     final ObjectFactory objectFactory = new ObjectFactory();
 
     public <T> T random(final Class<T> type) {
 
-        if(type.isPrimitive() || Reflector.isBoxedOrString(type)) {
-            return primitiveFactory.create(type, random);
-        }
-
-        if(type.isEnum()) {
-            return enumFactory.create(type, random);
+        if(type.isPrimitive() || type.isEnum() || Reflector.isBoxedOrString(type)) {
+            return specimenFactory.build(type).create();
         }
 
         if(Reflector.isMap(type)) {

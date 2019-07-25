@@ -35,7 +35,16 @@ public class SpecimenFactory {
             //return proxyFactory.create(type, this);
         }
 
-        return null;
+        throw new SpecimenException("Unsupported type: "+ type);
     }
+
+    public <T> Specimen<T> build(final Class<T> type, final Class<T> genericType) {
+        if(Reflector.isCollection(type)) {
+            return new CollectionSpecimen<>(type, genericType, context, this);
+        }
+
+        throw new SpecimenException("Unsupported type: "+ type);
+    }
+
 }
 

@@ -54,6 +54,10 @@ public class Reflector<T> {
         return type != null && type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
     }
 
+    public static Class<?> getGenericType(final Type type, final int index) {
+        return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[index];
+    }
+
     public static boolean isStatic(final Field field) {
         return Modifier.isStatic(field.getModifiers());
     }

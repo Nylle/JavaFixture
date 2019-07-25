@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.Reflector;
 import com.github.nylle.javafixture.Specimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -27,7 +28,7 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.stream.IntStream;
 
-public class CollectionSpecimen<T,G> implements Specimen<T> {
+public class CollectionSpecimen<T, G> implements Specimen<T> {
     private final Class<T> type;
     private final Class<G> genericType;
     private final Context context;
@@ -35,19 +36,19 @@ public class CollectionSpecimen<T,G> implements Specimen<T> {
 
     public CollectionSpecimen(final Class<T> type, final Class<G> genericType, final Context context, final SpecimenFactory specimenFactory) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
-        if(genericType == null) {
+        if (genericType == null) {
             throw new IllegalArgumentException("genericType: null");
         }
 
-        if(context == null) {
+        if (context == null) {
             throw new IllegalArgumentException("context: null");
         }
 
-        if(specimenFactory == null) {
+        if (specimenFactory == null) {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
@@ -63,13 +64,16 @@ public class CollectionSpecimen<T,G> implements Specimen<T> {
 
     @Override
     public T create() {
-        Collection<G> collection = type.isInterface()
-                ? createFromInterfaceType(type)
-                : createFromConcreteType(type);
+        Collection<G> collection = context.cached(
+                SpecimenType.forCollection(type, genericType),
+                type.isInterface()
+                        ? createFromInterfaceType(type)
+                        : createFromConcreteType(type));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .forEach(x -> collection.add(specimenFactory.build(genericType).create()));
+
 
         return (T) collection;
     }
@@ -120,7 +124,7 @@ public class CollectionSpecimen<T,G> implements Specimen<T> {
             return new LinkedList<>();
         }
 
-        throw new SpecimenException("Unsupported type: "+ type);
+        throw new SpecimenException("Unsupported type: " + type);
     }
 
 }

@@ -3,6 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,18 +29,20 @@ import java.util.concurrent.TransferQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CollectionSpecimenTest {
 
     private SpecimenFactory specimenFactory = Mockito.mock(SpecimenFactory.class);
-    private Context context = Mockito.mock(Context.class);
+    private Context context = new Context(new Configuration(2, 2));
+    private Context mockedContext = Mockito.mock(Context.class);
 
     @BeforeEach
     void setup() {
         when(specimenFactory.build(String.class)).thenReturn(new PrimitiveSpecimen<>(String.class));
-        when(context.getConfiguration()).thenReturn(new Configuration(2, 2));
+        when(mockedContext.getConfiguration()).thenReturn(new Configuration(2, 2));
     }
     
     @Test
@@ -78,16 +81,19 @@ class CollectionSpecimenTest {
     }
 
     @Test
-    void xxx() {
-        var sut = new CollectionSpecimen<>(List.class, String.class, context, specimenFactory);
+    void resultIsCached() {
+        var sut = new CollectionSpecimen<>(List.class, String.class, mockedContext, specimenFactory);
+
+        Class<LinkedList> cachedType = LinkedList.class;
+        Class<ArrayList> newType = ArrayList.class;
+
+        when(mockedContext.cached(any(), any())).thenReturn(new LinkedList<>());
 
         var actual = sut.create();
 
-//        verify(context).
+        verify(mockedContext).cached(any(SpecimenType.class), any(newType));
 
-
-        assertThat(actual).isInstanceOf(ArrayList.class);
-        assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
+        assertThat(actual).isInstanceOf(cachedType);
         assertThat(actual.size()).isEqualTo(2);
     }
 

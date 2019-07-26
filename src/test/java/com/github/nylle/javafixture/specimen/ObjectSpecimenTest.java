@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -61,9 +62,21 @@ class ObjectSpecimenTest {
 
         assertThat(actual).isInstanceOf(TestObject.class);
         assertThat(actual.getValue()).isInstanceOf(String.class);
+
         assertThat(actual.getIntegers()).isInstanceOf(ArrayList.class);
         assertThat(actual.getIntegers().size()).isEqualTo(2);
         assertThat(actual.getIntegers().get(0)).isInstanceOf(Integer.class);
+
+        assertThat(actual.getStrings()).isInstanceOf(HashMap.class);
+        assertThat(actual.getStrings().size()).isEqualTo(2);
+
+        var first = (Map.Entry)actual.getStrings().entrySet().iterator().next();
+        assertThat(first.getKey()).isExactlyInstanceOf(Integer.class);
+        assertThat(first.getValue()).isExactlyInstanceOf(String.class);
+
+        var second = (Map.Entry)actual.getStrings().entrySet().iterator().next();
+        assertThat(second.getKey()).isExactlyInstanceOf(Integer.class);
+        assertThat(second.getValue()).isExactlyInstanceOf(String.class);
     }
 
     @Test

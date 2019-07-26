@@ -1,15 +1,19 @@
 package com.github.nylle.javafixture.testobjects;
 
 import java.util.List;
+import java.util.Map;
 
 public class TestObject {
     private final String value;
 
     private final List<Integer> integers;
 
-    public TestObject(String value, final List<Integer> integers) {
+    private final Map<Integer, String> strings;
+
+    public TestObject(String value, final List<Integer> integers, Map<Integer, String> strings) {
         this.value = value;
         this.integers = integers;
+        this.strings = strings;
     }
 
     public String getValue() {
@@ -18,5 +22,9 @@ public class TestObject {
 
     public List<Integer> getIntegers() {
         return integers;
+    }
+
+    public Map<Integer, String> getStrings() {
+        return strings;
     }
 }

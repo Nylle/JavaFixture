@@ -47,10 +47,10 @@ public class ObjectSpecimen<T> implements Specimen<T> {
         var result = context.cached(SpecimenType.forObject(type), newInstance(type));
 
         Arrays.stream(type.getDeclaredFields())
-                .filter(f -> !Reflector.isStatic(f))
-                .forEach(f -> Reflector.setField(f, result, Reflector.isCollection(f.getType())
-                        ? specimenFactory.build(f.getType(), Reflector.getGenericType(f.getGenericType(), 0)).create()
-                        : specimenFactory.build(f.getType()).create()));
+                .filter(x -> !Reflector.isStatic(x))
+                .forEach(x -> Reflector.setField(x, result, Reflector.isParameterizedType(x.getGenericType())
+                        ? specimenFactory.build(x.getType(), x.getGenericType()).create()
+                        : specimenFactory.build(x.getType()).create()));
 
         return result;
     }

@@ -6,6 +6,8 @@ import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 
+import java.lang.reflect.Type;
+
 public class SpecimenFactory {
 
     private final Context context;
@@ -36,14 +38,17 @@ public class SpecimenFactory {
             //return proxyFactory.create(type, this);
         }
 
-        //TODO: abstract classes: Modifier.isAbstract(type.getModifiers());
-
         return new ObjectSpecimen(type, context, this);
     }
 
-    public <T, G> Specimen<T> build(final Class<T> type, final Class<G> genericType) {
+    public <T, G> Specimen<T> build(final Class<T> type, final Type genericType) {
+
         if(Reflector.isCollection(type)) {
-            return new CollectionSpecimen<>(type, genericType, context, this);
+            return new CollectionSpecimen<>(type, Reflector.getGenericType(genericType, 0), context, this);
+        }
+
+        if(Reflector.isMap(type)) {
+            return new MapSpecimen<>(type, Reflector.getGenericType(genericType, 0), Reflector.getGenericType(genericType, 1), context, this);
         }
 
         throw new SpecimenException("Unsupported type: "+ type);

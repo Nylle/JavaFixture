@@ -20,7 +20,7 @@ class InterfaceSpecimenTest {
 
     @BeforeEach
     void setup() {
-        context = new Context(new Configuration(2, 2));
+        context = new Context(new Configuration(2, 2, 3));
         specimenFactory = new SpecimenFactory(context);
     }
 

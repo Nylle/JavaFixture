@@ -3,7 +3,6 @@ package com.github.nylle.javafixture.specimen;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ class MapSpecimenTest {
 
     @BeforeEach
     void setup() {
-        context = new Context(new Configuration(2, 2));
+        context = new Context(new Configuration(2, 2, 3));
         specimenFactory = new SpecimenFactory(context);
     }
 

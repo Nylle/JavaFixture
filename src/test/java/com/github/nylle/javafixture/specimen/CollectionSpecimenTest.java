@@ -3,12 +3,9 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,9 +28,6 @@ import java.util.concurrent.TransferQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class CollectionSpecimenTest {
 
@@ -42,7 +36,7 @@ class CollectionSpecimenTest {
 
     @BeforeEach
     void setup() {
-        context = new Context(new Configuration(2, 2));
+        context = new Context(new Configuration(2, 2, 3));
         specimenFactory = new SpecimenFactory(context);
     }
     

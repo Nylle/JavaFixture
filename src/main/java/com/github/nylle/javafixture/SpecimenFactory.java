@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 
@@ -24,8 +25,7 @@ public class SpecimenFactory {
         }
 
         if(Reflector.isMap(type)) {
-            //TODO: non-generic empty map or exception?
-            throw new SpecimenException("Unsupported type: "+ type);
+            return new MapSpecimen<>(type, null, null, context, this);
         }
 
         if(Reflector.isCollection(type)) {

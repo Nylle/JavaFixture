@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
@@ -31,12 +32,13 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (genericKeyType == null) {
-            throw new IllegalArgumentException("genericKeyType: null");
-        }
-
-        if (genericValueType == null) {
-            throw new IllegalArgumentException("genericValueType: null");
+        if (genericKeyType != null || genericValueType != null) {
+            if (genericKeyType == null) {
+                throw new IllegalArgumentException("genericKeyType: null");
+            }
+            if (genericValueType == null) {
+                throw new IllegalArgumentException("genericValueType: null");
+            }
         }
 
         if (context == null) {
@@ -64,6 +66,7 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
+                .filter(x -> genericKeyType != null && genericValueType != null)
                 .forEach(x -> map.put(
                         specimenFactory.build(genericKeyType).create(),
                         specimenFactory.build(genericValueType).create()));
@@ -97,6 +100,11 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
             return new TreeMap<>();
         }
 
+        if (Map.class.isAssignableFrom(type)) {
+            return new HashMap<>();
+        }
+
         throw new SpecimenException("Unsupported type: " + type);
     }
+
 }

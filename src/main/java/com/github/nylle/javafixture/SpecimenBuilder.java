@@ -10,34 +10,35 @@ import java.util.stream.Stream;
 
 
 public class SpecimenBuilder<T> {
-    private static final int DEFAULT_COLLECTION_SIZE = 3;
-
     private final Class<T> typeReference;
-    private final Reflector<T> reflector;
+    private final Configuration configuration;
+
+    private final Context context;
 
     private final List<Consumer<T>> functions = new LinkedList<>();
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
 
-    private Randomizer randomizer = new Randomizer();
+    private final Reflector<T> reflector;
 
-    public SpecimenBuilder(Class<T> typeReference) {
+    public SpecimenBuilder(final Class<T> typeReference, final Configuration configuration) {
         this.typeReference = typeReference;
+        this.configuration = configuration;
+        this.context = new Context(configuration);
+
         reflector = new Reflector<>(typeReference);
     }
 
     public T create() {
-        T instance = randomizer.random(typeReference);
-        customize(instance);
-        return instance;
+        return customize(new SpecimenFactory(context).build(typeReference).create());
     }
 
     public Stream<T> createMany() {
-        return IntStream.range(0, DEFAULT_COLLECTION_SIZE).boxed().map(x -> create());
+        return IntStream.range(0, configuration.getStreamSize()).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
     public Stream<T> createMany(int size) {
-        return IntStream.range(0, size).boxed().map(x -> create());
+        return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
     public SpecimenBuilder<T> with(Consumer<T> function) {
@@ -56,7 +57,7 @@ public class SpecimenBuilder<T> {
     }
 
     private T customize(T instance) {
-        customFields.entrySet().forEach(kvp -> reflector.setField(instance, kvp.getKey(), kvp.getValue()));
+        customFields.forEach((key, value) -> reflector.setField(instance, key, value));
         ignoredFields.forEach(field -> reflector.unsetField(instance, field));
         functions.forEach(f -> f.accept(instance));
         return instance;

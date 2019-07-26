@@ -66,12 +66,7 @@ public class ObjectSpecimen<T> implements Specimen<T> {
         try {
             return type.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            try {
-                return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(type)).newInstance();
-            }
-            catch(Exception f) {
-                throw new SpecimenException("Unable to create object of type " + type.getName(), f);
-            }
+            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(type)).newInstance();
         }
     }
 

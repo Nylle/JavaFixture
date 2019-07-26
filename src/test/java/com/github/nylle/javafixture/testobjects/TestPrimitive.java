@@ -29,6 +29,4 @@ public class TestPrimitive {
     public void setInteger(Integer integer) {
         this.integer = integer;
     }
-
-
 }

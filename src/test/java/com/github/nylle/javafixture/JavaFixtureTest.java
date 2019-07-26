@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -187,6 +188,7 @@ public class JavaFixtureTest {
         assertThat(firstContractPosition.getContract()).isInstanceOf(Contract.class);
         assertThat(firstContractPosition.getStartDate()).isInstanceOf(LocalDate.class);
         assertThat(firstContractPosition.getRemainingPeriod()).isInstanceOf(Period.class);
+        assertThat(firstContractPosition.getFile()).isInstanceOf(File.class);
     }
 
     @Test

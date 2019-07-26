@@ -9,10 +9,8 @@ import com.github.nylle.javafixture.SpecimenType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toMap;
 
 public class InterfaceSpecimen<T> implements Specimen<T> {
 
@@ -50,26 +48,22 @@ public class InterfaceSpecimen<T> implements Specimen<T> {
         if(context.isCached(specimenType)){
             return (T) context.cached(specimenType);
         }
-        return context.cached(specimenType, newProxy(type));
+
+        return (T) context.cached(specimenType, Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new GenericInvocationHandler()));
     }
 
-    private T newProxy(Class<T> type) {
-        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new GenericInvocationHandler<>(type, specimenFactory));
-    }
+    class GenericInvocationHandler implements InvocationHandler {
 
-    class GenericInvocationHandler<U> implements InvocationHandler {
-
-        private Map<String, Object> values;
-
-        GenericInvocationHandler(final Class<U> type, final SpecimenFactory specimenFactory) {
-            values = stream(type.getDeclaredMethods())
-                    .filter(x -> x.getReturnType() != void.class)
-                    .collect(toMap(x -> x.getName(), x -> specimenFactory.build(x.getReturnType()).create()));
-        }
+        private Map<String, Object> methodResults = new HashMap<>();
 
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) {
-            return values.get(method.getName());
+            if(method.getReturnType() != void.class) {
+                methodResults.computeIfAbsent(method.toString(), x -> specimenFactory.build(method.getReturnType()).create());
+                return methodResults.get(method.toString());
+            }
+
+            return null;
         }
     }
 

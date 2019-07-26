@@ -22,9 +22,11 @@ import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
 
 public class JavaFixtureTest {
 
+    private final Configuration configuration = new Configuration(2, 2, 3);
+
     @Test
     public void canCreatePrimitives() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         int integerResult = fixture.create(int.class);
 
@@ -44,7 +46,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canCreateInstance() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         TestPrimitive result = fixture.create(TestPrimitive.class);
 
@@ -54,7 +56,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canCreateInstanceWithoutDefaultConstructor() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         AnotherTestDto result = fixture.create(AnotherTestDto.class);
 
@@ -64,7 +66,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canCreateMany() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         List<TestPrimitive> result = fixture.createMany(TestPrimitive.class).collect(Collectors.toList());
 
@@ -77,7 +79,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canCreateManyWithCustomization() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         List<TestPrimitive> result = fixture.build(TestPrimitive.class)
                 .with(x -> x.setHello("world"))
@@ -110,7 +112,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canAddManyTo() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         List<TestPrimitive> result = new ArrayList<>();
         result.add(new TestPrimitive());
@@ -124,7 +126,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canOverrideBySetter() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         TestPrimitive result = fixture.build(TestPrimitive.class).with(x -> x.setHello("world")).create();
 
@@ -133,7 +135,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canOverridePublicField() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         TestPrimitive result = fixture.build(TestPrimitive.class).with(x -> x.publicField = "world").create();
 
@@ -142,7 +144,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canOverridePrivateField() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         TestPrimitive result = fixture.build(TestPrimitive.class).with("hello", "world").create();
 
@@ -151,7 +153,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canOmitPrivateField() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         TestPrimitive result = fixture.build(TestPrimitive.class).without("hello").create();
 
@@ -160,7 +162,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canOmitPrivatePrimitiveFieldAndInitializesDefaultValue() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         TestPrimitive result = fixture.build(TestPrimitive.class).without("primitive").create();
 
@@ -169,7 +171,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canCreateComplexModel() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         Contract result = fixture.create(Contract.class);
         assertThat(result).isInstanceOf(Contract.class);
@@ -189,7 +191,7 @@ public class JavaFixtureTest {
 
     @Test
     public void canPerformAction() {
-        JavaFixture fixture = new JavaFixture();
+        JavaFixture fixture = new JavaFixture(configuration);
 
         ContractPosition cp = fixture.create(ContractPosition.class);
         Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x ->

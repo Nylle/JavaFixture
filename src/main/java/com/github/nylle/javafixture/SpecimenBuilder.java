@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-
 public class SpecimenBuilder<T> {
     private final Class<T> typeReference;
     private final Configuration configuration;
@@ -19,14 +18,10 @@ public class SpecimenBuilder<T> {
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
 
-    private final Reflector<T> reflector;
-
     public SpecimenBuilder(final Class<T> typeReference, final Configuration configuration) {
         this.typeReference = typeReference;
         this.configuration = configuration;
         this.context = new Context(configuration);
-
-        reflector = new Reflector<>(typeReference);
     }
 
     public T create() {
@@ -57,8 +52,8 @@ public class SpecimenBuilder<T> {
     }
 
     private T customize(T instance) {
-        customFields.forEach((key, value) -> reflector.setField(instance, key, value));
-        ignoredFields.forEach(field -> reflector.unsetField(instance, field));
+        customFields.forEach((fieldName, value) -> ReflectionHelper.setField(fieldName, instance, value));
+        ignoredFields.forEach(field -> ReflectionHelper.unsetField(field, instance));
         functions.forEach(f -> f.accept(instance));
         return instance;
     }

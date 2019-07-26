@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.Reflector;
+import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.Specimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
@@ -33,6 +33,7 @@ public class CollectionSpecimen<T, G> implements Specimen<T> {
     private final Class<G> genericType;
     private final Context context;
     private final SpecimenFactory specimenFactory;
+    private final SpecimenType specimenType;
 
     public CollectionSpecimen(final Class<T> type, final Class<G> genericType, final Context context, final SpecimenFactory specimenFactory) {
 
@@ -48,7 +49,7 @@ public class CollectionSpecimen<T, G> implements Specimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!Reflector.isCollection(type)) {
+        if (!ReflectionHelper.isCollection(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -56,19 +57,23 @@ public class CollectionSpecimen<T, G> implements Specimen<T> {
         this.genericType = genericType;
         this.context = context;
         this.specimenFactory = specimenFactory;
+        this.specimenType = SpecimenType.forCollection(type, genericType);
     }
 
     @Override
     public T create() {
-        Collection<G> collection = type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type);
+        if(context.isCached(specimenType)){
+            return (T) context.cached(specimenType);
+        }
+
+        Collection<G> collection = context.cached(specimenType, type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .filter(x -> genericType != null)
                 .forEach(x -> collection.add(specimenFactory.build(genericType).create()));
 
-
-        return (T) context.cached(SpecimenType.forCollection(type, genericType), collection);
+        return (T) collection;
     }
 
     private Collection<G> createFromConcreteType(final Class<?> type) {

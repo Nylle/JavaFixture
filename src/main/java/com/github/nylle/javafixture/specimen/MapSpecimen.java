@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.IntStream;
 
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.Reflector;
+import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.Specimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
@@ -25,6 +25,7 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
     private final Class<V> genericValueType;
     private final Context context;
     private final SpecimenFactory specimenFactory;
+    private final SpecimenType specimenType;
 
     public MapSpecimen(final Class<T> type, final Class<K> genericKeyType, final Class<V> genericValueType, final Context context, final SpecimenFactory specimenFactory) {
 
@@ -49,7 +50,7 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!Reflector.isMap(type)) {
+        if (!ReflectionHelper.isMap(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -58,11 +59,16 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
         this.genericValueType = genericValueType;
         this.context = context;
         this.specimenFactory = specimenFactory;
+        this.specimenType = SpecimenType.forMap(type, genericKeyType, genericValueType);
     }
 
     @Override
     public T create() {
-        Map<K, V> map = type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type);
+        if(context.isCached(specimenType)){
+            return (T) context.cached(specimenType);
+        }
+
+        Map<K, V> map = context.cached(specimenType, type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
@@ -71,7 +77,7 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
                         specimenFactory.build(genericKeyType).create(),
                         specimenFactory.build(genericValueType).create()));
 
-        return (T) context.cached(SpecimenType.forMap(type, genericKeyType, genericValueType), map);
+        return (T) map;
     }
 
     private Map<K, V> createFromConcreteType(final Class<T> type) {

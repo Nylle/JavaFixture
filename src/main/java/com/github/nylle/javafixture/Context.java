@@ -20,8 +20,16 @@ public class Context {
         return configuration;
     }
 
+    public boolean isCached(SpecimenType specimenType) {
+        return cache.containsKey(specimenType);
+    }
+
     public <T> T cached(SpecimenType specimenType, T instance) {
         cache.putIfAbsent(specimenType, instance);
+        return (T) cache.get(specimenType);
+    }
+
+    public <T> T cached(SpecimenType specimenType) {
         return (T) cache.get(specimenType);
     }
 }

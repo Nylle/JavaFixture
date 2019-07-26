@@ -22,7 +22,7 @@ import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
 
 public class JavaFixtureTest {
 
-    private final Configuration configuration = new Configuration(2, 2, 3);
+    private final Configuration configuration = new Configuration();
 
     @Test
     public void canCreatePrimitives() {

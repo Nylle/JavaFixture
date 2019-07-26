@@ -90,5 +90,13 @@ class ObjectSpecimenTest {
         assertThat(original.getValue()).isEqualTo(cached.getValue());
         assertThat(original.getIntegers()).isEqualTo(cached.getIntegers());
     }
+
+    @Test
+    void ignoresStaticFields() {
+
+        var actual = new ObjectSpecimen<>(TestObject.class, context, specimenFactory).create();
+
+        assertThat(actual.STATIC_FIELD).isEqualTo("unchanged");
+    }
 }
 

@@ -19,7 +19,7 @@ public class SpecimenFactory {
 
     public <T> Specimen<T> build(final Class<T> type) {
 
-        if(type.isPrimitive() || Reflector.isBoxedOrString(type)) {
+        if(type.isPrimitive() || ReflectionHelper.isBoxedOrString(type)) {
             return new PrimitiveSpecimen<>(type);
         }
 
@@ -27,11 +27,11 @@ public class SpecimenFactory {
             return new EnumSpecimen<>(type);
         }
 
-        if(Reflector.isMap(type)) {
+        if(ReflectionHelper.isMap(type)) {
             return new MapSpecimen<>(type, null, null, context, this);
         }
 
-        if(Reflector.isCollection(type)) {
+        if(ReflectionHelper.isCollection(type)) {
             return new CollectionSpecimen<>(type, null, context, this);
         }
 
@@ -44,12 +44,12 @@ public class SpecimenFactory {
 
     public <T, G> Specimen<T> build(final Class<T> type, final Type genericType) {
 
-        if(Reflector.isCollection(type)) {
-            return new CollectionSpecimen<>(type, Reflector.getGenericType(genericType, 0), context, this);
+        if(ReflectionHelper.isCollection(type)) {
+            return new CollectionSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), context, this);
         }
 
-        if(Reflector.isMap(type)) {
-            return new MapSpecimen<>(type, Reflector.getGenericType(genericType, 0), Reflector.getGenericType(genericType, 1), context, this);
+        if(ReflectionHelper.isMap(type)) {
+            return new MapSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), ReflectionHelper.getGenericType(genericType, 1), context, this);
         }
 
         throw new SpecimenException("Unsupported type: "+ type);

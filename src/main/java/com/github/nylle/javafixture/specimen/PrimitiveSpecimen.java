@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Reflector;
+import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.Specimen;
 import com.github.nylle.javafixture.SpecimenException;
 
@@ -19,7 +19,7 @@ public class PrimitiveSpecimen<T> implements Specimen<T> {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (!type.isPrimitive() && !Reflector.isBoxedOrString(type)) {
+        if (!type.isPrimitive() && !ReflectionHelper.isBoxedOrString(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TestObject {
+    public final static String STATIC_FIELD = "unchanged";
+
     private final String value;
 
     private final List<Integer> integers;

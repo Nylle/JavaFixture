@@ -1,13 +1,18 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.GenericInvocationHandler;
 import com.github.nylle.javafixture.Reflector;
 import com.github.nylle.javafixture.Specimen;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
 
 public class InterfaceSpecimen<T> implements Specimen<T> {
 
@@ -46,6 +51,23 @@ public class InterfaceSpecimen<T> implements Specimen<T> {
     private T newProxy(Class<T> type) {
         return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new GenericInvocationHandler<>(type, specimenFactory));
     }
+
+    class GenericInvocationHandler<U> implements InvocationHandler {
+
+        private Map<String, Object> values;
+
+        GenericInvocationHandler(final Class<U> type, final SpecimenFactory specimenFactory) {
+            values = stream(type.getDeclaredMethods())
+                    .filter(x -> x.getReturnType() != void.class)
+                    .collect(toMap(x -> x.getName(), x -> specimenFactory.build(x.getReturnType()).create()));
+        }
+
+        @Override
+        public Object invoke(final Object proxy, final Method method, final Object[] args) {
+            return values.get(method.getName());
+        }
+    }
+
 
 }
 

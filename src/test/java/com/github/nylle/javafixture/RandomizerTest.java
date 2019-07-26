@@ -106,7 +106,7 @@ public class RandomizerTest {
 
         final TestInterface result = sut.random(TestInterface.class);
 
-        assertThat(result.getTestDto()).isInstanceOf(TestPrimitive.class);
+        assertThat(result.getTestObject()).isInstanceOf(TestPrimitive.class);
         assertThat(result.toString()).isInstanceOf(String.class);
         assertThat(result.publicField).isEqualTo(1);
     }

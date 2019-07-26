@@ -3,7 +3,6 @@ package com.github.nylle.javafixture;
 public class Randomizer {
 
     final SpecimenFactory specimenFactory = new SpecimenFactory(new Context(new Configuration()));
-    final ProxyFactory proxyFactory = new ProxyFactory();
 
     public <T> T random(final Class<T> type) {
 
@@ -21,7 +20,7 @@ public class Randomizer {
         }
 
         if (type.isInterface()) {
-            return proxyFactory.create(type, this);
+            return specimenFactory.build(type).create();
         }
 
         //TODO: abstract classes: Modifier.isAbstract(type.getModifiers());

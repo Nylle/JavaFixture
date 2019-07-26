@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.specimen.EnumSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
+import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 
 import java.lang.reflect.Type;
 
@@ -35,7 +36,7 @@ public class SpecimenFactory {
         }
 
         if(type.isInterface()) {
-            //return proxyFactory.create(type, this);
+            return new InterfaceSpecimen<>(type, context, this);
         }
 
         return new ObjectSpecimen(type, context, this);

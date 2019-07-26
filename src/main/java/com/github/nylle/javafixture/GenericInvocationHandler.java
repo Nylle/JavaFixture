@@ -11,10 +11,10 @@ public class GenericInvocationHandler<T> implements InvocationHandler {
 
     private Map<String, Object> values;
 
-    public GenericInvocationHandler(final Class<T> type, final Randomizer randomizer) {
+    public GenericInvocationHandler(final Class<T> type, final SpecimenFactory specimenFactory) {
         values = stream(type.getDeclaredMethods())
                 .filter(x -> x.getReturnType() != void.class)
-                .collect(toMap(x -> x.getName(), x -> randomizer.random(x.getReturnType())));
+                .collect(toMap(x -> x.getName(), x -> specimenFactory.build(x.getReturnType()).create()));
     }
 
     @Override

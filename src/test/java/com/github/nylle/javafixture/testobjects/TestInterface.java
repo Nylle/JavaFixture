@@ -3,9 +3,9 @@ package com.github.nylle.javafixture.testobjects;
 public interface TestInterface {
     int publicField = 1;
 
-    TestPrimitive getTestDto();
+    TestObject getTestObject();
 
-    void setTestDto(TestPrimitive value);
+    void setTestDto(TestObject value);
 
     String toString();
 }

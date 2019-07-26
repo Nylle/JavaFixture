@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import com.github.nylle.javafixture.testobjects.AnotherTestDto;
+import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import com.github.nylle.javafixture.testobjects.complex.AccountManager;
 import com.github.nylle.javafixture.testobjects.complex.Contract;
@@ -59,10 +59,10 @@ public class JavaFixtureTest {
     public void canCreateInstanceWithoutDefaultConstructor() {
         JavaFixture fixture = new JavaFixture(configuration);
 
-        AnotherTestDto result = fixture.create(AnotherTestDto.class);
+        TestObjectWithoutDefaultConstructor result = fixture.create(TestObjectWithoutDefaultConstructor.class);
 
         assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(AnotherTestDto.class);
+        assertThat(result).isInstanceOf(TestObjectWithoutDefaultConstructor.class);
     }
 
     @Test
@@ -196,8 +196,7 @@ public class JavaFixtureTest {
         JavaFixture fixture = new JavaFixture(configuration);
 
         ContractPosition cp = fixture.create(ContractPosition.class);
-        Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x ->
-                x.setBaseContractPosition(cp)).create();
+        Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
 
         assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
     }

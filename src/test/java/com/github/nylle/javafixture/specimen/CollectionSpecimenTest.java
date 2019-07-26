@@ -61,13 +61,6 @@ class CollectionSpecimenTest {
     }
 
     @Test
-    void genericTypeIsRequired() {
-        assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, null, context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("genericType: null");
-    }
-
-    @Test
     void contextIsRequired() {
         assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, Object.class, null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -282,7 +275,7 @@ class CollectionSpecimenTest {
     }
 
     @Test
-    void nestedListsLoseGenericType() {
+    void nestedListsLoseGenericTypeAndAreEmpty() {
         var sut = new CollectionSpecimen<>(List.class, List.class, context, specimenFactory);
 
         var actual = sut.create();
@@ -291,9 +284,9 @@ class CollectionSpecimenTest {
         assertThat(((ArrayList<ArrayList<Object>>)actual).size()).isEqualTo(2);
 
         assertThat(actual.get(0)).isExactlyInstanceOf(ArrayList.class);
-        assertThat(((ArrayList<Object>)actual.get(0)).size()).isEqualTo(2);
+        assertThat(((List)actual.get(0)).size()).isEqualTo(0);
         assertThat(actual.get(1)).isExactlyInstanceOf(ArrayList.class);
-        assertThat(((ArrayList<Object>)actual.get(1)).size()).isEqualTo(2);
+        assertThat(((List)actual.get(1)).size()).isEqualTo(0);
     }
 
     @Test

@@ -29,7 +29,7 @@ public class SpecimenFactory {
         }
 
         if(Reflector.isCollection(type)) {
-            return new CollectionSpecimen<>(type, Object.class, context, this);
+            return new CollectionSpecimen<>(type, null, context, this);
         }
 
         if(type.isInterface()) {

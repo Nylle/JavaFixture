@@ -40,10 +40,6 @@ public class CollectionSpecimen<T, G> implements Specimen<T> {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (genericType == null) {
-            throw new IllegalArgumentException("genericType: null");
-        }
-
         if (context == null) {
             throw new IllegalArgumentException("context: null");
         }
@@ -68,6 +64,7 @@ public class CollectionSpecimen<T, G> implements Specimen<T> {
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
+                .filter(x -> genericType != null)
                 .forEach(x -> collection.add(specimenFactory.build(genericType).create()));
 
 

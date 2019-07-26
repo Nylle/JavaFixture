@@ -62,8 +62,19 @@ public class Reflector<T> {
         return Modifier.isStatic(field.getModifiers());
     }
 
+    public static void setField(final Field field, final Object instance, final Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(instance, value);
+        } catch (SecurityException e) {
+            throw new SpecimenException("Unable to access field " + field.getName() + " on object of type " + instance.getClass().getName(), e);
+        } catch (IllegalAccessException e) {
+            throw new SpecimenException("Unable to set field " + field.getName() + " on object of type " + instance.getClass().getName(), e);
+        }
+
+    }
+
     private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {
         return (T) Array.get(Array.newInstance(type, 1), 0);
     }
-
 }

@@ -6,16 +6,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EnumSpecimenTest {
+
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> { new EnumSpecimen<>(null); })
+        assertThatThrownBy(() -> new EnumSpecimen<>(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void onlyEnumTypes() {
-        assertThatThrownBy(() -> { new EnumSpecimen<>(Object.class); })
+        assertThatThrownBy(() -> new EnumSpecimen<>(Object.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Object.class.getName());
     }

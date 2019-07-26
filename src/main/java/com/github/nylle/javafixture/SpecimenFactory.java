@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 
 public class SpecimenFactory {
@@ -35,10 +36,12 @@ public class SpecimenFactory {
             //return proxyFactory.create(type, this);
         }
 
-        throw new SpecimenException("Unsupported type: "+ type);
+        //TODO: abstract classes: Modifier.isAbstract(type.getModifiers());
+
+        return new ObjectSpecimen(type, context, this);
     }
 
-    public <T> Specimen<T> build(final Class<T> type, final Class<T> genericType) {
+    public <T, G> Specimen<T> build(final Class<T> type, final Class<G> genericType) {
         if(Reflector.isCollection(type)) {
             return new CollectionSpecimen<>(type, genericType, context, this);
         }

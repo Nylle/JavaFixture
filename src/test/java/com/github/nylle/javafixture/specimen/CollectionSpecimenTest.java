@@ -4,6 +4,8 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestObject;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,66 +37,48 @@ import static org.mockito.Mockito.when;
 
 class CollectionSpecimenTest {
 
-    private SpecimenFactory specimenFactory = Mockito.mock(SpecimenFactory.class);
-    private Context context = new Context(new Configuration(2, 2));
-    private Context mockedContext = Mockito.mock(Context.class);
+    private Context context;
+    private SpecimenFactory specimenFactory;
 
     @BeforeEach
     void setup() {
-        when(specimenFactory.build(String.class)).thenReturn(new PrimitiveSpecimen<>(String.class));
-        when(mockedContext.getConfiguration()).thenReturn(new Configuration(2, 2));
+        context = new Context(new Configuration(2, 2));
+        specimenFactory = new SpecimenFactory(context);
     }
     
     @Test
     void onlyCollectionTypes() {
-        assertThatThrownBy(() -> { new CollectionSpecimen<>(Map.class, Object.class, context, specimenFactory); })
+        assertThatThrownBy(() -> new CollectionSpecimen<>(Map.class, Object.class, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Map.class.getName());
     }
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> { new CollectionSpecimen<>(null, Object.class, context, specimenFactory); })
+        assertThatThrownBy(() -> new CollectionSpecimen<>(null, Object.class, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void genericTypeIsRequired() {
-        assertThatThrownBy(() -> { new CollectionSpecimen<>(List.class, null, context, specimenFactory); })
+        assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("genericType: null");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> { new CollectionSpecimen<>(List.class, Object.class, null, specimenFactory); })
+        assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, Object.class, null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> { new CollectionSpecimen<>(List.class, Object.class, context, null); })
+        assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, Object.class, context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
-    }
-
-    @Test
-    void resultIsCached() {
-        var sut = new CollectionSpecimen<>(List.class, String.class, mockedContext, specimenFactory);
-
-        Class<LinkedList> cachedType = LinkedList.class;
-        Class<ArrayList> newType = ArrayList.class;
-
-        when(mockedContext.cached(any(), any())).thenReturn(new LinkedList<>());
-
-        var actual = sut.create();
-
-        verify(mockedContext).cached(any(SpecimenType.class), any(newType));
-
-        assertThat(actual).isInstanceOf(cachedType);
-        assertThat(actual.size()).isEqualTo(2);
     }
 
     @Test
@@ -284,4 +268,46 @@ class CollectionSpecimenTest {
         assertThat(actual.size()).isEqualTo(2);
     }
 
+    @Test
+    void resultIsCached() {
+
+        var original = new CollectionSpecimen<>(List.class, String.class, context, specimenFactory).create();
+        var cached = new CollectionSpecimen<>(List.class, String.class, context, specimenFactory).create();
+
+        assertThat(original).isInstanceOf(List.class);
+        assertThat(original.size()).isEqualTo(2);
+        assertThat(original).isSameAs(cached);
+        assertThat(original.get(0)).isEqualTo(cached.get(0));
+        assertThat(original.get(1)).isEqualTo(cached.get(1));
+    }
+
+    @Test
+    void nestedListsLoseGenericType() {
+        var sut = new CollectionSpecimen<>(List.class, List.class, context, specimenFactory);
+
+        var actual = sut.create();
+
+        assertThat(actual).isExactlyInstanceOf(ArrayList.class);
+        assertThat(((ArrayList<ArrayList<Object>>)actual).size()).isEqualTo(2);
+
+        assertThat(actual.get(0)).isExactlyInstanceOf(ArrayList.class);
+        assertThat(((ArrayList<Object>)actual.get(0)).size()).isEqualTo(2);
+        assertThat(actual.get(1)).isExactlyInstanceOf(ArrayList.class);
+        assertThat(((ArrayList<Object>)actual.get(1)).size()).isEqualTo(2);
+    }
+
+    @Test
+    void nonPrimitiveElementsAreSameInstance() {
+
+        var sut = new CollectionSpecimen<>(List.class, TestObject.class, context, specimenFactory);
+
+        var actual = sut.create();
+
+        assertThat(actual).isExactlyInstanceOf(ArrayList.class);
+        assertThat(actual.size()).isEqualTo(2);
+        assertThat(actual.get(0)).isExactlyInstanceOf(TestObject.class);
+        assertThat(actual.get(1)).isExactlyInstanceOf(TestObject.class);
+        assertThat(actual.get(0)).isSameAs(actual.get(1));
+
+    }
 }

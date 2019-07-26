@@ -64,18 +64,14 @@ public class CollectionSpecimen<T, G> implements Specimen<T> {
 
     @Override
     public T create() {
-        Collection<G> collection = context.cached(
-                SpecimenType.forCollection(type, genericType),
-                type.isInterface()
-                        ? createFromInterfaceType(type)
-                        : createFromConcreteType(type));
+        Collection<G> collection = type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type);
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .forEach(x -> collection.add(specimenFactory.build(genericType).create()));
 
 
-        return (T) collection;
+        return (T) context.cached(SpecimenType.forCollection(type, genericType), collection);
     }
 
     private Collection<G> createFromConcreteType(final Class<?> type) {

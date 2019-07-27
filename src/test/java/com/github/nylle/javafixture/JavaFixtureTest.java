@@ -177,7 +177,7 @@ public class JavaFixtureTest {
         Contract result = fixture.create(Contract.class);
         assertThat(result).isInstanceOf(Contract.class);
         assertThat(result.getBaseContractPosition()).isInstanceOf(ContractPosition.class);
-        assertThat(result.getAccountManager()).isInstanceOf(AccountManager.class);
+        assertThat(result.getAccountManagers()).isInstanceOf(AccountManager[].class);
         assertThat(result.getContractPositions()).isInstanceOf(Set.class);
         assertThat(result.getContractPositions().size()).isGreaterThan(0);
         assertThat(result.getCategory()).isInstanceOf(ContractCategory.class);

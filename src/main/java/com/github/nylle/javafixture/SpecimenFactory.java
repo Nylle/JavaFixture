@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
@@ -33,6 +34,10 @@ public class SpecimenFactory {
 
         if(ReflectionHelper.isCollection(type)) {
             return new CollectionSpecimen<>(type, null, context, this);
+        }
+
+        if(type.isArray()) {
+            return new ArraySpecimen<>(type, context, this);
         }
 
         if(type.isInterface()) {

@@ -10,10 +10,10 @@ public interface ISpecimenBuilder<T> {
 
     Stream<T> createMany(int size);
 
-    SpecimenBuilder<T> with(Consumer<T> function);
+    ISpecimenBuilder<T> with(Consumer<T> function);
 
-    SpecimenBuilder<T> with(String fieldName, Object value);
+    ISpecimenBuilder<T> with(String fieldName, Object value);
 
-    SpecimenBuilder<T> without(String fieldName);
+    ISpecimenBuilder<T> without(String fieldName);
 }
 

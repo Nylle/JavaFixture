@@ -8,10 +8,6 @@ public class SpecimenType {
     private final Class<?> genericType1;
     private final Class<?> genericType2;
 
-    private SpecimenType() throws IllegalAccessException {
-        throw new IllegalAccessException();
-    }
-
     private SpecimenType(final Class<?> type, final Class<?> genericType1, final Class<?> genericType2) {
         this.type = type;
         this.genericType1 = genericType1;

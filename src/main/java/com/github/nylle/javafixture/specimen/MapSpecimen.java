@@ -33,13 +33,11 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (genericKeyType != null || genericValueType != null) {
-            if (genericKeyType == null) {
-                throw new IllegalArgumentException("genericKeyType: null");
-            }
-            if (genericValueType == null) {
-                throw new IllegalArgumentException("genericValueType: null");
-            }
+        if (genericKeyType == null && genericValueType != null) {
+            throw new IllegalArgumentException("genericKeyType: null");
+        }
+        if (genericValueType == null && genericKeyType != null) {
+            throw new IllegalArgumentException("genericValueType: null");
         }
 
         if (context == null) {
@@ -64,7 +62,7 @@ public class MapSpecimen<T, K, V> implements Specimen<T> {
 
     @Override
     public T create() {
-        if(context.isCached(specimenType)){
+        if (context.isCached(specimenType)) {
             return (T) context.cached(specimenType);
         }
 

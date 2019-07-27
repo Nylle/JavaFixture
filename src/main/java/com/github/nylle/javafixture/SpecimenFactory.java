@@ -39,10 +39,10 @@ public class SpecimenFactory {
             return new InterfaceSpecimen<>(type, context, this);
         }
 
-        return new ObjectSpecimen(type, context, this);
+        return new ObjectSpecimen<>(type, context, this);
     }
 
-    public <T, G> Specimen<T> build(final Class<T> type, final Type genericType) {
+    public <T> Specimen<T> build(final Class<T> type, final Type genericType) {
 
         if(ReflectionHelper.isCollection(type)) {
             return new CollectionSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), context, this);

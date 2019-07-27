@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import com.github.nylle.javafixture.DefaultSpecimenFactory;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class MapSpecimenTest {
     @BeforeEach
     void setup() {
         context = new Context(new Configuration(2, 2, 3));
-        specimenFactory = new SpecimenFactory(context);
+        specimenFactory = new DefaultSpecimenFactory(context);
     }
 
     @Test

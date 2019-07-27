@@ -18,11 +18,11 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class SpecimenFactoryTest {
+class DefaultSpecimenFactoryTest {
 
     @Test
     void build() {
-        var sut = new SpecimenFactory(new Context(new Configuration()));
+        var sut = new DefaultSpecimenFactory(new Context(new Configuration()));
 
         assertThat(sut.build(String.class)).isExactlyInstanceOf(PrimitiveSpecimen.class);
         assertThat(sut.build(Integer.class)).isExactlyInstanceOf(PrimitiveSpecimen.class);
@@ -38,7 +38,7 @@ class SpecimenFactoryTest {
 
     @Test
     void buildGeneric() throws NoSuchFieldException {
-        var sut = new SpecimenFactory(new Context(new Configuration()));
+        var sut = new DefaultSpecimenFactory(new Context(new Configuration()));
 
         Type genericListType = TestObject.class.getDeclaredField("integers").getGenericType();
         Type genericMapType = TestObject.class.getDeclaredField("strings").getGenericType();

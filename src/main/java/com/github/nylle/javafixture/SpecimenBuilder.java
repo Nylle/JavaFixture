@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class SpecimenBuilder<T> {
+public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final Class<T> typeReference;
     private final Configuration configuration;
 
@@ -21,28 +21,34 @@ public class SpecimenBuilder<T> {
         this.configuration = configuration;
     }
 
+    @Override
     public T create() {
         return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create());
     }
 
+    @Override
     public Stream<T> createMany() {
         return IntStream.range(0, configuration.getStreamSize()).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
+    @Override
     public Stream<T> createMany(int size) {
         return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
+    @Override
     public SpecimenBuilder<T> with(Consumer<T> function) {
         functions.add(function);
         return this;
     }
 
+    @Override
     public SpecimenBuilder<T> with(String fieldName, Object value) {
         customFields.put(fieldName, value);
         return this;
     }
 
+    @Override
     public SpecimenBuilder<T> without(String fieldName) {
         ignoredFields.add(fieldName);
         return this;

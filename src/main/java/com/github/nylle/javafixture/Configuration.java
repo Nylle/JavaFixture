@@ -3,14 +3,11 @@ package com.github.nylle.javafixture;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Configuration {
-    private final int maxCollectionSize;
-    private final int minCollectionSize;
-    private final int streamSize;
+    private int maxCollectionSize = 10;
+    private int minCollectionSize = 2;
+    private int streamSize = 3;
 
     public Configuration() {
-        this.maxCollectionSize = 10;
-        this.minCollectionSize = 2;
-        this.streamSize = 3;
     }
 
     public Configuration(int maxCollectionSize, int minCollectionSize, int streamSize) {
@@ -35,4 +32,22 @@ public class Configuration {
         return ThreadLocalRandom.current().nextInt(minCollectionSize, maxCollectionSize + 1);
     }
 
+    public static Configuration configure() {
+        return new Configuration();
+    }
+
+    public Configuration streamSize(int streamSize) {
+        this.streamSize = streamSize;
+        return this;
+    }
+
+    public Configuration maxCollectionSize(int maxCollectionSize) {
+        this.maxCollectionSize = maxCollectionSize;
+        return this;
+    }
+
+    public Configuration minCollectionSize(int minCollectionSize) {
+        this.minCollectionSize = minCollectionSize;
+        return this;
+    }
 }

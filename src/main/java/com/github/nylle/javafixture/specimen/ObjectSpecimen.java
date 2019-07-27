@@ -2,18 +2,17 @@ package com.github.nylle.javafixture.specimen;
 
 import java.util.Arrays;
 
-import com.github.nylle.javafixture.SpecimenException;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.objenesis.instantiator.ObjectInstantiator;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.ReflectionHelper;
-import com.github.nylle.javafixture.Specimen;
+import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
-public class ObjectSpecimen<T> implements Specimen<T> {
+public class ObjectSpecimen<T> implements ISpecimen<T> {
 
     private final Class<T> type;
     private final Context context;

@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture;
 
-public interface Specimen<T> {
+public interface ISpecimen<T> {
 
     T create();
 

@@ -1,10 +1,10 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Specimen;
+import com.github.nylle.javafixture.ISpecimen;
 
 import java.util.Random;
 
-public class EnumSpecimen<T> implements Specimen<T> {
+public class EnumSpecimen<T> implements ISpecimen<T> {
 
     private final Class<T> type;
     private final Random random;

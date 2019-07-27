@@ -1,14 +1,14 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.ReflectionHelper;
-import com.github.nylle.javafixture.Specimen;
+import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
 
 import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.UUID;
 
-public class PrimitiveSpecimen<T> implements Specimen<T> {
+public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     private final Class<T> type;
     private final Random random;

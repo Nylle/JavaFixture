@@ -14,12 +14,12 @@ import java.util.stream.IntStream;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.ReflectionHelper;
-import com.github.nylle.javafixture.Specimen;
+import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
-public class MapSpecimen<T, K, V> implements Specimen<T> {
+public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     private final Class<T> type;
     private final Class<K> genericKeyType;
     private final Class<V> genericValueType;

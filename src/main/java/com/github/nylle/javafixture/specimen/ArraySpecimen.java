@@ -1,14 +1,14 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.Specimen;
+import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.Array;
 import java.util.stream.IntStream;
 
-public class ArraySpecimen<T> implements Specimen<T> {
+public class ArraySpecimen<T> implements ISpecimen<T> {
     private final Class<T> type;
     private final Context context;
     private final SpecimenFactory specimenFactory;

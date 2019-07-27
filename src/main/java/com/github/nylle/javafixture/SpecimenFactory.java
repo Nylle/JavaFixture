@@ -18,7 +18,7 @@ public class SpecimenFactory {
         this.context = context;
     }
 
-    public <T> Specimen<T> build(final Class<T> type) {
+    public <T> ISpecimen<T> build(final Class<T> type) {
 
         if(type.isPrimitive() || ReflectionHelper.isBoxedOrString(type)) {
             return new PrimitiveSpecimen<>(type);
@@ -47,7 +47,7 @@ public class SpecimenFactory {
         return new ObjectSpecimen<>(type, context, this);
     }
 
-    public <T> Specimen<T> build(final Class<T> type, final Type genericType) {
+    public <T> ISpecimen<T> build(final Class<T> type, final Type genericType) {
 
         if(ReflectionHelper.isCollection(type)) {
             return new CollectionSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), context, this);

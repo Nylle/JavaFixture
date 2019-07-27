@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.TestEnum;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,11 +31,4 @@ class EnumSpecimenTest {
         assertThat(actual).isInstanceOf(TestEnum.class);
         assertThat(actual.toString()).isIn("VALUE1", "VALUE2", "VALUE3");
     }
-
-    private enum TestEnum {
-        VALUE1,
-        VALUE2,
-        VALUE3
-    }
-
 }

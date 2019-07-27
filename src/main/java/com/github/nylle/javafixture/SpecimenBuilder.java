@@ -12,8 +12,6 @@ public class SpecimenBuilder<T> {
     private final Class<T> typeReference;
     private final Configuration configuration;
 
-    private final Context context;
-
     private final List<Consumer<T>> functions = new LinkedList<>();
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
@@ -21,11 +19,10 @@ public class SpecimenBuilder<T> {
     public SpecimenBuilder(final Class<T> typeReference, final Configuration configuration) {
         this.typeReference = typeReference;
         this.configuration = configuration;
-        this.context = new Context(configuration);
     }
 
     public T create() {
-        return customize(new SpecimenFactory(context).build(typeReference).create());
+        return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create());
     }
 
     public Stream<T> createMany() {

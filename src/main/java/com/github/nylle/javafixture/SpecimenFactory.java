@@ -57,7 +57,7 @@ public class SpecimenFactory {
             return new MapSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), ReflectionHelper.getGenericType(genericType, 1), context, this);
         }
 
-        throw new SpecimenException("Unsupported type: "+ type);
+        throw new SpecimenException(String.format("Unsupported type for generic creation: %s", type));
     }
 
 }

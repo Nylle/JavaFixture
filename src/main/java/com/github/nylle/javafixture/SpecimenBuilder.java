@@ -22,15 +22,15 @@ public class SpecimenBuilder<T> {
     }
 
     public T create() {
-        return customize(new DefaultSpecimenFactory(new Context(configuration)).build(typeReference).create());
+        return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create());
     }
 
     public Stream<T> createMany() {
-        return IntStream.range(0, configuration.getStreamSize()).boxed().map(x -> customize(new DefaultSpecimenFactory(new Context(configuration)).build(typeReference).create()));
+        return IntStream.range(0, configuration.getStreamSize()).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
     public Stream<T> createMany(int size) {
-        return IntStream.range(0, size).boxed().map(x -> customize(new DefaultSpecimenFactory(new Context(configuration)).build(typeReference).create()));
+        return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
     public SpecimenBuilder<T> with(Consumer<T> function) {

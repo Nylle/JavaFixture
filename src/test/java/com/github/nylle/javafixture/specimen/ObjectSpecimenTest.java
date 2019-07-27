@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.nylle.javafixture.DefaultSpecimenFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,7 @@ class ObjectSpecimenTest {
     @BeforeEach
     void setup() {
         context = new Context(new Configuration(2, 2, 3));
-        specimenFactory = new DefaultSpecimenFactory(context);
+        specimenFactory = new SpecimenFactory(context);
     }
 
     @Test

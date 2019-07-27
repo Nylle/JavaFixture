@@ -2,7 +2,6 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.DefaultSpecimenFactory;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,7 @@ class CollectionSpecimenTest {
     @BeforeEach
     void setup() {
         context = new Context(new Configuration(2, 2, 3));
-        specimenFactory = new DefaultSpecimenFactory(context);
+        specimenFactory = new SpecimenFactory(context);
     }
     
     @Test

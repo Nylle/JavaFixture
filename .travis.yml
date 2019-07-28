@@ -21,3 +21,4 @@ deploy:
       repo: Nylle/JavaFixture
       tags: true
       jdk: openjdk11
+

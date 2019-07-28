@@ -3,10 +3,10 @@ package com.github.nylle.javafixture.testobjects;
 import java.util.List;
 
 
-public class AnotherTestDto {
+public class TestObjectWithoutDefaultConstructor {
     private List<String> strings;
 
-    public AnotherTestDto(List<String> strings) {
+    public TestObjectWithoutDefaultConstructor(List<String> strings) {
         this.strings = strings;
     }
 }

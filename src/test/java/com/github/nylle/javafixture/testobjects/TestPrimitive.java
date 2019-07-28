@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.testobjects;
 
-public class TestDto {
+public class TestPrimitive {
     private String hello;
     private int primitive;
     private Integer integer;
@@ -29,6 +29,4 @@ public class TestDto {
     public void setInteger(Integer integer) {
         this.integer = integer;
     }
-
-
 }

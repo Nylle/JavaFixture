@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - openjdk9
+  - openjdk11
 install:
   - mvn --settings .travis/settings.xml install -DskipTests=false -Dmaven.javadoc.skip=true -B -V
 before_install:
@@ -13,11 +13,12 @@ deploy:
     on:
       repo: Nylle/JavaFixture
       branch: master
-      jdk: openjdk9
+      jdk: openjdk11
   -
     provider: script
     script: .travis/deploy.sh
     on:
       repo: Nylle/JavaFixture
       tags: true
-      jdk: openjdk9
+      jdk: openjdk11
+

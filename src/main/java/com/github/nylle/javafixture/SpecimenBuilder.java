@@ -1,66 +1,31 @@
 package com.github.nylle.javafixture;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import io.github.benas.randombeans.api.EnhancedRandom;
-
-
-public class SpecimenBuilder<T> {
-    private static final int DEFAULT_COLLECTION_SIZE = 3;
+public class SpecimenBuilder<T> extends AbstractSpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final Class<T> typeReference;
-    private final Reflector<T> reflector;
-    private List<Consumer<T>> functions;
-    private List<String> ignoredFields;
-    private Map<String, Object> customFields;
+    private final Configuration configuration;
 
-    public SpecimenBuilder(Class<T> typeReference) {
+
+    public SpecimenBuilder(final Class<T> typeReference, final Configuration configuration) {
         this.typeReference = typeReference;
-        reflector = new Reflector<>(typeReference);
-        functions = new LinkedList<>();
-        ignoredFields = new LinkedList<>();
-        customFields = new HashMap<>();
+        this.configuration = configuration;
     }
 
+    @Override
     public T create() {
-        T instance = EnhancedRandom.random(typeReference, ignoredFields.toArray(new String[0]));
-        customize(instance);
-        return instance;
+        return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create());
     }
 
+    @Override
     public Stream<T> createMany() {
-        return EnhancedRandom.randomStreamOf(DEFAULT_COLLECTION_SIZE, typeReference, ignoredFields.toArray(new String[0]))
-                .map(x -> customize(x));
+        return IntStream.range(0, configuration.getStreamSize()).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 
+    @Override
     public Stream<T> createMany(int size) {
-        return EnhancedRandom.randomStreamOf(size, typeReference, ignoredFields.toArray(new String[0])).map(x ->
-                customize(x));
-    }
-
-    public SpecimenBuilder<T> with(Consumer<T> function) {
-        functions.add(function);
-        return this;
-    }
-
-    public SpecimenBuilder<T> with(String fieldName, Object value) {
-        ignoredFields.add(fieldName);
-        customFields.put(fieldName, value);
-        return this;
-    }
-
-    public SpecimenBuilder<T> without(String fieldName) {
-        ignoredFields.add(fieldName);
-        return this;
-    }
-
-    private T customize(T instance) {
-        customFields.entrySet().forEach(kvp -> reflector.setField(instance, kvp.getKey(), kvp.getValue()));
-        functions.forEach(x -> x.accept(instance));
-        return instance;
+        return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
     }
 }
+

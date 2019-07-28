@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture.testobjects.complex;
 
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -9,15 +10,17 @@ public class ContractPosition {
     private String companyWideId;
     private int quantity = 1;
     private LocalDate startDate;
+    private File file;
     private Period remainingPeriod;
     private boolean billingIsPeriodic;
     private Contract contract;
 
     public ContractPosition(int quantity, final LocalDate startDate,
-            final Period remainingPeriod,
-            final boolean billingIsPeriodic) {
+                            File file, final Period remainingPeriod,
+                            final boolean billingIsPeriodic) {
         this.quantity = quantity;
         this.startDate = startDate;
+        this.file = file;
         this.remainingPeriod = remainingPeriod;
         this.billingIsPeriodic = billingIsPeriodic;
     }
@@ -52,6 +55,14 @@ public class ContractPosition {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public Period getRemainingPeriod() {

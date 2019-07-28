@@ -1,6 +1,13 @@
 package com.github.nylle.javafixture;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
+import com.github.nylle.javafixture.testobjects.TestPrimitive;
+import com.github.nylle.javafixture.testobjects.complex.AccountManager;
+import com.github.nylle.javafixture.testobjects.complex.Contract;
+import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
+import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -11,19 +18,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
-
-import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
-import com.github.nylle.javafixture.testobjects.TestPrimitive;
-import com.github.nylle.javafixture.testobjects.complex.AccountManager;
-import com.github.nylle.javafixture.testobjects.complex.Contract;
-import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
-import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class JavaFixtureTest {
+public class EasyRandomIT {
 
-    private final Configuration configuration = new Configuration();
+    private final Configuration configuration = Configuration.configure().useEasyRandom(true);
 
     @Test
     public void canCreatePrimitives() {
@@ -171,6 +171,7 @@ public class JavaFixtureTest {
     }
 
     @Test
+    @Disabled("Fails with EasyRandom 4.0.0 ;-)")
     public void canCreateComplexModel() {
         JavaFixture fixture = new JavaFixture(configuration);
 
@@ -192,6 +193,7 @@ public class JavaFixtureTest {
     }
 
     @Test
+    @Disabled("Fails with EasyRandom 4.0.0 ;-)")
     public void canPerformAction() {
         JavaFixture fixture = new JavaFixture(configuration);
 

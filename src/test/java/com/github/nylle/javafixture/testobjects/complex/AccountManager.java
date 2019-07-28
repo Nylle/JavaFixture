@@ -7,6 +7,7 @@ public class AccountManager {
     private Long id;
     private String description;
     private LocalDateTime creationDate;
+    private AccountManager[] otherAccountManagers;
 
     public Long getId() {
         return id;
@@ -32,4 +33,11 @@ public class AccountManager {
         this.creationDate = creationDate;
     }
 
+    public AccountManager[] getOtherAccountManagers() {
+        return otherAccountManagers;
+    }
+
+    public void setOtherAccountManagers(AccountManager[] otherAccountManagers) {
+        this.otherAccountManagers = otherAccountManagers;
+    }
 }

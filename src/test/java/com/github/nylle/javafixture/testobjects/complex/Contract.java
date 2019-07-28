@@ -10,7 +10,7 @@ public class Contract implements IContract {
     private Long id;
     private String companyWideId;
     private long contractNumber;
-    private AccountManager accountManager;
+    private AccountManager[] accountManagers;
     private int lastAssignedNumber = 0;
     private Set<ContractPosition> contractPositions = new TreeSet<>();
     private ContractPosition baseContractPosition;
@@ -54,12 +54,12 @@ public class Contract implements IContract {
         this.contractNumber = contractNumber;
     }
 
-    public AccountManager getAccountManager() {
-        return accountManager;
+    public AccountManager[] getAccountManagers() {
+        return accountManagers;
     }
 
-    public void setAccountManager(AccountManager accountManager) {
-        this.accountManager = accountManager;
+    public void setAccountManagers(AccountManager[] accountManagers) {
+        this.accountManagers = accountManagers;
     }
 
     public int getLastAssignedNumber() {

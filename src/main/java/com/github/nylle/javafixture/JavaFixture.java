@@ -6,22 +6,33 @@ import java.util.stream.Stream;
 
 
 public class JavaFixture {
+
+    private final SpecimenBuilderProvider provider;
+
+    public JavaFixture() {
+        this(new Configuration());
+    }
+
+    public JavaFixture(Configuration configuration) {
+        this.provider = new SpecimenBuilderProvider(configuration);
+    }
+
     public <T> T create(Class<T> typeReference) {
-        SpecimenBuilder<T> specimenBuilder = new SpecimenBuilder<>(typeReference);
+        var specimenBuilder = provider.newBuilder(typeReference);
         return specimenBuilder.create();
     }
 
     public <T> Stream<T> createMany(Class<T> typeReference) {
-        SpecimenBuilder<T> specimenBuilder = new SpecimenBuilder<>(typeReference);
+        var specimenBuilder = provider.newBuilder(typeReference);
         return specimenBuilder.createMany();
     }
 
-    public <T> SpecimenBuilder<T> build(Class<T> typeReference) {
-        return new SpecimenBuilder<>(typeReference);
+    public <T> ISpecimenBuilder<T> build(Class<T> typeReference) {
+        return provider.newBuilder(typeReference);
     }
 
     public <T> void addManyTo(Collection<T> result, Class<T> typeReference) {
-        SpecimenBuilder<T> specimenBuilder = new SpecimenBuilder<>(typeReference);
+        var specimenBuilder = provider.newBuilder(typeReference);
         result.addAll(specimenBuilder.createMany().collect(Collectors.toList()));
     }
 }

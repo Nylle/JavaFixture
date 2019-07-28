@@ -23,11 +23,11 @@ The values below are the default values, used when no configuration is provided.
 var config = Configuration.configure()
                     .collectionSizeRange(2, 10)
                     .streamSize(3)
-                    .useEasyRandom(false); //*
+                    .useEasyRandom(false); // deprecated*
 
 var fixture = new JavaFixture(config);
 ```
-_\*Enabling [Easy Random™](https://github.com/j-easy/easy-random) will use its version 4.0.0 instead of JavaFixture's native engine for object graph generation (this feature will be deprecated on the long run)._
+> _\* Enabling [Easy Random™](https://github.com/j-easy/easy-random) will fall back to use easy-random-4.0.0 instead of JavaFixture's own engine for object graph generation._
 
 ## Create a Fixture
 ```java

@@ -34,14 +34,13 @@
             <artifactId>easy-random-core</artifactId>
             <version>4.0.0</version>
         </dependency>
-
-        <!-- test scope -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.5.1</version>
-            <scope>test</scope>
         </dependency>
+
+        <!-- test scope -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>

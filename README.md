@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/Nylle/JavaFixture.svg?branch=master)](https://travis-ci.org/Nylle/JavaFixture)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|1.1.0|)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture/badge.svg)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|1.1.1|)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 # JavaFixture
@@ -19,7 +19,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -156,10 +156,26 @@ ParentDto:
 
 ## JUnit5 Support
 
+In order to use JUnit5 support you need to add the following dependencies if not already present.
+
+```
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <version>5.5.1</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-params</artifactId>
+    <version>5.5.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
 ### Inject Random Values Into Single Test
 ```
-@Test
-@ExtendWith(JavaFixtureExtension.class)
+@TestWithFixture
 void injectParameterViaMethodExtension(TestDto testObject, int intValue) {
     assertThat(testObject).isInstanceOf(TestDto.class);
     assertThat(intValue).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);

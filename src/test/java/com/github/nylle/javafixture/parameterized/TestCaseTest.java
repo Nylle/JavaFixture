@@ -1,7 +1,6 @@
-package com.github.nylle.javafixture.extension;
+package com.github.nylle.javafixture.parameterized;
 
-import com.github.nylle.javafixture.parameterized.TestCase;
-import com.github.nylle.javafixture.parameterized.TestWithCases;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,8 +10,6 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TestCaseTest {
 

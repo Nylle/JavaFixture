@@ -156,8 +156,7 @@ ParentDto:
 
 ## JUnit5 Support
 
-### Inject Random Values Into Test
-
+### Inject Random Values Into Single Test
 ```
 @Test
 @ExtendWith(JavaFixtureExtension.class)
@@ -167,30 +166,8 @@ void injectParameterViaMethodExtension(TestDto testObject, int intValue) {
 }
 ```
 
-### Inject Random Values Into Setup Method
-```
-public class MyTest {
-
-    private TestDto globalTestObject;
-    private int globalIntValue;
-
-    @BeforeEach
-    @ExtendWith(JavaFixtureExtension.class)
-    void setup(TestDto globalTestObject, int globalIntValue) {
-        this.contract = globalTestObject;
-        this.intValue = globalIntValue;
-    }
-
-    @Test
-    void injectParameterViaSetupMethod() {
-        assertThat(globalTestObject).isInstanceOf(TestDto.class);
-        assertThat(globalIntValue).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
-    }
-
-}
-```
-
 ### Inject Random Values Into Everything
+Note, that the fixture is also injected into the `setup` method.
 ```
 @ExtendWith(JavaFixtureExtension.class)
 public class MyTest {

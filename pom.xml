@@ -7,11 +7,13 @@
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <name>JavaFixture</name>
     <url>https://github.com/Nylle/JavaFixture</url>
-    <description>JavaFixture is a wrapper for Random Beans (https://github.com/benas/random-beans) to provide a fluent API for customising your test objects during generation.</description>
+    <description>JavaFixture is the attempt to bring Mark Seemann's AutoFixture for .NET to the Java world. Its purpose
+        is to generate full object graphs for use in test suites with a fluent API for customising the test objects
+        during generation.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,11 +30,6 @@
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
             <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jeasy</groupId>
-            <artifactId>easy-random-core</artifactId>
-            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

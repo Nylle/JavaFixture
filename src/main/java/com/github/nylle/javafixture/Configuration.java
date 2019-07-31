@@ -6,7 +6,6 @@ public class Configuration {
     private int maxCollectionSize = 10;
     private int minCollectionSize = 2;
     private int streamSize = 3;
-    private boolean useEasyRandom = false;
 
     /**
      * Creates a new default configuration with the following values
@@ -58,14 +57,6 @@ public class Configuration {
     }
 
     /**
-     * Returns whether EasyRandom™ is being used to create objects
-     * @return
-     */
-    public boolean useEasyRandom() {
-        return useEasyRandom;
-    }
-
-    /**
      * Returns a random value between minimum and maximum size of collections and maps
      * @return
      */
@@ -104,16 +95,6 @@ public class Configuration {
     public Configuration collectionSizeRange(int min, int max) {
         this.minCollectionSize = min;
         this.maxCollectionSize = max;
-        return this;
-    }
-
-    /**
-     * Sets whether to use EasyRandom™ to create objects
-     * @param useEasyRandom
-     * @return
-     */
-    public Configuration useEasyRandom(boolean useEasyRandom) {
-        this.useEasyRandom = useEasyRandom;
         return this;
     }
 }

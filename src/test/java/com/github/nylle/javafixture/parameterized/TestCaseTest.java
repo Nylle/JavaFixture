@@ -19,9 +19,7 @@ class TestCaseTest {
     @TestCase(str1 = "foo", int2 = 3)
     @TestCase(str1 = "hello", int2 = 5)
     void testStringLength(String input, int expected) {
-
         assertThat(input.length()).isEqualTo(expected);
-
     }
 
     @TestWithCases
@@ -31,9 +29,7 @@ class TestCaseTest {
     @TestCase(class1 = TreeSet.class, class2 = SortedSet.class, bool3 = true)
     @TestCase(class1 = HashSet.class, class2 = NavigableSet.class, bool3 = false)
     void testClassIsAssignable(Class type, Class interfaceType, boolean expected) {
-
         assertThat(interfaceType.isAssignableFrom(type)).isEqualTo(expected);
-
     }
 
 }

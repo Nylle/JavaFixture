@@ -27,9 +27,10 @@ class TestCasesProvider implements ArgumentsProvider, AnnotationConsumer<TestWit
     }
 
     private static Arguments mapToArguments(TestCase testCase, List<Class<?>> parameters) {
+        ReflectedTestCase reflectedTestCase = new ReflectedTestCase(testCase);
         return Arguments.of(IntStream.range(0, parameters.size())
                 .boxed()
-                .map(i -> new TestCaseMatrix(testCase).getTestCaseValueFor(parameters.get(i), i))
+                .map(i -> reflectedTestCase.getTestCaseValueFor(parameters.get(i), i))
                 .toArray());
     }
 

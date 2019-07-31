@@ -1,14 +1,22 @@
 package com.github.nylle.javafixture;
 
+import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.MonthDay;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.Temporal;
+
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
-import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
-
-import java.lang.reflect.Type;
+import com.github.nylle.javafixture.specimen.TemporalSpecimen;
+import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
 public class SpecimenFactory {
 
@@ -43,8 +51,36 @@ public class SpecimenFactory {
         if(type.isInterface()) {
             return new InterfaceSpecimen<>(type, context, this);
         }
+        if(Temporal.class.isAssignableFrom(type)) {
+            return new TemporalSpecimen<>( type, context );
+        }
+        if(ReflectionHelper.isTimeType( type)) {
+            return new TimeSpecimen<>( type );
+        }
 
         return new ObjectSpecimen<>(type, context, this);
+    }
+
+    private static boolean isTimeSpecimen( Class type ) {
+        if(type.equals(Duration.class)) {
+            return true;
+        }
+        if(type.equals(Period.class)) {
+            return true;
+        }
+
+        if(type.equals(MonthDay.class)) {
+            return true;
+        }
+
+        if(type.equals(ZoneId.class)) {
+            return true;
+        }
+
+        if(type.equals(ZoneOffset.class)) {
+            return true;
+        }
+        return false;
     }
 
     public <T> ISpecimen<T> build(final Class<T> type, final Type genericType) {

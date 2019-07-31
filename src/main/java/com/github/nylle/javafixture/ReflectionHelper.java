@@ -1,14 +1,17 @@
 package com.github.nylle.javafixture;
 
+import static java.lang.String.format;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Map;
-
-import static java.lang.String.format;
 
 
 public class ReflectionHelper {
@@ -81,6 +84,19 @@ public class ReflectionHelper {
         } catch (IllegalAccessException e) {
             return true;
         }
+    }
+
+    public static boolean isTimeType( Class<?> type ) {
+        if ( TemporalAdjuster.class.isAssignableFrom( type ) ) {
+            return true;
+        }
+        if ( TemporalAmount.class.isAssignableFrom( type ) ) {
+            return true;
+        }
+        if( type.equals( ZoneId.class )) {
+            return true;
+        }
+        return false;
     }
 
     private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {

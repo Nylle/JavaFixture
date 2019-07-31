@@ -42,11 +42,11 @@ class SpecimenFactoryTest {
         assertThat(sut.build(List.class)).isExactlyInstanceOf(CollectionSpecimen.class);
         assertThat(sut.build(int[].class)).isExactlyInstanceOf(ArraySpecimen.class);
         assertThat(sut.build(IContract.class)).isExactlyInstanceOf(InterfaceSpecimen.class);
-        assertThat(sut.build(Duration.class)).isExactlyInstanceOf(TimeSpecimen.class);
-        assertThat(sut.build(Period.class)).isExactlyInstanceOf(TimeSpecimen.class);
-        assertThat(sut.build(MonthDay.class)).isExactlyInstanceOf(TimeSpecimen.class);
-        assertThat(sut.build(ZoneId.class)).isExactlyInstanceOf(TimeSpecimen.class);
-        assertThat(sut.build(ZoneOffset.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(Duration.class)).isExactlyInstanceOf( TimeSpecimen.class);
+        assertThat(sut.build(Period.class)).isExactlyInstanceOf( TimeSpecimen.class);
+        assertThat(sut.build(MonthDay.class)).isExactlyInstanceOf( TimeSpecimen.class);
+        assertThat(sut.build(ZoneId.class)).isExactlyInstanceOf( TimeSpecimen.class);
+        assertThat(sut.build(ZoneOffset.class)).isExactlyInstanceOf( TimeSpecimen.class);
         assertThat(sut.build(Instant.class)).isExactlyInstanceOf(TemporalSpecimen.class);
         assertThat(sut.build(Object.class)).isExactlyInstanceOf(ObjectSpecimen.class);
     }

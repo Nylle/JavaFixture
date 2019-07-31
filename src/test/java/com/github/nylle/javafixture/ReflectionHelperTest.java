@@ -1,10 +1,13 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.testobjects.TestObject;
-import com.github.nylle.javafixture.testobjects.TestPrimitive;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.MonthDay;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.chrono.JapaneseEra;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -32,7 +35,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.parameterized.TestCase;
+import com.github.nylle.javafixture.parameterized.TestWithCases;
+import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestPrimitive;
 
 class ReflectionHelperTest {
 
@@ -137,5 +145,17 @@ class ReflectionHelperTest {
 
         assertThat(ReflectionHelper.isStatic(staticField)).isTrue();
         assertThat(ReflectionHelper.isStatic(field)).isFalse();
+    }
+
+    @TestWithCases
+    @TestCase(class1 = Duration.class, bool2 = true)
+    @TestCase(class1 = JapaneseEra.class, bool2 = true)
+    @TestCase(class1 = MonthDay.class, bool2 = true)
+    @TestCase(class1 = Period.class, bool2 = true)
+    @TestCase(class1 = String.class, bool2 = false)
+    @TestCase(class1 = ZoneId.class, bool2 = true)
+    @TestCase(class1 = ZoneOffset.class, bool2 = true )
+    void isTimeClass(Class type, boolean expected) {
+        assertThat( ReflectionHelper.isTimeType( type ) ).isEqualTo( expected );
     }
 }

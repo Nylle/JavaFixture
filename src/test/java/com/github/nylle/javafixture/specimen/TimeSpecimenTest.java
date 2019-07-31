@@ -8,6 +8,7 @@ import java.time.MonthDay;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.chrono.JapaneseEra;
 import java.time.temporal.TemporalAmount;
 import java.util.Map;
 
@@ -19,10 +20,9 @@ import com.github.nylle.javafixture.parameterized.TestCase;
 import com.github.nylle.javafixture.parameterized.TestWithCases;
 
 class TimeSpecimenTest {
-
     @Test
     void onlyTemporalTypes() {
-        assertThatThrownBy( () -> new TimeSpecimen( Map.class ) )
+        assertThatThrownBy( () -> new TimeSpecimen<>( Map.class ) )
                 .isInstanceOf( IllegalArgumentException.class )
                 .hasMessageContaining( "type: " + Map.class.getName() );
     }
@@ -36,8 +36,9 @@ class TimeSpecimenTest {
 
     @TestWithCases
     @TestCase(class1 = Duration.class)
-    @TestCase(class1 = Period.class)
+    @TestCase(class1 = JapaneseEra.class)
     @TestCase(class1 = MonthDay.class)
+    @TestCase(class1 = Period.class)
     @TestCase(class1 = ZoneId.class)
     @TestCase(class1 = ZoneOffset.class)
     void createDuration(Class type) {

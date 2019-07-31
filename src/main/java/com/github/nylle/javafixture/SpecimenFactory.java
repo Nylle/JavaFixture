@@ -51,11 +51,11 @@ public class SpecimenFactory {
         if(type.isInterface()) {
             return new InterfaceSpecimen<>(type, context, this);
         }
-        if(isTimeSpecimen(type)) {
-            return new TimeSpecimen<>( type );
-        }
         if(Temporal.class.isAssignableFrom(type)) {
             return new TemporalSpecimen<>( type, context );
+        }
+        if(ReflectionHelper.isTimeType( type)) {
+            return new TimeSpecimen<>( type );
         }
 
         return new ObjectSpecimen<>(type, context, this);

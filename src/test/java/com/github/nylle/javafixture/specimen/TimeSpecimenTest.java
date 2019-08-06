@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 class TimeSpecimenTest {
 
@@ -41,7 +43,7 @@ class TimeSpecimenTest {
 
     @BeforeEach
     void setup() {
-        context = new Context(new Configuration(2, 2, 3));
+        context = new Context(Configuration.configure());
     }
 
     @Test
@@ -110,5 +112,16 @@ class TimeSpecimenTest {
         assertThat(sut.toString()).isNotEmpty();
     }
 
+    @Test
+    void createWithClock() {
+        Clock mockClock = Mockito.mock(Clock.class);
+        when(mockClock.instant()).thenReturn(Instant.MIN);
+        context = new Context(Configuration.configure().clock(mockClock));
 
+        var sut = new TimeSpecimen<>(Instant.class, context);
+
+        var actual = sut.create();
+
+        assertThat(actual).isEqualTo(Instant.MIN);
+    }
 }

@@ -7,6 +7,7 @@ import com.github.nylle.javafixture.SpecimenException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.MonthDay;
 import java.time.Period;
@@ -44,14 +45,14 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
     public T create() {
         if (Temporal.class.isAssignableFrom(type)) {
             try {
-                Method now = type.getMethod("now");
-                return (T) now.invoke(null);
+                Method now = type.getMethod("now", Clock.class);
+                return (T) now.invoke(null, context.getConfiguration().getClock());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new SpecimenException("Unsupported type: " + type);
             }
         }
         if (type.equals(MonthDay.class)) {
-            return (T) MonthDay.now();
+            return (T) MonthDay.now(context.getConfiguration().getClock());
         }
 
         if (type.equals(JapaneseEra.class)) {

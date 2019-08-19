@@ -161,7 +161,7 @@ The values below are the default values, used when no configuration is provided.
 var config = Configuration.configure()
                     .collectionSizeRange(2, 10)
                     .streamSize(3)
-                    .clock(Clock.fixed((Instant.now(), ZoneOffset.UTC)));
+                    .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC));
 
 var fixture = new JavaFixture(config);
 ```

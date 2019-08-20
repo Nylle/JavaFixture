@@ -1,7 +1,16 @@
 package com.github.nylle.javafixture;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.github.nylle.javafixture.specimen.ArraySpecimen;
+import com.github.nylle.javafixture.specimen.CollectionSpecimen;
+import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
+import com.github.nylle.javafixture.specimen.MapSpecimen;
+import com.github.nylle.javafixture.specimen.ObjectSpecimen;
+import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
+import com.github.nylle.javafixture.specimen.TimeSpecimen;
+import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.complex.IContract;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -10,22 +19,12 @@ import java.time.MonthDay;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
-import com.github.nylle.javafixture.specimen.ArraySpecimen;
-import com.github.nylle.javafixture.specimen.CollectionSpecimen;
-import com.github.nylle.javafixture.specimen.EnumSpecimen;
-import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
-import com.github.nylle.javafixture.specimen.MapSpecimen;
-import com.github.nylle.javafixture.specimen.ObjectSpecimen;
-import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
-import com.github.nylle.javafixture.specimen.TemporalSpecimen;
-import com.github.nylle.javafixture.specimen.TimeSpecimen;
-import com.github.nylle.javafixture.testobjects.TestObject;
-import com.github.nylle.javafixture.testobjects.complex.IContract;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SpecimenFactoryTest {
 
@@ -42,12 +41,13 @@ class SpecimenFactoryTest {
         assertThat(sut.build(List.class)).isExactlyInstanceOf(CollectionSpecimen.class);
         assertThat(sut.build(int[].class)).isExactlyInstanceOf(ArraySpecimen.class);
         assertThat(sut.build(IContract.class)).isExactlyInstanceOf(InterfaceSpecimen.class);
-        assertThat(sut.build(Duration.class)).isExactlyInstanceOf( TimeSpecimen.class);
-        assertThat(sut.build(Period.class)).isExactlyInstanceOf( TimeSpecimen.class);
-        assertThat(sut.build(MonthDay.class)).isExactlyInstanceOf( TimeSpecimen.class);
-        assertThat(sut.build(ZoneId.class)).isExactlyInstanceOf( TimeSpecimen.class);
-        assertThat(sut.build(ZoneOffset.class)).isExactlyInstanceOf( TimeSpecimen.class);
-        assertThat(sut.build(Instant.class)).isExactlyInstanceOf(TemporalSpecimen.class);
+        assertThat(sut.build(Duration.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(Period.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(MonthDay.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(ZoneId.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(ZonedDateTime.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(ZoneOffset.class)).isExactlyInstanceOf(TimeSpecimen.class);
+        assertThat(sut.build(Instant.class)).isExactlyInstanceOf(TimeSpecimen.class);
         assertThat(sut.build(Object.class)).isExactlyInstanceOf(ObjectSpecimen.class);
     }
 

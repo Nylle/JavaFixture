@@ -160,12 +160,14 @@ The values below are the default values, used when no configuration is provided.
 ```java
 var config = Configuration.configure()
                     .collectionSizeRange(2, 10)
-                    .streamSize(3);
+                    .streamSize(3)
+                    .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC));
 
 var fixture = new JavaFixture(config);
 ```
 - `collectionSizeRange` determines the range from which a random collection size will be picked when creating any collection, map or array
 - `streamSize` determines the number of objects to be returned when using `Stream<T> JavaFixture.createMany(Class<T>)`
+- `clock` sets the clock to use when creating time-based values
 
 ## JUnit5 Support
 

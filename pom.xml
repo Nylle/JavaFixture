@@ -159,6 +159,11 @@
             <name>Kuldeep Ghogre</name>
             <url>https://github.com/KuldeepG</url>
         </developer>
+        <developer>
+            <id>akutschera</id>
+            <name>Andreas Kutschera</name>
+            <url>https://github.com/akutschera</url>
+        </developer>
     </developers>
 
     <licenses>

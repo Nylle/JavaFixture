@@ -1,6 +1,13 @@
 package com.github.nylle.javafixture;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
+import com.github.nylle.javafixture.testobjects.TestPrimitive;
+import com.github.nylle.javafixture.testobjects.complex.AccountManager;
+import com.github.nylle.javafixture.testobjects.complex.ClassWithNestedMapsAndLists;
+import com.github.nylle.javafixture.testobjects.complex.Contract;
+import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
+import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -11,14 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
-
-import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
-import com.github.nylle.javafixture.testobjects.TestPrimitive;
-import com.github.nylle.javafixture.testobjects.complex.AccountManager;
-import com.github.nylle.javafixture.testobjects.complex.Contract;
-import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
-import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class JavaFixtureTest {
@@ -199,6 +199,42 @@ public class JavaFixtureTest {
         Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
 
         assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
+    }
+
+    @Test
+    void canCreatedNestedParameterizeObject() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        var classWithMapWithList = fixture.create(ClassWithNestedMapsAndLists.class);
+
+
+        var nestedList = classWithMapWithList.getNestedList();
+        assertThat(nestedList).isNotEmpty();
+        assertThat(nestedList).isNotEmpty();
+        var innerList = nestedList.get(0);
+        assertThat(innerList).isNotEmpty();
+        assertThat(innerList.get(0)).isNotEmpty();
+
+        var mapWithMap = classWithMapWithList.getMapWithMap();
+        assertThat(mapWithMap).isNotEmpty();
+        assertThat(mapWithMap.values()).isNotEmpty();
+        var firstValue = mapWithMap.values().iterator().next();
+        assertThat(firstValue).isNotEmpty();
+        assertThat(firstValue.values()).isNotEmpty();
+
+        var mapWithList = classWithMapWithList.getMapWithList();
+        assertThat(mapWithList).isNotEmpty();
+        assertThat(mapWithList.values()).isNotEmpty();
+        var firstList = mapWithList.values().iterator().next();
+        assertThat(firstList).isNotEmpty();
+
+        var deeplyNestedList = classWithMapWithList.getDeeplyNestedList();
+        assertThat( deeplyNestedList ).isNotEmpty();
+        var firstEntry = deeplyNestedList.get(0);
+        assertThat( firstEntry ).isNotEmpty();
+        var firstMapEntry = firstEntry.values().iterator().next();
+        assertThat( firstMapEntry ).isNotEmpty();
+        assertThat( firstMapEntry.get(0)).isNotEmpty();
     }
 
 

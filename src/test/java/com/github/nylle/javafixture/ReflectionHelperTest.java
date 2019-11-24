@@ -130,6 +130,15 @@ class ReflectionHelperTest {
     }
 
     @Test
+    void getGenericTypeClass() throws NoSuchFieldException {
+
+        var type = TestObject.class.getDeclaredField("strings").getGenericType();
+
+        assertThat(ReflectionHelper.getGenericTypeClass(type, 0)).isEqualTo(Integer.class);
+        assertThat(ReflectionHelper.getGenericTypeClass(type, 1)).isEqualTo(String.class);
+    }
+
+    @Test
     void getGenericType() throws NoSuchFieldException {
 
         var type = TestObject.class.getDeclaredField("strings").getGenericType();

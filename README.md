@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/Nylle/JavaFixture.svg?branch=master)](https://travis-ci.org/Nylle/JavaFixture)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|1.2.1|)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|1.2.2|)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 # JavaFixture
@@ -20,7 +20,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <scope>test</scope>
 </dependency>
 ```

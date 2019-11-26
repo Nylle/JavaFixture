@@ -1,5 +1,12 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.ReflectionHelper;
+import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,20 +19,13 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.IntStream;
 
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.ReflectionHelper;
-import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
-
 public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     private final Class<T> type;
     private final Class<K> genericKeyType;
-    private final Class<V> genericValueType;
     private final Context context;
     private final SpecimenFactory specimenFactory;
     private final SpecimenType specimenType;
+    private ISpecimen<V> valueSpecimen;
 
     public MapSpecimen(final Class<T> type, final Class<K> genericKeyType, final Class<V> genericValueType, final Context context, final SpecimenFactory specimenFactory) {
 
@@ -54,10 +54,16 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
         this.type = type;
         this.genericKeyType = genericKeyType;
-        this.genericValueType = genericValueType;
         this.context = context;
         this.specimenFactory = specimenFactory;
         this.specimenType = SpecimenType.forMap(type, genericKeyType, genericValueType);
+        this.valueSpecimen = genericValueType == null ? null : specimenFactory.build(genericValueType);
+    }
+
+    public MapSpecimen(final Class<T> type, final Class<K> genericKeyType, Class<V> genericValueType, final Context context, final SpecimenFactory specimenFactory, final ISpecimen<V> specimen) {
+
+        this(type, genericKeyType, genericValueType, context, specimenFactory);
+        this.valueSpecimen = specimen;
     }
 
     @Override
@@ -70,10 +76,10 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
-                .filter(x -> genericKeyType != null && genericValueType != null)
+                .filter(x -> genericKeyType != null && valueSpecimen != null)
                 .forEach(x -> map.put(
                         specimenFactory.build(genericKeyType).create(),
-                        specimenFactory.build(genericValueType).create()));
+                       valueSpecimen.create()));
 
         return (T) map;
     }

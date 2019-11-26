@@ -1,8 +1,8 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
@@ -30,10 +30,9 @@ import java.util.stream.IntStream;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     private final Class<T> type;
-    private final Class<G> genericType;
     private final Context context;
-    private final SpecimenFactory specimenFactory;
     private final SpecimenType specimenType;
+    private ISpecimen<G> specimen;
 
     public CollectionSpecimen(final Class<T> type, final Class<G> genericType, final Context context, final SpecimenFactory specimenFactory) {
 
@@ -54,24 +53,33 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         }
 
         this.type = type;
-        this.genericType = genericType;
+        if (genericType != null) {
+            this.specimen = specimenFactory.build(genericType);
+        }
         this.context = context;
-        this.specimenFactory = specimenFactory;
         this.specimenType = SpecimenType.forCollection(type, genericType);
     }
 
+    public CollectionSpecimen(final Class<T> type, Class<G> genericType, final Context context, final SpecimenFactory specimenFactory, final ISpecimen<G> specimen) {
+
+        this(type, genericType, context, specimenFactory);
+        this.specimen = specimen;
+    }
+
+
     @Override
     public T create() {
-        if(context.isCached(specimenType)){
+        if (context.isCached(specimenType)) {
             return (T) context.cached(specimenType);
         }
 
         Collection<G> collection = context.cached(specimenType, type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type));
 
+
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
-                .filter(x -> genericType != null)
-                .forEach(x -> collection.add(specimenFactory.build(genericType).create()));
+                .filter(x -> specimen != null)
+                .forEach(x -> collection.add(specimen.create()));
 
         return (T) collection;
     }

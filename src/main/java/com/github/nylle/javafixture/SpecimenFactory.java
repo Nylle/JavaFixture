@@ -54,11 +54,16 @@ public class SpecimenFactory {
     public <T> ISpecimen<T> build(final Class<T> type, final Type genericType) {
 
         if (ReflectionHelper.isCollection(type)) {
-            return new CollectionSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), context, this);
+
+            return ReflectionHelper.getRawType(genericType, 0)
+                    .map(rawType -> new CollectionSpecimen<>(type, rawType, context, this, build(rawType, ReflectionHelper.getGenericType(genericType, 0))))
+                    .orElseGet(() -> new CollectionSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), context, this));
         }
 
         if (ReflectionHelper.isMap(type)) {
-            return new MapSpecimen<>(type, ReflectionHelper.getGenericType(genericType, 0), ReflectionHelper.getGenericType(genericType, 1), context, this);
+            return ReflectionHelper.getRawType(genericType, 1)
+                    .map(rawType -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), rawType, context, this, build(rawType, ReflectionHelper.getGenericType(genericType, 1))))
+                    .orElseGet(() -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), ReflectionHelper.getGenericTypeClass(genericType, 1), context, this));
         }
 
         throw new SpecimenException(String.format("Unsupported type for generic creation: %s", type));

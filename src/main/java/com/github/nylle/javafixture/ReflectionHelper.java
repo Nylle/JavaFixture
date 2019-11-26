@@ -11,6 +11,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -71,8 +72,12 @@ public class ReflectionHelper {
         return type != null && type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
     }
 
-    public static Class<?> getGenericType(final Type type, final int index) {
+    public static Class<?> getGenericTypeClass(final Type type, final int index) {
         return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[index];
+    }
+
+    public static Type getGenericType(final Type type, final int index) {
+        return ((ParameterizedType) type).getActualTypeArguments()[index];
     }
 
     public static boolean isStatic(final Field field) {
@@ -105,5 +110,15 @@ public class ReflectionHelper {
 
     private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {
         return (T) Array.get(Array.newInstance(type, 1), 0);
+    }
+
+    static Optional<Class> getRawType(Type type, int index) {
+        if (isParameterizedType(type)) {
+            var actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[index];
+            if (isParameterizedType(actualTypeArgument)) {
+                return Optional.of((Class) ((ParameterizedType) actualTypeArgument).getRawType());
+            }
+        }
+        return Optional.empty();
     }
 }

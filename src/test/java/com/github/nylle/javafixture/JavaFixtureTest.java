@@ -192,6 +192,16 @@ public class JavaFixtureTest {
     }
 
     @Test
+    public void canCreateThrowable() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        Throwable result = fixture.create(Throwable.class);
+        assertThat(result).isInstanceOf(Throwable.class);
+        assertThat(result.getMessage().length()).isGreaterThan(0);
+        assertThat(result.getCause().getClass()).isEqualTo(Throwable.class);
+    }
+
+    @Test
     public void canPerformAction() {
         JavaFixture fixture = new JavaFixture(configuration);
 

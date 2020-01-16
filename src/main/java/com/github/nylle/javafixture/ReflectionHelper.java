@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
@@ -73,7 +74,13 @@ public class ReflectionHelper {
     }
 
     public static Class<?> getGenericTypeClass(final Type type, final int index) {
-        return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[index];
+            final Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[index];
+
+            if(actualTypeArgument instanceof WildcardType) {
+                return Object.class;
+            }
+
+            return (Class<?>) actualTypeArgument;
     }
 
     public static Type getGenericType(final Type type, final int index) {

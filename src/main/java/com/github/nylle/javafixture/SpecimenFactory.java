@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
@@ -64,11 +65,10 @@ public class SpecimenFactory {
                     .map(rawType -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), rawType, context, this, build(rawType, ReflectionHelper.getGenericType(genericType, 1))))
                     .orElseGet(() -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), ReflectionHelper.getGenericTypeClass(genericType, 1), context, this));
         }
-//
-//        if(type == Class.class) {
-//            return ReflectionHelper.getRawType(genericType, 0)
-//                    .map(rawType -> new)
-//        }
+
+        if(type == Class.class) {
+            return new GenericSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0));
+        }
 
         throw new SpecimenException(String.format("Unsupported type for generic creation: %s", type));
     }

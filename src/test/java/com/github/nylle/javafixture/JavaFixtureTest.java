@@ -192,6 +192,19 @@ public class JavaFixtureTest {
     }
 
     @Test
+    public void canCreateThrowable() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        Throwable result = fixture.create(Throwable.class);
+        assertThat(result).isInstanceOf(Throwable.class);
+        assertThat(result.getMessage().length()).isGreaterThan(0);
+        assertThat(result.getLocalizedMessage().length()).isGreaterThan(0);
+        assertThat(result.getStackTrace().length).isGreaterThan(0);
+        assertThat(result.getStackTrace()[0]).isInstanceOf(StackTraceElement.class);
+        assertThat(result.getCause()).isNull(); //if cause == this, the getter returns null
+    }
+
+    @Test
     public void canPerformAction() {
         JavaFixture fixture = new JavaFixture(configuration);
 

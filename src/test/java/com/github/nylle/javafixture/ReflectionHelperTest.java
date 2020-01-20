@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.parameterized.TestCase;
 import com.github.nylle.javafixture.parameterized.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestObjectWithWildcardGeneric;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import org.junit.jupiter.api.Test;
 
@@ -136,6 +137,14 @@ class ReflectionHelperTest {
 
         assertThat(ReflectionHelper.getGenericTypeClass(type, 0)).isEqualTo(Integer.class);
         assertThat(ReflectionHelper.getGenericTypeClass(type, 1)).isEqualTo(String.class);
+    }
+
+    @Test
+    void getGenericTypeClassCanHandleWildcardType() throws NoSuchFieldException {
+
+        var type = TestObjectWithWildcardGeneric.class.getDeclaredField("integers").getGenericType();
+
+        assertThat(ReflectionHelper.getGenericTypeClass(type, 0)).isEqualTo(Object.class);
     }
 
     @Test

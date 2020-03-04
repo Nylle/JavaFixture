@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenericCollection;
 import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import com.github.nylle.javafixture.testobjects.complex.AccountManager;
@@ -203,6 +204,15 @@ class JavaFixtureTest {
         assertThat(result.getStackTrace().length).isGreaterThan(0);
         assertThat(result.getStackTrace()[0]).isInstanceOf(StackTraceElement.class);
         assertThat(result.getCause()).isNull(); //if cause == this, the getter returns null
+    }
+
+    @Test
+    void xxx() {
+
+        final JavaFixture fixture = new JavaFixture(configuration);
+
+        final TestObjectWithGenericCollection result = fixture.create(TestObjectWithGenericCollection.class);
+
     }
 
     @Test

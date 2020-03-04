@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.TestEnum;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

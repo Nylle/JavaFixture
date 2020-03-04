@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture;
+package com.github.nylle.javafixture.testobjects;
 
 public enum TestEnum {
     VALUE1,

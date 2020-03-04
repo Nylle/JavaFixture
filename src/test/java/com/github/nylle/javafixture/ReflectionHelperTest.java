@@ -16,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.time.chrono.JapaneseEra;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,6 +86,7 @@ class ReflectionHelperTest {
 
     @Test
     void isCollection() {
+        assertThat(ReflectionHelper.isCollection(Collection.class)).isTrue();
         assertThat(ReflectionHelper.isCollection(List.class)).isTrue();
         assertThat(ReflectionHelper.isCollection(NavigableSet.class)).isTrue();
         assertThat(ReflectionHelper.isCollection(SortedSet.class)).isTrue();

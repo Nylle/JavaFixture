@@ -8,6 +8,7 @@ import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.complex.IContract;
 import org.junit.jupiter.api.Test;

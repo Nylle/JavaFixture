@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -66,6 +67,17 @@ class CollectionSpecimenTest {
         assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, Object.class, context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
+    }
+
+    @Test
+    void createArrayListFromCollectionInterface() {
+        var sut = new CollectionSpecimen<>(Collection.class, String.class, context, specimenFactory);
+
+        var actual = sut.create();
+
+        assertThat(actual).isInstanceOf(ArrayList.class);
+        assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
+        assertThat(actual.size()).isEqualTo(2);
     }
 
     @Test

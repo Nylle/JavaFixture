@@ -130,6 +130,10 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
             return new LinkedList<>();
         }
 
+        if (Collection.class.isAssignableFrom(type)) {
+            return new ArrayList<>();
+        }
+
         throw new SpecimenException("Unsupported type: " + type);
     }
 

@@ -70,9 +70,7 @@ public class SpecimenFactory {
             return new GenericSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0));
         }
 
-        return new ObjectSpecimen<>(type, context, this);
-
-        //throw new SpecimenException(String.format("Unsupported type for generic creation: %s", type));
+        throw new SpecimenException(String.format("Unsupported type for generic creation: %s", type));
     }
 
 }

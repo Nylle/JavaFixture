@@ -4,13 +4,13 @@ import java.util.List;
 
 public class TestObjectWithGenericCollection {
 
-    private List<TestObjectGeneric<String, String>> generics;
+    private List<TestObjectGeneric<String, Integer>> generics;
 
-    public List<TestObjectGeneric<String, String>> getGenerics() {
+    public List<TestObjectGeneric<String, Integer>> getGenerics() {
         return generics;
     }
 
-    public void setGenerics(final List<TestObjectGeneric<String, String>> generics) {
+    public void setGenerics(final List<TestObjectGeneric<String, Integer>> generics) {
         this.generics = generics;
     }
 }

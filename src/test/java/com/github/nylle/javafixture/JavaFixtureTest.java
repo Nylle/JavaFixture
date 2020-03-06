@@ -207,15 +207,6 @@ class JavaFixtureTest {
     }
 
     @Test
-    void xxx() {
-
-        final JavaFixture fixture = new JavaFixture(configuration);
-
-        final TestObjectWithGenericCollection result = fixture.create(TestObjectWithGenericCollection.class);
-
-    }
-
-    @Test
     void canPerformAction() {
         JavaFixture fixture = new JavaFixture(configuration);
 
@@ -226,7 +217,7 @@ class JavaFixtureTest {
     }
 
     @Test
-    void canCreatedNestedParameterizeObject() {
+    void canCreateNestedParameterizedObject() {
         JavaFixture fixture = new JavaFixture(configuration);
 
         var classWithMapWithList = fixture.create(ClassWithNestedMapsAndLists.class);
@@ -259,6 +250,18 @@ class JavaFixtureTest {
         var firstMapEntry = firstEntry.values().iterator().next();
         assertThat( firstMapEntry ).isNotEmpty();
         assertThat( firstMapEntry.get(0)).isNotEmpty();
+    }
+
+    @Test
+    void canCreateAnyParameterizedObject() {
+
+        final JavaFixture fixture = new JavaFixture(new Configuration().collectionSizeRange(2, 2));
+
+        final TestObjectWithGenericCollection result = fixture.create(TestObjectWithGenericCollection.class);
+        assertThat(result.getGenerics()).hasSize(2);
+        assertThat(result.getGenerics().get(0).getT()).isInstanceOf(String.class);
+        assertThat(result.getGenerics().get(0).getU()).isInstanceOf(Integer.class);
+
     }
 
 

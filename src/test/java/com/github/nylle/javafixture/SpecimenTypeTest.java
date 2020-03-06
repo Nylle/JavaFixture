@@ -14,9 +14,7 @@ class SpecimenTypeTest {
         var sut = SpecimenType.forObject(String.class);
 
         assertThat(sut.getType()).isEqualTo(String.class);
-        assertThat(sut.getGenericType()).isNull();
-        assertThat(sut.getKeyType()).isNull();
-        assertThat(sut.getValueType()).isNull();
+        assertThat(sut.getGenericTypes()).hasSize(0);
     }
 
     @Test
@@ -24,9 +22,8 @@ class SpecimenTypeTest {
         var sut = SpecimenType.forCollection(List.class, String.class);
 
         assertThat(sut.getType()).isEqualTo(List.class);
-        assertThat(sut.getGenericType()).isEqualTo(String.class);
-        assertThat(sut.getKeyType()).isEqualTo(String.class);
-        assertThat(sut.getValueType()).isNull();
+        assertThat(sut.getGenericTypes()).hasSize(1);
+        assertThat(sut.getGenericTypes().get(0)).isEqualTo(String.class);
     }
 
     @Test
@@ -34,9 +31,19 @@ class SpecimenTypeTest {
         var sut = SpecimenType.forMap(Map.class, String.class, Integer.class);
 
         assertThat(sut.getType()).isEqualTo(Map.class);
-        assertThat(sut.getGenericType()).isEqualTo(String.class);
-        assertThat(sut.getKeyType()).isEqualTo(String.class);
-        assertThat(sut.getValueType()).isEqualTo(Integer.class);
+        assertThat(sut.getGenericTypes()).hasSize(2);
+        assertThat(sut.getGenericTypes().get(0)).isEqualTo(String.class);
+        assertThat(sut.getGenericTypes().get(1)).isEqualTo(Integer.class);
+    }
+
+    @Test
+    void forGeneric() {
+        var sut = SpecimenType.forGeneric(Map.class, String.class, Integer.class);
+
+        assertThat(sut.getType()).isEqualTo(Map.class);
+        assertThat(sut.getGenericTypes()).hasSize(2);
+        assertThat(sut.getGenericTypes().get(0)).isEqualTo(String.class);
+        assertThat(sut.getGenericTypes().get(1)).isEqualTo(Integer.class);
     }
 
     @Test
@@ -55,12 +62,16 @@ class SpecimenTypeTest {
 
         var forObject = SpecimenType.forObject(Map.class);
         assertThat(sut.equals(forObject)).isFalse();
+        assertThat(forObject.equals(sut)).isFalse();
 
         var forCollection = SpecimenType.forCollection(Map.class, String.class);
         assertThat(sut.equals(forCollection)).isFalse();
+        assertThat(forCollection.equals(sut)).isFalse();
 
         var forMap = SpecimenType.forMap(Map.class, Integer.class, String.class);
         assertThat(sut.equals(forMap)).isFalse();
+        assertThat(forMap.equals(sut)).isFalse();
+
     }
 
 }

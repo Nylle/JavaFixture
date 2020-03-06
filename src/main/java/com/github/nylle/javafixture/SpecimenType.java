@@ -1,45 +1,42 @@
 package com.github.nylle.javafixture;
 
+import java.util.List;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
 
 public class SpecimenType {
 
     private final Class<?> type;
-    private final Class<?> genericType1;
-    private final Class<?> genericType2;
+    private final List<Class<?>> genericTypes;
 
-    private SpecimenType(final Class<?> type, final Class<?> genericType1, final Class<?> genericType2) {
+    private SpecimenType(final Class<?> type, final Class<?>... genericTypes) {
         this.type = type;
-        this.genericType1 = genericType1;
-        this.genericType2 = genericType2;
+        this.genericTypes = asList(genericTypes);
     }
 
     public static SpecimenType forObject(final Class<?> type) {
-        return new SpecimenType(type, null, null);
+        return new SpecimenType(type);
     }
 
     public static SpecimenType forCollection(final Class<?> type, final Class<?> T) {
-        return new SpecimenType(type, T, null);
+        return new SpecimenType(type, T);
     }
 
     public static SpecimenType forMap(final Class<?> type, final Class<?> K, final Class<?> V) {
         return new SpecimenType(type, K, V);
     }
 
+    public static SpecimenType forGeneric(final Class<?> type, final Class<?>... genericTypes) {
+        return new SpecimenType(type, genericTypes);
+    }
+
     public Class<?> getType() {
         return type;
     }
 
-    public Class<?> getGenericType() {
-        return genericType1;
-    }
-
-    public Class<?> getKeyType() {
-        return genericType1;
-    }
-
-    public Class<?> getValueType() {
-        return genericType2;
+    public List<Class<?>> getGenericTypes() {
+        return genericTypes;
     }
 
     @Override
@@ -53,13 +50,22 @@ public class SpecimenType {
         }
 
         final SpecimenType that = (SpecimenType) o;
-        return Objects.equals(type, that.type)
-                && Objects.equals(genericType1, that.genericType1)
-                && Objects.equals(genericType2, that.genericType2);
+
+        if(genericTypes.size() != that.genericTypes.size()) {
+            return false;
+        }
+
+        //TODO: Do we care about the order? Maybe genericTypes could be a Set?
+        boolean allGenericTypesAreEqual = true;
+        for(int i = 0; i < genericTypes.size(); i++) {
+            allGenericTypesAreEqual &= Objects.equals(genericTypes.get(i), that.genericTypes.get(i));
+        }
+
+        return Objects.equals(type, that.type) && allGenericTypesAreEqual;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, genericType1);
+        return Objects.hash(type, genericTypes);
     }
 }

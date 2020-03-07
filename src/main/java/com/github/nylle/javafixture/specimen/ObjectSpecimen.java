@@ -15,9 +15,9 @@ import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
-    protected final Class<T> type;
-    protected final Context context;
-    protected final SpecimenFactory specimenFactory;
+    private final Class<T> type;
+    private final Context context;
+    private final SpecimenFactory specimenFactory;
     private final SpecimenType specimenType;
 
     public ObjectSpecimen(final Class<T> type, final Context context, final SpecimenFactory specimenFactory) {

@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 
@@ -55,10 +56,10 @@ public class SpecimenType {
             return false;
         }
 
-        boolean allGenericTypesAreEqual = true;
-        for(int i = 0; i < genericTypes.size(); i++) {
-            allGenericTypesAreEqual &= Objects.equals(genericTypes.get(i), that.genericTypes.get(i));
-        }
+        boolean allGenericTypesAreEqual = IntStream
+                .range(0, genericTypes.size())
+                .boxed()
+                .allMatch(i -> Objects.equals(genericTypes.get(i), that.genericTypes.get(i)));
 
         return Objects.equals(type, that.type) && allGenericTypesAreEqual;
     }

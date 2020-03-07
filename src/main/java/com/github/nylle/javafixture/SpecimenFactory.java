@@ -66,11 +66,7 @@ public class SpecimenFactory {
                     .orElseGet(() -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), ReflectionHelper.getGenericTypeClass(genericType, 1), context, this));
         }
 
-        if(type == Class.class) {
-            return new GenericSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0));
-        }
-
-        throw new SpecimenException(String.format("Unsupported type for generic creation: %s", type));
+        return new GenericSpecimen<>(type, context, this, ReflectionHelper.getGenericTypeClasses(genericType));
     }
 
 }

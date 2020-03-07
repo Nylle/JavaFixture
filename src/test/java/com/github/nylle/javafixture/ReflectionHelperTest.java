@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.parameterized.TestCase;
 import com.github.nylle.javafixture.parameterized.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithWildcardGeneric;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.time.ZonedDateTime;
 import java.time.chrono.JapaneseEra;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,6 +87,7 @@ class ReflectionHelperTest {
 
     @Test
     void isCollection() {
+        assertThat(ReflectionHelper.isCollection(Collection.class)).isTrue();
         assertThat(ReflectionHelper.isCollection(List.class)).isTrue();
         assertThat(ReflectionHelper.isCollection(NavigableSet.class)).isTrue();
         assertThat(ReflectionHelper.isCollection(SortedSet.class)).isTrue();
@@ -123,11 +126,15 @@ class ReflectionHelperTest {
     void isParameterizedType() throws NoSuchFieldException {
 
         var type = TestObject.class.getDeclaredField("value").getGenericType();
-        var parameterizedType = TestObject.class.getDeclaredField("integers").getGenericType();
+        var listType = TestObject.class.getDeclaredField("integers").getGenericType();
+        var classType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
+        var genericType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
 
         assertThat(ReflectionHelper.isParameterizedType(null)).isFalse();
         assertThat(ReflectionHelper.isParameterizedType(type)).isFalse();
-        assertThat(ReflectionHelper.isParameterizedType(parameterizedType)).isTrue();
+        assertThat(ReflectionHelper.isParameterizedType(listType)).isTrue();
+        assertThat(ReflectionHelper.isParameterizedType(classType)).isTrue();
+        assertThat(ReflectionHelper.isParameterizedType(genericType)).isTrue();
     }
 
     @Test

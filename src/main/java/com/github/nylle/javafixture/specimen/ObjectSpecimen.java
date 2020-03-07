@@ -1,16 +1,14 @@
 package com.github.nylle.javafixture.specimen;
 
-import java.util.Arrays;
-
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
-
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+
+import java.util.Arrays;
+
+import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
@@ -60,14 +58,5 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
 
         return result;
     }
-
-    private T newInstance(final Class<T> type) {
-        try {
-            return type.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(type)).newInstance();
-        }
-    }
-
 }
 

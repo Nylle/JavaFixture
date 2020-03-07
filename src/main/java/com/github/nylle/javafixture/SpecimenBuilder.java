@@ -33,29 +33,29 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     }
 
     @Override
-    public Stream<T> createMany(int size) {
+    public Stream<T> createMany(final int size) {
         return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create(new CustomizationContext(ignoredFields, customFields))));
     }
 
     @Override
-    public ISpecimenBuilder<T> with(Consumer<T> function) {
+    public ISpecimenBuilder<T> with(final Consumer<T> function) {
         functions.add(function);
         return this;
     }
 
     @Override
-    public ISpecimenBuilder<T> with(String fieldName, Object value) {
+    public ISpecimenBuilder<T> with(final String fieldName, Object value) {
         customFields.put(fieldName, value);
         return this;
     }
 
     @Override
-    public ISpecimenBuilder<T> without(String fieldName) {
+    public ISpecimenBuilder<T> without(final String fieldName) {
         ignoredFields.add(fieldName);
         return this;
     }
 
-    protected T customize(T instance) {
+    private T customize(T instance) {
         functions.forEach(f -> f.accept(instance));
         return instance;
     }

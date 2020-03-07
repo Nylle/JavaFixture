@@ -17,6 +17,10 @@ public class JavaFixture {
         this.configuration = configuration;
     }
 
+    public static JavaFixture fixture() {
+        return new JavaFixture();
+    }
+
     public <T> T create(final Class<T> typeReference) {
         return new SpecimenBuilder<>(typeReference, configuration).create();
     }

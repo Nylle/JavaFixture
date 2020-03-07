@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -78,10 +79,14 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         stream(type.getDeclaredFields())
                 .filter(x -> !ReflectionHelper.isStatic(x))
                 .forEach(x -> ReflectionHelper.setField(x, result, ReflectionHelper.isParameterizedType(x.getGenericType())
-                        ? specimenFactory.build(genericTypes.get(x.getGenericType().getTypeName()), x.getGenericType()).create()
-                        : specimenFactory.build(genericTypes.get(x.getGenericType().getTypeName())).create()));
+                        ? specimenFactory.build(resolveType(x), x.getGenericType()).create()
+                        : specimenFactory.build(resolveType(x)).create()));
 
         return result;
+    }
+
+    private Class<?> resolveType(final Field field) {
+        return genericTypes.getOrDefault(field.getGenericType().getTypeName(), field.getType());
     }
 }
 

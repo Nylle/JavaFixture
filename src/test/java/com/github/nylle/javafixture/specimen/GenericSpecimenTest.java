@@ -84,5 +84,6 @@ class GenericSpecimenTest {
         assertThat(actual).isInstanceOf(TestObjectGeneric.class);
         assertThat(actual.getT()).isInstanceOf(String.class);
         assertThat(actual.getU()).isInstanceOf(Integer.class);
+        assertThat(actual.getString()).isInstanceOf(String.class);
     }
 }

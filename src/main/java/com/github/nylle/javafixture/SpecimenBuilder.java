@@ -24,7 +24,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
 
     @Override
     public T create() {
-        return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create());
+        return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create(new CustomizationContext(ignoredFields, customFields)));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
 
     @Override
     public Stream<T> createMany(int size) {
-        return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create()));
+        return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create(new CustomizationContext(ignoredFields, customFields))));
     }
 
     @Override
@@ -56,8 +56,6 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     }
 
     protected T customize(T instance) {
-        customFields.forEach((fieldName, value) -> ReflectionHelper.setField(fieldName, instance, value));
-        ignoredFields.forEach(field -> ReflectionHelper.unsetField(field, instance));
         functions.forEach(f -> f.accept(instance));
         return instance;
     }

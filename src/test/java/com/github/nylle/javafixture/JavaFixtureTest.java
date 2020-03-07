@@ -263,6 +263,7 @@ class JavaFixtureTest {
         assertThat(result.getGenerics()).hasSize(2);
         assertThat(result.getGenerics().get(0).getT()).isInstanceOf(String.class);
         assertThat(result.getGenerics().get(0).getU()).isInstanceOf(Integer.class);
+        assertThat(result.getGenerics().get(0).getString()).isInstanceOf(String.class);
 
         assertThat(result.getGeneric()).isInstanceOf(TestObjectGeneric.class);
         assertThat(result.getGeneric().getT()).isInstanceOf(String.class);

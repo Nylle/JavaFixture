@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenFactory;
@@ -11,6 +12,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
@@ -45,6 +48,11 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if(context.isCached(specimenType)){
             return (T) context.cached(specimenType);
         }

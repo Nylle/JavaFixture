@@ -1,12 +1,15 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.Array;
 import java.util.stream.IntStream;
+
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class ArraySpecimen<T> implements ISpecimen<T> {
     private final Class<T> type;
@@ -39,6 +42,11 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if(context.isCached(specimenType)){
             return (T) context.cached(specimenType);
         }

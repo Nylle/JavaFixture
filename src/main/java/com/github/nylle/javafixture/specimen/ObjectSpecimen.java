@@ -1,25 +1,28 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
-    private final Class<T> type;
-    private final Context context;
-    private final SpecimenFactory specimenFactory;
+    protected final Class<T> type;
+    protected final Context context;
+    protected final SpecimenFactory specimenFactory;
     private final SpecimenType specimenType;
 
     public ObjectSpecimen(final Class<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
@@ -31,7 +34,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if(type.isPrimitive() || type.isEnum() || ReflectionHelper.isBoxedOrString(type) || ReflectionHelper.isMap(type) || ReflectionHelper.isCollection(type) || type.isInterface()) {
+        if (type.isPrimitive() || type.isEnum() || ReflectionHelper.isBoxedOrString(type) || ReflectionHelper.isMap(type) || ReflectionHelper.isCollection(type) || type.isInterface()) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -43,20 +46,34 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
 
-        if(context.isCached(specimenType)){
+    @Override
+    public T create(final CustomizationContext customizationContext) {
+
+        if (context.isCached(specimenType)) {
             return (T) context.cached(specimenType);
         }
 
         var result = context.cached(specimenType, newInstance(type));
 
         Arrays.stream(type.getDeclaredFields())
+                .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))
                 .filter(x -> !ReflectionHelper.isStatic(x))
-                .forEach(x -> ReflectionHelper.setField(x, result, ReflectionHelper.isParameterizedType(x.getGenericType())
-                        ? specimenFactory.build(x.getType(), x.getGenericType()).create()
-                        : specimenFactory.build(x.getType()).create()));
+                .forEach(x -> customize(x, result, customizationContext));
 
         return result;
+    }
+
+    private void customize(Field x, T result, CustomizationContext customizationContext) {
+        if(customizationContext.getCustomFields().containsKey(x.getName())) {
+            ReflectionHelper.setField(x, result, customizationContext.getCustomFields().get(x.getName()));
+        } else {
+            ReflectionHelper.setField(x, result, ReflectionHelper.isParameterizedType(x.getGenericType())
+                    ? specimenFactory.build(x.getType(), x.getGenericType()).create()
+                    : specimenFactory.build(x.getType()).create());
+        }
     }
 }
 

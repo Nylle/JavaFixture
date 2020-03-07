@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
@@ -7,6 +8,8 @@ import com.github.nylle.javafixture.SpecimenException;
 import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.UUID;
+
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
@@ -29,6 +32,11 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if (type.equals(String.class)) {
             return (T) UUID.randomUUID().toString();
         }

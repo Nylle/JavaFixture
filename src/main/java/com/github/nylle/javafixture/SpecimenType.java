@@ -55,7 +55,6 @@ public class SpecimenType {
             return false;
         }
 
-        //TODO: Do we care about the order? Maybe genericTypes could be a Set?
         boolean allGenericTypesAreEqual = true;
         for(int i = 0; i < genericTypes.size(); i++) {
             allGenericTypesAreEqual &= Objects.equals(genericTypes.get(i), that.genericTypes.get(i));

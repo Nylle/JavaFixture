@@ -1,5 +1,9 @@
 package com.github.nylle.javafixture;
 
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -15,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.String.format;
+import static java.util.Arrays.stream;
 
 
 public class ReflectionHelper {
@@ -70,17 +75,17 @@ public class ReflectionHelper {
     }
 
     public static boolean isParameterizedType(final Type type) {
-        return type != null && type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
+        return type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
     }
 
     public static Class<?> getGenericTypeClass(final Type type, final int index) {
-            final Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[index];
+        return getGenericTypeClasses(type)[index];
+    }
 
-            if(actualTypeArgument instanceof WildcardType) {
-                return Object.class;
-            }
-
-            return (Class<?>) actualTypeArgument;
+    public static Class<?>[] getGenericTypeClasses(final Type type) {
+        return stream(((ParameterizedType) type).getActualTypeArguments())
+                .map(x -> castToClass(x))
+                .toArray(size -> new Class<?>[size]);
     }
 
     public static Type getGenericType(final Type type, final int index) {
@@ -89,14 +94,6 @@ public class ReflectionHelper {
 
     public static boolean isStatic(final Field field) {
         return Modifier.isStatic(field.getModifiers());
-    }
-
-    public static <T> boolean isNull(Field field, T instance) {
-        try {
-            return field.get(instance) == null;
-        } catch (IllegalAccessException e) {
-            return true;
-        }
     }
 
     public static boolean isTimeType(Class<?> type) {
@@ -115,8 +112,12 @@ public class ReflectionHelper {
         return false;
     }
 
-    private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {
-        return (T) Array.get(Array.newInstance(type, 1), 0);
+    public static <T> T newInstance(final Class<T> type) {
+        try {
+            return type.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(type)).newInstance();
+        }
     }
 
     static Optional<Class> getRawType(Type type, int index) {
@@ -127,5 +128,21 @@ public class ReflectionHelper {
             }
         }
         return Optional.empty();
+    }
+
+    private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {
+        return (T) Array.get(Array.newInstance(type, 1), 0);
+    }
+
+    private static Class<?> castToClass(Type type) {
+        if(type instanceof WildcardType) {
+            return Object.class;
+        }
+
+        if(isParameterizedType(type)) {
+            return (Class) ((ParameterizedType) type).getRawType();
+        }
+
+        return (Class<?>) type;
     }
 }

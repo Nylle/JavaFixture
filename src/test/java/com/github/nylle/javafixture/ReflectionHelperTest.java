@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.parameterized.TestCase;
 import com.github.nylle.javafixture.parameterized.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithWildcardGeneric;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import org.junit.jupiter.api.Test;
@@ -125,11 +126,15 @@ class ReflectionHelperTest {
     void isParameterizedType() throws NoSuchFieldException {
 
         var type = TestObject.class.getDeclaredField("value").getGenericType();
-        var parameterizedType = TestObject.class.getDeclaredField("integers").getGenericType();
+        var listType = TestObject.class.getDeclaredField("integers").getGenericType();
+        var classType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
+        var genericType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
 
         assertThat(ReflectionHelper.isParameterizedType(null)).isFalse();
         assertThat(ReflectionHelper.isParameterizedType(type)).isFalse();
-        assertThat(ReflectionHelper.isParameterizedType(parameterizedType)).isTrue();
+        assertThat(ReflectionHelper.isParameterizedType(listType)).isTrue();
+        assertThat(ReflectionHelper.isParameterizedType(classType)).isTrue();
+        assertThat(ReflectionHelper.isParameterizedType(genericType)).isTrue();
     }
 
     @Test

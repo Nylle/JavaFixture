@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
@@ -10,6 +11,8 @@ import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.complex.IContract;
 import org.junit.jupiter.api.Test;
 
@@ -58,13 +61,13 @@ class SpecimenFactoryTest {
 
         Type genericListType = TestObject.class.getDeclaredField("integers").getGenericType();
         Type genericMapType = TestObject.class.getDeclaredField("strings").getGenericType();
+        Type classParametrizedType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
+        Type genericParametrizedType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
 
         assertThat(sut.build(List.class, genericListType)).isExactlyInstanceOf(CollectionSpecimen.class);
         assertThat(sut.build(Map.class, genericMapType)).isExactlyInstanceOf(MapSpecimen.class);
-
-        assertThatThrownBy(() -> sut.build(TestObject.class, genericListType))
-                .isInstanceOf(SpecimenException.class)
-                .hasMessageContaining("Unsupported type for generic creation: " + TestObject.class);
+        assertThat(sut.build(Class.class, classParametrizedType)).isExactlyInstanceOf(GenericSpecimen.class);
+        assertThat(sut.build(TestObjectGeneric.class, genericParametrizedType)).isExactlyInstanceOf(GenericSpecimen.class);
 
     }
 

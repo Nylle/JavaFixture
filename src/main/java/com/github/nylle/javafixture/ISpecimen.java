@@ -4,5 +4,7 @@ public interface ISpecimen<T> {
 
     T create();
 
+    T create(final CustomizationContext customizationContext);
+
 }
 

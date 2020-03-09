@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
@@ -16,6 +17,8 @@ import java.time.ZoneOffset;
 import java.time.chrono.JapaneseEra;
 import java.time.temporal.Temporal;
 import java.util.Random;
+
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class TimeSpecimen<T> implements ISpecimen<T> {
 
@@ -43,6 +46,11 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if (Temporal.class.isAssignableFrom(type)) {
             try {
                 Method now = type.getMethod("now", Clock.class);

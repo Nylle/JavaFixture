@@ -17,22 +17,23 @@ public class JavaFixture {
         this.configuration = configuration;
     }
 
-    public <T> T create(Class<T> typeReference) {
-        var specimenBuilder = new SpecimenBuilder<>(typeReference, configuration);
-        return specimenBuilder.create();
+    public static JavaFixture fixture() {
+        return new JavaFixture();
     }
 
-    public <T> Stream<T> createMany(Class<T> typeReference) {
-        var specimenBuilder = new SpecimenBuilder<>(typeReference, configuration);
-        return specimenBuilder.createMany();
+    public <T> T create(final Class<T> typeReference) {
+        return new SpecimenBuilder<>(typeReference, configuration).create();
     }
 
-    public <T> ISpecimenBuilder<T> build(Class<T> typeReference) {
+    public <T> Stream<T> createMany(final Class<T> typeReference) {
+        return new SpecimenBuilder<>(typeReference, configuration).createMany();
+    }
+
+    public <T> ISpecimenBuilder<T> build(final Class<T> typeReference) {
         return new SpecimenBuilder<>(typeReference, configuration);
     }
 
-    public <T> void addManyTo(Collection<T> result, Class<T> typeReference) {
-        var specimenBuilder = new SpecimenBuilder<>(typeReference, configuration);
-        result.addAll(specimenBuilder.createMany().collect(Collectors.toList()));
+    public <T> void addManyTo(Collection<T> result, final Class<T> typeReference) {
+        result.addAll(new SpecimenBuilder<>(typeReference, configuration).createMany().collect(Collectors.toList()));
     }
 }

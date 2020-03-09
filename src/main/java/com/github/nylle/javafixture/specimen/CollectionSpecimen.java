@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
@@ -27,6 +28,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.stream.IntStream;
+
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     private final Class<T> type;
@@ -69,6 +72,11 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if (context.isCached(specimenType)) {
             return (T) context.cached(specimenType);
         }

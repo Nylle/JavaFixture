@@ -25,49 +25,53 @@ class GenericSpecimenTest {
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(null, context, specimenFactory, Object.class))
+        assertThatThrownBy(() -> new GenericSpecimen<>(null, context, specimenFactory, new PrimitiveSpecimen<>(int.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void typeMustBeParametrized() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(Object.class, context, specimenFactory, Object.class))
+        assertThatThrownBy(() -> new GenericSpecimen<>(Object.class, context, specimenFactory, new PrimitiveSpecimen<>(int.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type does not appear to be generic: class java.lang.Object");
     }
 
     @Test
-    void typeParametersMustMatchNumberOfGenericTypes() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, specimenFactory, Object.class, Object.class))
+    void specimensAreRequired() {
+        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("number of type parameters (1) does not match number of provided generic types: 2");
+                .hasMessageContaining("no specimens provided");
+
+        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, specimenFactory, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("specimens: null");
     }
 
     @Test
-    void genericTypeIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, specimenFactory, null))
+    void specimensMustMatchNumberOfGenericTypes() {
+        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, specimenFactory, new PrimitiveSpecimen<>(int.class), new PrimitiveSpecimen<>(int.class)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("genericTypes: null");
+                .hasMessageContaining("number of type parameters (1) does not match number of provided specimens: 2");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, null, specimenFactory, Object.class))
+        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, null, specimenFactory, new PrimitiveSpecimen<>(int.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, null, Object.class))
+        assertThatThrownBy(() -> new GenericSpecimen<>(Optional.class, context, null, new PrimitiveSpecimen<>(int.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }
 
     @Test
     void createClass() {
-        var sut = new GenericSpecimen<>(Class.class, context, specimenFactory, String.class);
+        var sut = new GenericSpecimen<>(Class.class, context, specimenFactory, new PrimitiveSpecimen<>(String.class));
 
         var actual = sut.create();
 
@@ -77,7 +81,7 @@ class GenericSpecimenTest {
 
     @Test
     void createGeneric() {
-        var sut = new GenericSpecimen<>(TestObjectGeneric.class, context, specimenFactory, String.class, Integer.class);
+        var sut = new GenericSpecimen<>(new TestObjectGeneric<String, Integer>().getClass(), context, specimenFactory, new PrimitiveSpecimen<>(String.class), new PrimitiveSpecimen<>(Integer.class));
 
         var actual = sut.create();
 

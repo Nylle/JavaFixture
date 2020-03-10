@@ -81,24 +81,19 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         var result = context.cached(specimenType, newInstance(type));
 
         stream(type.getDeclaredFields())
-                .filter(field -> !ReflectionHelper.isStatic(field))
-                .forEach(field -> ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(field.getType())).create()));
                 .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))
-                .filter(x -> !ReflectionHelper.isStatic(x))
-                .forEach(x -> customize(x, result, customizationContext));
+                .filter(field -> !ReflectionHelper.isStatic(field))
+                .forEach(field -> customize(field, result, customizationContext));
 
         return result;
     }
 
-    private void customize(Field x, T result, CustomizationContext customizationContext) {
-        if(customizationContext.getCustomFields().containsKey(x.getName())) {
-            ReflectionHelper.setField(x, result, customizationContext.getCustomFields().get(x.getName()));
+    private void customize(Field field, T result, CustomizationContext customizationContext) {
+        if(customizationContext.getCustomFields().containsKey(field.getName())) {
+            ReflectionHelper.setField(field, result, customizationContext.getCustomFields().get(field.getName()));
         } else {
-            ReflectionHelper.setField(x, result, ReflectionHelper.isParameterizedType(x.getGenericType())
-                    ? specimenFactory.build(resolveType(x), x.getGenericType()).create()
-                    : specimenFactory.build(resolveType(x)).create());
+            ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(field.getType())).create());
         }
     }
-
 }
 

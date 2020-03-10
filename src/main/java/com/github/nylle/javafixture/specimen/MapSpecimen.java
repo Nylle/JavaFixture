@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
@@ -18,6 +19,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.IntStream;
+
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     private final Class<T> type;
@@ -68,6 +71,11 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if (context.isCached(specimenType)) {
             return (T) context.cached(specimenType);
         }
@@ -79,7 +87,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
                 .filter(x -> genericKeyType != null && valueSpecimen != null)
                 .forEach(x -> map.put(
                         specimenFactory.build(genericKeyType).create(),
-                       valueSpecimen.create()));
+                        valueSpecimen.create()));
 
         return (T) map;
     }

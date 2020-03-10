@@ -1,14 +1,17 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -62,6 +65,11 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create() {
+        return create(noContext());
+    }
+
+    @Override
+    public T create(final CustomizationContext customizationContext) {
         if (type.equals(Class.class)) {
             return (T) specimens.entrySet().stream().findFirst().get().getValue().create().getClass();
         }
@@ -75,8 +83,22 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         stream(type.getDeclaredFields())
                 .filter(field -> !ReflectionHelper.isStatic(field))
                 .forEach(field -> ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(field.getType())).create()));
+                .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))
+                .filter(x -> !ReflectionHelper.isStatic(x))
+                .forEach(x -> customize(x, result, customizationContext));
 
         return result;
     }
+
+    private void customize(Field x, T result, CustomizationContext customizationContext) {
+        if(customizationContext.getCustomFields().containsKey(x.getName())) {
+            ReflectionHelper.setField(x, result, customizationContext.getCustomFields().get(x.getName()));
+        } else {
+            ReflectionHelper.setField(x, result, ReflectionHelper.isParameterizedType(x.getGenericType())
+                    ? specimenFactory.build(resolveType(x), x.getGenericType()).create()
+                    : specimenFactory.build(resolveType(x)).create());
+        }
+    }
+
 }
 

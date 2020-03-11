@@ -3,13 +3,13 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenerics;
+import com.github.nylle.javafixture.testobjects.TestObjectWithNestedMapsAndLists;
 import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
-import com.github.nylle.javafixture.testobjects.complex.AccountManager;
-import com.github.nylle.javafixture.testobjects.complex.ClassWithNestedMapsAndLists;
-import com.github.nylle.javafixture.testobjects.complex.Contract;
-import com.github.nylle.javafixture.testobjects.complex.ContractCategory;
-import com.github.nylle.javafixture.testobjects.complex.ContractPosition;
+import com.github.nylle.javafixture.testobjects.example.AccountManager;
+import com.github.nylle.javafixture.testobjects.example.Contract;
+import com.github.nylle.javafixture.testobjects.example.ContractCategory;
+import com.github.nylle.javafixture.testobjects.example.ContractPosition;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -222,7 +222,7 @@ class JavaFixtureTest {
     void canCreateNestedParameterizedCollections() {
         JavaFixture fixture = new JavaFixture(configuration);
 
-        var classWithMapWithList = fixture.create(ClassWithNestedMapsAndLists.class);
+        var classWithMapWithList = fixture.create(TestObjectWithNestedMapsAndLists.class);
 
         var nestedList = classWithMapWithList.getNestedList();
         assertThat(nestedList).isNotEmpty();

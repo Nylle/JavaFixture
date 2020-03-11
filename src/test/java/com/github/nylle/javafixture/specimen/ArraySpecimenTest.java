@@ -3,7 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.testobjects.complex.AccountManager;
+import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

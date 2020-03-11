@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.testobjects.complex;
+package com.github.nylle.javafixture.testobjects.example;
 
 import java.util.Set;
 

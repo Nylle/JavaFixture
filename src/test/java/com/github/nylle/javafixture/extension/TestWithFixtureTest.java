@@ -1,8 +1,8 @@
 package com.github.nylle.javafixture.extension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.github.nylle.javafixture.testobjects.example.Contract;
 
-import com.github.nylle.javafixture.testobjects.complex.Contract;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestWithFixtureTest {
     @TestWithFixture

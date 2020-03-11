@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.extension;
 
-import com.github.nylle.javafixture.testobjects.complex.Contract;
+import com.github.nylle.javafixture.testobjects.example.Contract;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

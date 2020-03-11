@@ -13,7 +13,7 @@ import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
-import com.github.nylle.javafixture.testobjects.complex.IContract;
+import com.github.nylle.javafixture.testobjects.example.IContract;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SpecimenFactoryTest {
 

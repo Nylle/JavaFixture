@@ -1,9 +1,9 @@
-package com.github.nylle.javafixture.testobjects.complex;
+package com.github.nylle.javafixture.testobjects;
 
 import java.util.List;
 import java.util.Map;
 
-public class ClassWithNestedMapsAndLists {
+public class TestObjectWithNestedMapsAndLists {
 
     private List<List<String>> nestedList;
 
@@ -16,7 +16,6 @@ public class ClassWithNestedMapsAndLists {
     public List<Map<String, List<String>>> getDeeplyNestedList() {
         return deeplyNestedList;
     }
-
 
     public Map<String, Map<String, String>> getMapWithMap() {
         return mapWithMap;

@@ -3,6 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.ProxyFactory;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
@@ -76,6 +77,10 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
 
         if (context.isCached(specimenType)) {
             return (T) context.cached(specimenType);
+        }
+
+        if(type.isInterface()) {
+            return (T) context.cached(specimenType, ProxyFactory.createGeneric(type, specimenFactory, specimens));
         }
 
         var result = context.cached(specimenType, newInstance(type));

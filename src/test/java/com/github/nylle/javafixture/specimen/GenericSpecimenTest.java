@@ -90,4 +90,20 @@ class GenericSpecimenTest {
         assertThat(actual.getU()).isInstanceOf(Integer.class);
         assertThat(actual.getString()).isInstanceOf(String.class);
     }
+
+    @Test
+    void subSpecimenAreProperlyCached() {
+
+        var optionalStringSpecimen = new GenericSpecimen<>(Optional.class, context, specimenFactory, new PrimitiveSpecimen<>(String.class));
+        var optionalIntegerSpecimen = new GenericSpecimen<>(Optional.class, context, specimenFactory, new PrimitiveSpecimen<>(Integer.class));
+
+        var sut = new GenericSpecimen<>(new TestObjectGeneric<Optional<String>, Optional<Integer>>().getClass(),
+                context, specimenFactory, optionalStringSpecimen, optionalIntegerSpecimen);
+
+        TestObjectGeneric<Optional<String>, Optional<Integer>> result = sut.create();
+
+        assertThat(result.getT().get()).isInstanceOf(String.class);
+        assertThat(result.getU().get()).isInstanceOf(Integer.class);
+
+    }
 }

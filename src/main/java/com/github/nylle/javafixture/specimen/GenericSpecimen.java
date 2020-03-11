@@ -59,7 +59,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         this.type = type;
         this.context = context;
         this.specimenFactory = specimenFactory;
-        this.specimenType = SpecimenType.forGeneric(type, stream(specimens).map(s -> s.getClass()).toArray(size -> new Class<?>[size]));
+        this.specimenType = SpecimenType.forGeneric(type, stream(specimens).map(s -> s.create().getClass()).toArray(size -> new Class<?>[size]));
         this.specimens = IntStream.range(0, type.getTypeParameters().length).boxed().collect(toMap(i -> type.getTypeParameters()[i].getName(), i -> specimens[i]));
     }
 

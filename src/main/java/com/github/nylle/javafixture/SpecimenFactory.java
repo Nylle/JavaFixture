@@ -12,6 +12,9 @@ import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
 import java.lang.reflect.Type;
 
+import static com.github.nylle.javafixture.ReflectionHelper.isParameterizedType;
+import static java.util.Arrays.stream;
+
 public class SpecimenFactory {
 
     private final Context context;
@@ -56,18 +59,29 @@ public class SpecimenFactory {
 
         if (ReflectionHelper.isCollection(type)) {
             return ReflectionHelper.getRawType(genericType, 0)
-                    .map(rawType -> new CollectionSpecimen<>(type, rawType, context, this, build(rawType, ReflectionHelper.getGenericType(genericType, 0))))
+                    .map(rawType -> new CollectionSpecimen<>(type, rawType, context, this, asSpecimen(ReflectionHelper.getGenericType(genericType, 0))))
                     .orElseGet(() -> new CollectionSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), context, this));
         }
 
         if (ReflectionHelper.isMap(type)) {
             return ReflectionHelper.getRawType(genericType, 1)
-                    .map(rawType -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), rawType, context, this, build(rawType, ReflectionHelper.getGenericType(genericType, 1))))
+                    .map(rawType -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), rawType, context, this, asSpecimen(ReflectionHelper.getGenericType(genericType, 1))))
                     .orElseGet(() -> new MapSpecimen<>(type, ReflectionHelper.getGenericTypeClass(genericType, 0), ReflectionHelper.getGenericTypeClass(genericType, 1), context, this));
         }
 
-        return new GenericSpecimen<>(type, context, this, ReflectionHelper.getGenericTypeClasses(genericType));
+        if (isParameterizedType(genericType)) {
+            return new GenericSpecimen<>(type, context, this, stream(ReflectionHelper.getGenericTypes(genericType)).map(t -> asSpecimen(t)).toArray(size -> new ISpecimen<?>[size]));
+        }
+
+        return new GenericSpecimen<>(type, context, this, asSpecimen(genericType));
     }
 
+    private ISpecimen<?> asSpecimen(Type t) {
+        if (isParameterizedType(t)) {
+            return build(ReflectionHelper.castToClass(t), t);
+        } else {
+            return build(ReflectionHelper.castToClass(t));
+        }
+    }
 }
 

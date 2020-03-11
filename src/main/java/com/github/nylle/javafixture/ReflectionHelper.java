@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 
 
 public class ReflectionHelper {
@@ -32,7 +31,6 @@ public class ReflectionHelper {
         } catch (IllegalAccessException e) {
             throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
         }
-
     }
 
     public static void setField(final String fieldName, final Object instance, final Object value) {
@@ -60,6 +58,26 @@ public class ReflectionHelper {
         }
     }
 
+    public static <T> T newInstance(final Class<T> type) {
+        try {
+            return type.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(type)).newInstance();
+        }
+    }
+
+    public static Class<?> castToClass(Type type) {
+        if (type instanceof WildcardType) {
+            return Object.class;
+        }
+
+        if (isParameterizedType(type)) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        return (Class<?>) type;
+    }
+
     public static boolean isBoxedOrString(Class<?> type) {
         return type == Double.class || type == Float.class || type == Long.class ||
                 type == Integer.class || type == Short.class || type == Character.class ||
@@ -76,20 +94,6 @@ public class ReflectionHelper {
 
     public static boolean isParameterizedType(final Type type) {
         return type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
-    }
-
-    public static Class<?> getGenericTypeClass(final Type type, final int index) {
-        return getGenericTypeClasses(type)[index];
-    }
-
-    public static Class<?>[] getGenericTypeClasses(final Type type) {
-        return stream(((ParameterizedType) type).getActualTypeArguments())
-                .map(x -> castToClass(x))
-                .toArray(size -> new Class<?>[size]);
-    }
-
-    public static Type getGenericType(final Type type, final int index) {
-        return ((ParameterizedType) type).getActualTypeArguments()[index];
     }
 
     public static boolean isStatic(final Field field) {
@@ -112,15 +116,19 @@ public class ReflectionHelper {
         return false;
     }
 
-    public static <T> T newInstance(final Class<T> type) {
-        try {
-            return type.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(type)).newInstance();
-        }
+    public static Type[] getGenericTypes(final Type type) {
+        return ((ParameterizedType) type).getActualTypeArguments();
     }
 
-    static Optional<Class> getRawType(Type type, int index) {
+    public static Type getGenericType(final Type type, final int index) {
+        return getGenericTypes(type)[index];
+    }
+
+    public static Class<?> getGenericTypeClass(final Type type, final int index) {
+        return castToClass(getGenericTypes(type)[index]);
+    }
+
+    public static Optional<Class> getRawType(Type type, int index) {
         if (isParameterizedType(type)) {
             var actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[index];
             if (isParameterizedType(actualTypeArgument)) {
@@ -132,17 +140,5 @@ public class ReflectionHelper {
 
     private static <T> T getDefaultValueForPrimitiveOrNull(Class<T> type) {
         return (T) Array.get(Array.newInstance(type, 1), 0);
-    }
-
-    private static Class<?> castToClass(Type type) {
-        if(type instanceof WildcardType) {
-            return Object.class;
-        }
-
-        if(isParameterizedType(type)) {
-            return (Class) ((ParameterizedType) type).getRawType();
-        }
-
-        return (Class<?>) type;
     }
 }

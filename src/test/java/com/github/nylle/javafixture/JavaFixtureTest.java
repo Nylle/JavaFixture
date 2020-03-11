@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
+import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import com.github.nylle.javafixture.testobjects.complex.AccountManager;
@@ -218,7 +219,7 @@ class JavaFixtureTest {
     }
 
     @Test
-    void canCreateNestedParameterizedObject() {
+    void canCreateNestedParameterizedCollections() {
         JavaFixture fixture = new JavaFixture(configuration);
 
         var classWithMapWithList = fixture.create(ClassWithNestedMapsAndLists.class);
@@ -253,7 +254,7 @@ class JavaFixtureTest {
     }
 
     @Test
-    void canCreateAnyParameterizedObject() {
+    void canCreateParameterizedObject() {
         final JavaFixture fixture = new JavaFixture(new Configuration().collectionSizeRange(2, 2));
 
         final var result = fixture.create(TestObjectWithGenerics.class);
@@ -275,5 +276,26 @@ class JavaFixtureTest {
         assertThat(result.getOptional()).isInstanceOf(Optional.class);
         assertThat(result.getOptional().isPresent()).isTrue();
         assertThat(result.getOptional().get()).isInstanceOf(Boolean.class);
+    }
+
+    @Test
+    void canCreateNestedParameterizedObject() {
+        final JavaFixture fixture = new JavaFixture(new Configuration().collectionSizeRange(2, 2));
+
+        final var result = fixture.create(TestObjectWithNestedGenerics.class);
+
+        assertThat(result).isInstanceOf(TestObjectWithNestedGenerics.class);
+
+        assertThat(result.getOptionalGeneric()).isInstanceOf(Optional.class);
+        assertThat(result.getOptionalGeneric().isPresent()).isTrue();
+        assertThat(result.getOptionalGeneric().get()).isInstanceOf(TestObjectGeneric.class);
+        assertThat(result.getOptionalGeneric().get().getT()).isInstanceOf(String.class);
+        assertThat(result.getOptionalGeneric().get().getU()).isInstanceOf(Integer.class);
+
+        assertThat(result.getGenericOptional()).isInstanceOf(TestObjectGeneric.class);
+        assertThat(result.getGenericOptional().getT()).isInstanceOf(String.class);
+        assertThat(result.getGenericOptional().getU()).isInstanceOf(Optional.class);
+        assertThat(result.getGenericOptional().getU()).isPresent();
+        assertThat(result.getGenericOptional().getU().get()).isInstanceOf(Integer.class);
     }
 }

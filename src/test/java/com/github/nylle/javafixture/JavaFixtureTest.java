@@ -87,6 +87,20 @@ class JavaFixtureTest {
     }
 
     @Test
+    void canAddManyTo() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        List<TestPrimitive> result = new ArrayList<>();
+        result.add(new TestPrimitive());
+
+        fixture.addManyTo(result, TestPrimitive.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(4);
+        assertThat(result.get(1)).isInstanceOf(TestPrimitive.class);
+    }
+
+    @Test
     void canCreateManyWithCustomization() {
         JavaFixture fixture = new JavaFixture(configuration);
 
@@ -117,20 +131,6 @@ class JavaFixtureTest {
 
         assertThat(first.getPrimitive()).isNotEqualTo(second.getPrimitive());
         assertThat(second.getPrimitive()).isNotEqualTo(third.getPrimitive());
-    }
-
-    @Test
-    void canAddManyTo() {
-        JavaFixture fixture = new JavaFixture(configuration);
-
-        List<TestPrimitive> result = new ArrayList<>();
-        result.add(new TestPrimitive());
-
-        fixture.addManyTo(result, TestPrimitive.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(4);
-        assertThat(result.get(1)).isInstanceOf(TestPrimitive.class);
     }
 
     @Test
@@ -179,6 +179,16 @@ class JavaFixtureTest {
     }
 
     @Test
+    void canPerformAction() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        ContractPosition cp = fixture.create(ContractPosition.class);
+        Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
+
+        assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
+    }
+
+    @Test
     void canCreateComplexModel() {
         JavaFixture fixture = new JavaFixture(configuration);
 
@@ -210,16 +220,6 @@ class JavaFixtureTest {
         assertThat(result.getStackTrace().length).isGreaterThan(0);
         assertThat(result.getStackTrace()[0]).isInstanceOf(StackTraceElement.class);
         assertThat(result.getCause()).isNull(); //if cause == this, the getter returns null
-    }
-
-    @Test
-    void canPerformAction() {
-        JavaFixture fixture = new JavaFixture(configuration);
-
-        ContractPosition cp = fixture.create(ContractPosition.class);
-        Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
-
-        assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
     }
 
     @Test

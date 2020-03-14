@@ -162,9 +162,9 @@ ParentDto:
 - youngestChild: String: "349a1f87-9d00-4623-89cb-3031bb84ddb3"
 
 ## Generics
-Due to Java's type erasure ([read more on baeldung](https://www.baeldung.com/java-type-erasure)), it is difficult to reflect generic classes on runtime and the following doesn't work:
+Due to Java's type erasure (further reading: [baeldung](https://www.baeldung.com/java-type-erasure)), it is difficult to reflect generic classes on runtime and the following doesn't work:
  ```java
- fixture.create(Optional<String>.class); // dos not compile
+ fixture.create(Optional<String>.class); // does not compile
  ```
  Using JavaFixture however it can be achieved through a little trick:
 

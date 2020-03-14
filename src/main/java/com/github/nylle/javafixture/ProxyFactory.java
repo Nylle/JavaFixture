@@ -56,8 +56,8 @@ public class ProxyFactory implements InvocationHandler {
     private Type resolveType(Type type) {
         if (specimens.containsKey(type.getTypeName())) {
             return specimens.get(type.getTypeName()).create().getClass();
-        } else {
-            return type;
         }
+
+        return type;
     }
 }

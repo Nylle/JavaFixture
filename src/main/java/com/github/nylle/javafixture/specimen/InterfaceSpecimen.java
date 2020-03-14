@@ -2,16 +2,11 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.ProxyFactory;
+import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
@@ -57,23 +52,9 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(specimenType);
         }
 
-        return (T) context.cached(specimenType, Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new GenericInvocationHandler()));
+        return (T) context.cached(specimenType, ProxyFactory.create(type, specimenFactory));
     }
 
-    class GenericInvocationHandler implements InvocationHandler {
-
-        private Map<String, Object> methodResults = new HashMap<>();
-
-        @Override
-        public Object invoke(final Object proxy, final Method method, final Object[] args) {
-            if(method.getReturnType() != void.class) {
-                methodResults.computeIfAbsent(method.toString(), x -> specimenFactory.build(method.getReturnType()).create());
-                return methodResults.get(method.toString());
-            }
-
-            return null;
-        }
-    }
 
 
 }

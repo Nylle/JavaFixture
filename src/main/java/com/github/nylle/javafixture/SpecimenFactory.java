@@ -11,6 +11,7 @@ import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import static com.github.nylle.javafixture.ReflectionHelper.isParameterizedType;
 import static java.util.Arrays.stream;
@@ -74,6 +75,10 @@ public class SpecimenFactory {
         }
 
         return new GenericSpecimen<>(type, context, this, asSpecimen(genericType));
+    }
+
+    public <T> ISpecimen<T> build(final Class<T> type, final List<Class<?>> genericTypes) {
+         return new GenericSpecimen<>(type, context, this, genericTypes.stream().map(t -> asSpecimen(t)).toArray(size -> new ISpecimen<?>[size]));
     }
 
     private ISpecimen<?> asSpecimen(Type t) {

@@ -1,7 +1,10 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.testobjects.ITestGeneric;
+import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
+import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenericInterfaces;
 import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithNestedMapsAndLists;
 import com.github.nylle.javafixture.testobjects.TestObjectWithoutDefaultConstructor;
@@ -22,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.github.nylle.javafixture.JavaFixture.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -83,6 +87,20 @@ class JavaFixtureTest {
     }
 
     @Test
+    void canAddManyTo() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        List<TestPrimitive> result = new ArrayList<>();
+        result.add(new TestPrimitive());
+
+        fixture.addManyTo(result, TestPrimitive.class);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(4);
+        assertThat(result.get(1)).isInstanceOf(TestPrimitive.class);
+    }
+
+    @Test
     void canCreateManyWithCustomization() {
         JavaFixture fixture = new JavaFixture(configuration);
 
@@ -113,20 +131,6 @@ class JavaFixtureTest {
 
         assertThat(first.getPrimitive()).isNotEqualTo(second.getPrimitive());
         assertThat(second.getPrimitive()).isNotEqualTo(third.getPrimitive());
-    }
-
-    @Test
-    void canAddManyTo() {
-        JavaFixture fixture = new JavaFixture(configuration);
-
-        List<TestPrimitive> result = new ArrayList<>();
-        result.add(new TestPrimitive());
-
-        fixture.addManyTo(result, TestPrimitive.class);
-
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(4);
-        assertThat(result.get(1)).isInstanceOf(TestPrimitive.class);
     }
 
     @Test
@@ -175,6 +179,16 @@ class JavaFixtureTest {
     }
 
     @Test
+    void canPerformAction() {
+        JavaFixture fixture = new JavaFixture(configuration);
+
+        ContractPosition cp = fixture.create(ContractPosition.class);
+        Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
+
+        assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
+    }
+
+    @Test
     void canCreateComplexModel() {
         JavaFixture fixture = new JavaFixture(configuration);
 
@@ -206,16 +220,6 @@ class JavaFixtureTest {
         assertThat(result.getStackTrace().length).isGreaterThan(0);
         assertThat(result.getStackTrace()[0]).isInstanceOf(StackTraceElement.class);
         assertThat(result.getCause()).isNull(); //if cause == this, the getter returns null
-    }
-
-    @Test
-    void canPerformAction() {
-        JavaFixture fixture = new JavaFixture(configuration);
-
-        ContractPosition cp = fixture.create(ContractPosition.class);
-        Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
-
-        assertThat(contract.getContractPositions().contains(contract.getBaseContractPosition())).isTrue();
     }
 
     @Test
@@ -297,5 +301,31 @@ class JavaFixtureTest {
         assertThat(result.getGenericOptional().getU()).isInstanceOf(Optional.class);
         assertThat(result.getGenericOptional().getU()).isPresent();
         assertThat(result.getGenericOptional().getU().get()).isInstanceOf(Integer.class);
+    }
+
+    @Test
+    void canCreateNestedParameterizedInterfaces() {
+        final var result = fixture().create(TestObjectWithNestedGenericInterfaces.class);
+
+        assertThat(result).isInstanceOf(TestObjectWithNestedGenericInterfaces.class);
+
+        assertThat(result.getTestGeneric()).isInstanceOf(ITestGeneric.class);
+        assertThat(result.getTestGeneric().publicField).isInstanceOf(Integer.class);
+
+        assertThat(result.getTestGeneric().getT()).isInstanceOf(String.class);
+        assertThat(result.getTestGeneric().getU()).isInstanceOf(ITestGenericInside.class);
+
+        assertThat(result.getTestGeneric().getU().getOptionalBoolean()).isInstanceOf(Optional.class);
+        assertThat(result.getTestGeneric().getU().getOptionalBoolean()).isPresent();
+        assertThat(result.getTestGeneric().getU().getOptionalBoolean().get()).isInstanceOf(Boolean.class);
+
+        assertThat(result.getTestGeneric().getU().getOptionalT()).isInstanceOf(Optional.class);
+        assertThat(result.getTestGeneric().getU().getOptionalT()).isPresent();
+        assertThat(result.getTestGeneric().getU().getOptionalT().get()).isInstanceOf(Integer.class);
+
+        assertThat(result.getTestGeneric().getU().getTestGeneric()).isInstanceOf(TestObjectGeneric.class);
+        assertThat(result.getTestGeneric().getU().getTestGeneric().getT()).isInstanceOf(String.class);
+        assertThat(result.getTestGeneric().getU().getTestGeneric().getU()).isInstanceOf(Integer.class);
+
     }
 }

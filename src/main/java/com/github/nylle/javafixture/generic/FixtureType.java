@@ -1,9 +1,18 @@
 package com.github.nylle.javafixture.generic;
 
-import com.github.nylle.javafixture.ReflectionHelper;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.time.ZoneId;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -15,12 +24,12 @@ public class FixtureType<T> extends TypeCapture<T> {
 
     private final Type type;
 
-    protected FixtureType() {
-        this.type = capture();
-    }
-
     private FixtureType(final Type type) {
         this.type = type;
+    }
+
+    protected FixtureType() {
+        this.type = capture();
     }
 
     public static <T> FixtureType<T> fromClass(final Type typeReference) {
@@ -32,7 +41,7 @@ public class FixtureType<T> extends TypeCapture<T> {
     }
 
     public Class<T> asClass() {
-        return (Class<T>) ReflectionHelper.castToClass(type);
+        return (Class<T>) castToClass(type);
     }
 
     public ParameterizedType asParameterizedType() {
@@ -40,6 +49,14 @@ public class FixtureType<T> extends TypeCapture<T> {
             return (ParameterizedType) type;
         }
         throw new FixtureTypeException(format("%s is not a ParameterizedType", type));
+    }
+
+    public T asInstance() {
+        try {
+            return asClass().getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(asClass())).newInstance();
+        }
     }
 
     public Type[] getGenericTypeArguments() {
@@ -79,19 +96,31 @@ public class FixtureType<T> extends TypeCapture<T> {
     }
 
     public boolean isParameterized() {
-        return ReflectionHelper.isParameterizedType(type);
+        return isParameterized(type);
     }
 
     public boolean isCollection() {
-        return ReflectionHelper.isCollection(this.asClass());
+        return Collection.class.isAssignableFrom(this.asClass());
     }
 
     public boolean isMap() {
-        return ReflectionHelper.isMap(this.asClass());
+        return Map.class.isAssignableFrom(this.asClass());
     }
 
     public boolean isTimeType() {
-        return ReflectionHelper.isTimeType(this.asClass());
+        if (Temporal.class.isAssignableFrom(this.asClass())) {
+            return true;
+        }
+        if (TemporalAdjuster.class.isAssignableFrom(this.asClass())) {
+            return true;
+        }
+        if (TemporalAmount.class.isAssignableFrom(this.asClass())) {
+            return true;
+        }
+        if (this.asClass().equals(ZoneId.class)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isPrimitive() {
@@ -114,6 +143,22 @@ public class FixtureType<T> extends TypeCapture<T> {
 
     public boolean isInterface() {
         return this.asClass().isInterface();
+    }
+
+    public static Class<?> castToClass(Type type) {
+        if (type instanceof WildcardType) {
+            return Object.class;
+        }
+
+        if (isParameterized(type)) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        return (Class<?>) type;
+    }
+
+    public static boolean isParameterized(final Type type) {
+        return type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
     }
 
     @Override

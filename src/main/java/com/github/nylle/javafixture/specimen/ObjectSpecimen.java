@@ -10,7 +10,6 @@ import com.github.nylle.javafixture.generic.FixtureType;
 import java.util.Arrays;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
@@ -53,7 +52,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        var result = context.cached(type, newInstance(type.asClass()));
+        var result = context.cached(type, type.asInstance());
 
         Arrays.stream(type.asClass().getDeclaredFields())
                 .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))

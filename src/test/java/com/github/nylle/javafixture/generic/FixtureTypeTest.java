@@ -4,7 +4,9 @@ import com.github.nylle.javafixture.parameterized.TestCase;
 import com.github.nylle.javafixture.parameterized.TestWithCases;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.TestEnum;
+import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
@@ -59,6 +61,21 @@ class FixtureTypeTest {
     void isParametrized() {
         assertThat(new FixtureType<String>() {}.isParameterized()).isFalse();
         assertThat(new FixtureType<Optional<String>>() {}.isParameterized()).isTrue();
+    }
+
+    @Test
+    void isParameterizedStatic() throws NoSuchFieldException {
+
+        var type = TestObject.class.getDeclaredField("value").getGenericType();
+        var listType = TestObject.class.getDeclaredField("integers").getGenericType();
+        var classType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
+        var genericType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
+
+        assertThat(FixtureType.isParameterized(null)).isFalse();
+        assertThat(FixtureType.isParameterized(type)).isFalse();
+        assertThat(FixtureType.isParameterized(listType)).isTrue();
+        assertThat(FixtureType.isParameterized(classType)).isTrue();
+        assertThat(FixtureType.isParameterized(genericType)).isTrue();
     }
 
     @Test

@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
-import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
 
@@ -58,43 +56,6 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
                         i -> specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(i)))));
     }
 
-    @Deprecated(forRemoval = true)
-    public GenericSpecimen(final Class<T> classType, final Context context, final SpecimenFactory specimenFactory, final ISpecimen<?>... specimens) throws IllegalArgumentException {
-
-        if (classType == null) {
-            throw new IllegalArgumentException("type: null");
-        }
-
-        if (context == null) {
-            throw new IllegalArgumentException("context: null");
-        }
-
-        if (specimenFactory == null) {
-            throw new IllegalArgumentException("specimenFactory: null");
-        }
-
-        if (specimens == null) {
-            throw new IllegalArgumentException("specimens: null");
-        }
-
-        if (specimens.length == 0) {
-            throw new IllegalArgumentException("no specimens provided");
-        }
-
-        if (classType.getTypeParameters() == null || classType.getTypeParameters().length == 0) {
-            throw new IllegalArgumentException(format("type does not appear to be generic: %s", classType));
-        }
-
-        if (classType.getTypeParameters().length != specimens.length) {
-            throw new IllegalArgumentException(format("number of type parameters (%d) does not match number of provided specimens: %d", classType.getTypeParameters().length, specimens.length));
-        }
-
-        this.type = FixtureType.fromClass(classType);
-        this.context = context;
-        this.specimenFactory = specimenFactory;
-        this.specimens = IntStream.range(0, classType.getTypeParameters().length).boxed().collect(toMap(i -> classType.getTypeParameters()[i].getName(), i -> specimens[i]));
-    }
-
     @Override
     public T create() {
         return create(noContext());
@@ -114,7 +75,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type, ProxyFactory.create(type.asClass(), specimenFactory, specimens));
         }
 
-        var result = context.cached(type, newInstance(type.asClass()));
+        var result = context.cached(type, type.asInstance());
 
         stream(type.asClass().getDeclaredFields())
                 .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))

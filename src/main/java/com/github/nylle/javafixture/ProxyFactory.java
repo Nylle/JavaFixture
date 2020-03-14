@@ -10,8 +10,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.nylle.javafixture.ReflectionHelper.castToClass;
-import static com.github.nylle.javafixture.ReflectionHelper.isParameterizedType;
 import static java.util.Arrays.stream;
 
 public class ProxyFactory implements InvocationHandler {
@@ -45,10 +43,10 @@ public class ProxyFactory implements InvocationHandler {
     }
 
     private ISpecimen<?> resolveSpecimen(final Method method) {
-        if (isParameterizedType(method.getGenericReturnType())) {
+        if (FixtureType.isParameterized(method.getGenericReturnType())) {
             return specimenFactory.build(
                     FixtureType.fromRawType(
-                            castToClass(((ParameterizedType) (method.getGenericReturnType())).getRawType()),
+                            FixtureType.castToClass(((ParameterizedType) (method.getGenericReturnType())).getRawType()),
                             stream(((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments())
                                     .map(t -> resolveType(t))
                                     .toArray(size -> new Type[size])));

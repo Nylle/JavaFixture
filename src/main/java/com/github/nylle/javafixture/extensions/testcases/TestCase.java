@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.parameterized;
+package com.github.nylle.javafixture.extensions.testcases;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;

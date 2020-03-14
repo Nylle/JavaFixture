@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.parameterized;
+package com.github.nylle.javafixture.extensions.testcases;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;

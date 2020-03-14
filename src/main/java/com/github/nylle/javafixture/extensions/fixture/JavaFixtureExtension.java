@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.extension;
+package com.github.nylle.javafixture.extensions.fixture;
 
 import com.github.nylle.javafixture.JavaFixture;
 import com.github.nylle.javafixture.generic.FixtureType;

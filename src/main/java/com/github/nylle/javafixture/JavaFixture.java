@@ -22,34 +22,34 @@ public class JavaFixture {
     }
 
     public <T> T create(final Class<T> type) {
-        return new SpecimenBuilder<T>(FixtureType.fromClass(type), configuration).create();
+        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).create();
     }
 
-    public <T> T create(final FixtureType<T> type) {
+    public <T> T create(final SpecimenType<T> type) {
         return new SpecimenBuilder<T>(type, configuration).create();
     }
 
     public <T> Stream<T> createMany(final Class<T> type) {
-        return new SpecimenBuilder<T>(FixtureType.fromClass(type), configuration).createMany();
+        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createMany();
     }
 
-    public <T> Stream<T> createMany(final FixtureType<T> type) {
+    public <T> Stream<T> createMany(final SpecimenType<T> type) {
         return new SpecimenBuilder<T>(type, configuration).createMany();
     }
 
     public <T> ISpecimenBuilder<T> build(final Class<T> type) {
-        return new SpecimenBuilder<T>(FixtureType.fromClass(type), configuration);
+        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration);
     }
 
-    public <T> ISpecimenBuilder<T> build(final FixtureType<T> type) {
+    public <T> ISpecimenBuilder<T> build(final SpecimenType<T> type) {
         return new SpecimenBuilder<>(type, configuration);
     }
 
     public <T> void addManyTo(Collection<T> result, final Class<T> type) {
-        result.addAll(new SpecimenBuilder<T>(FixtureType.fromClass(type), configuration).createMany().collect(Collectors.toList()));
+        result.addAll(new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createMany().collect(Collectors.toList()));
     }
 
-    public <T> void addManyTo(Collection<T> result, final FixtureType<T> type) {
+    public <T> void addManyTo(Collection<T> result, final SpecimenType<T> type) {
         result.addAll(new SpecimenBuilder<T>(type, configuration).createMany().collect(Collectors.toList()));
     }
 }

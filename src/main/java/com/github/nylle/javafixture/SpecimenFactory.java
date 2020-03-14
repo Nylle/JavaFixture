@@ -18,7 +18,7 @@ public class SpecimenFactory {
         this.context = context;
     }
 
-    public <T> ISpecimen<T> build(final FixtureType<T> type) {
+    public <T> ISpecimen<T> build(final SpecimenType<T> type) {
 
         if (type.isPrimitive() || type.isBoxed() || type.asClass() == String.class) {
             return new PrimitiveSpecimen<>(type);

@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture.extensions.fixture;
 
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.JavaFixture;
+import com.github.nylle.javafixture.SpecimenType;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -15,7 +15,7 @@ public class JavaFixtureExtension implements ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return new JavaFixture().create(FixtureType.fromClass(parameterContext.getParameter().getParameterizedType()));
+        return new JavaFixture().create(SpecimenType.fromClass(parameterContext.getParameter().getParameterizedType()));
     }
 }
 

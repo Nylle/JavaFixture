@@ -2,10 +2,10 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -22,12 +22,12 @@ import java.util.stream.IntStream;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class MapSpecimen<T, K, V> implements ISpecimen<T> {
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Context context;
     private ISpecimen<K> keySpecimen;
     private ISpecimen<V> valueSpecimen;
 
-    public MapSpecimen(final FixtureType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public MapSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -49,8 +49,8 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         this.context = context;
 
         if(type.isParameterized()) {
-            this.keySpecimen = specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(0)));
-            this.valueSpecimen = specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(1)));
+            this.keySpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
+            this.valueSpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(1)));
         }
     }
 

@@ -2,9 +2,9 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.Array;
 import java.util.stream.IntStream;
@@ -12,11 +12,11 @@ import java.util.stream.IntStream;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class ArraySpecimen<T> implements ISpecimen<T> {
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Context context;
     private final SpecimenFactory specimenFactory;
 
-    public ArraySpecimen(final FixtureType<T> type, Context context, SpecimenFactory specimenFactory) {
+    public ArraySpecimen(final SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
         if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
@@ -53,7 +53,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
 
         T result = (T) context.cached(type, Array.newInstance(type.getComponentType(), length));
 
-        IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(FixtureType.fromClass(type.getComponentType())).create()));
+        IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create()));
 
         return result;
     }

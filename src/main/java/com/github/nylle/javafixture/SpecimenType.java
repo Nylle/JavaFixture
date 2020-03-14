@@ -20,24 +20,24 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
-public class FixtureType<T> extends TypeCapture<T> {
+public class SpecimenType<T> extends TypeCapture<T> {
 
     private final Type type;
 
-    private FixtureType(final Type type) {
+    private SpecimenType(final Type type) {
         this.type = type;
     }
 
-    protected FixtureType() {
+    protected SpecimenType() {
         this.type = capture();
     }
 
-    public static <T> FixtureType<T> fromClass(final Type typeReference) {
-        return new FixtureType<>(typeReference);
+    public static <T> SpecimenType<T> fromClass(final Type typeReference) {
+        return new SpecimenType<>(typeReference);
     }
 
-    public static <T> FixtureType<T> fromRawType(final Class<?> rawType, final Type[] actualTypeArguments) {
-        return new FixtureType<>(TypeCapture.create(rawType, actualTypeArguments));
+    public static <T> SpecimenType<T> fromRawType(final Class<?> rawType, final Type[] actualTypeArguments) {
+        return new SpecimenType<>(TypeCapture.create(rawType, actualTypeArguments));
     }
 
     public Class<T> asClass() {
@@ -48,7 +48,7 @@ public class FixtureType<T> extends TypeCapture<T> {
         if (isParameterized()) {
             return (ParameterizedType) type;
         }
-        throw new FixtureTypeException(format("%s is not a ParameterizedType", type));
+        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
     public T asInstance() {
@@ -63,7 +63,7 @@ public class FixtureType<T> extends TypeCapture<T> {
         if (isParameterized()) {
             return ((ParameterizedType) type).getActualTypeArguments();
         }
-        throw new FixtureTypeException(format("%s is not a ParameterizedType", type));
+        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
     public Type getGenericTypeArgument(final int index) {
@@ -78,21 +78,21 @@ public class FixtureType<T> extends TypeCapture<T> {
         if (isParameterized()) {
             return stream(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
         }
-        throw new FixtureTypeException(format("%s is not a ParameterizedType", type));
+        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
     public Class<?> getComponentType() {
         if(isArray()) {
             return asClass().getComponentType();
         }
-        throw new FixtureTypeException(format("%s is not an array", type));
+        throw new SpecimenTypeException(format("%s is not an array", type));
     }
 
     public T[] getEnumConstants() {
         if(isEnum()) {
             return asClass().getEnumConstants();
         }
-        throw new FixtureTypeException(format("%s is not an enum", type));
+        throw new SpecimenTypeException(format("%s is not an enum", type));
     }
 
     public boolean isParameterized() {
@@ -171,7 +171,7 @@ public class FixtureType<T> extends TypeCapture<T> {
             return false;
         }
 
-        final FixtureType that = (FixtureType) o;
+        final SpecimenType that = (SpecimenType) o;
 
         if(isParameterized() != that.isParameterized()) {
             return false;

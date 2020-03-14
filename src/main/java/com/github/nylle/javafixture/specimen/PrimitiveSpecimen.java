@@ -1,9 +1,9 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.nio.charset.Charset;
 import java.util.Random;
@@ -13,10 +13,10 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Random random;
 
-    public PrimitiveSpecimen(final FixtureType<T> type) {
+    public PrimitiveSpecimen(final SpecimenType<T> type) {
 
         if(type == null) {
             throw new IllegalArgumentException("type: null");

@@ -14,7 +14,7 @@ class TypeCaptureTest {
     @Test
     void create() {
 
-        var expected = new FixtureType<Optional<String>>(){};
+        var expected = new SpecimenType<Optional<String>>(){};
 
         ParameterizedType actual = TypeCapture.create(expected.asClass(), expected.getGenericTypeArguments());
 
@@ -25,7 +25,7 @@ class TypeCaptureTest {
     @Test
     void rawTypeMustNotBeNull() {
 
-        var expected = new FixtureType<Optional<String>>(){};
+        var expected = new SpecimenType<Optional<String>>(){};
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> TypeCapture.create(null, expected.getGenericTypeArguments()))
@@ -36,7 +36,7 @@ class TypeCaptureTest {
     @Test
     void actualTypeArgumentsMustNotBeNull() {
 
-        var expected = new FixtureType<Optional<String>>(){};
+        var expected = new SpecimenType<Optional<String>>(){};
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> TypeCapture.create(expected.asClass(), null))
@@ -47,7 +47,7 @@ class TypeCaptureTest {
     @Test
     void actualTypeArgumentsMustMatchTypeParameters() {
 
-        var expected = new FixtureType<Optional<String>>(){};
+        var expected = new SpecimenType<Optional<String>>(){};
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> TypeCapture.create(expected.asClass(), new Type[0]))

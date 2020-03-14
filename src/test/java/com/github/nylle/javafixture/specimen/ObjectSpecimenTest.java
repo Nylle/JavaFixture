@@ -2,8 +2,8 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class ObjectSpecimenTest {
 
     @Test
     void onlyObjectTypes() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(FixtureType.fromClass(Map.class), context, specimenFactory))
+        assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Map.class.getName());
     }
@@ -42,21 +42,21 @@ class ObjectSpecimenTest {
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(FixtureType.fromClass(Object.class), null, specimenFactory))
+        assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Object.class), null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(FixtureType.fromClass(Object.class), context, null))
+        assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Object.class), context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }
 
     @Test
     void create() {
-        var sut = new ObjectSpecimen<TestObject>(FixtureType.fromClass(TestObject.class), context, specimenFactory);
+        var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
         var actual = sut.create();
 
@@ -82,8 +82,8 @@ class ObjectSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new ObjectSpecimen<TestObject>(FixtureType.fromClass(TestObject.class), context, specimenFactory).create();
-        var cached = new ObjectSpecimen<TestObject>(FixtureType.fromClass(TestObject.class), context, specimenFactory).create();
+        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
+        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(TestObject.class);
         assertThat(original).isSameAs(cached);
@@ -94,7 +94,7 @@ class ObjectSpecimenTest {
     @Test
     void ignoresStaticFields() {
 
-        var actual = new ObjectSpecimen<TestObject>(FixtureType.fromClass(TestObject.class), context, specimenFactory).create();
+        var actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
 
         assertThat(actual.STATIC_FIELD).isEqualTo("unchanged");
     }

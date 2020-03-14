@@ -2,10 +2,10 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.util.Arrays;
 
@@ -13,11 +13,11 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Context context;
     private final SpecimenFactory specimenFactory;
 
-    public ObjectSpecimen(final FixtureType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public ObjectSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -62,7 +62,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                                 field,
                                 result,
                                 customizationContext.getCustomFields()
-                                        .getOrDefault(field.getName(), specimenFactory.build(FixtureType.fromClass(field.getGenericType())).create())));
+                                        .getOrDefault(field.getName(), specimenFactory.build(SpecimenType.fromClass(field.getGenericType())).create())));
         return result;
     }
 

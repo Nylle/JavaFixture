@@ -2,10 +2,10 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -31,11 +31,11 @@ import java.util.stream.IntStream;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Context context;
     private ISpecimen<G> specimen;
 
-    public CollectionSpecimen(final FixtureType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public CollectionSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -57,7 +57,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         this.context = context;
 
         if(type.isParameterized()) {
-            this.specimen = specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(0)));
+            this.specimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
         }
     }
 

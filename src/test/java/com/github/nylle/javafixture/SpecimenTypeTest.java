@@ -50,17 +50,17 @@ import java.util.concurrent.TransferQueue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class FixtureTypeTest {
+class SpecimenTypeTest {
 
     @Test
     void asClass() {
-        assertThat(new FixtureType<String>() {}.asClass()).isEqualTo(String.class);
+        assertThat(new SpecimenType<String>() {}.asClass()).isEqualTo(String.class);
     }
 
     @Test
     void isParametrized() {
-        assertThat(new FixtureType<String>() {}.isParameterized()).isFalse();
-        assertThat(new FixtureType<Optional<String>>() {}.isParameterized()).isTrue();
+        assertThat(new SpecimenType<String>() {}.isParameterized()).isFalse();
+        assertThat(new SpecimenType<Optional<String>>() {}.isParameterized()).isTrue();
     }
 
     @Test
@@ -71,33 +71,33 @@ class FixtureTypeTest {
         var classType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
         var genericType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
 
-        assertThat(FixtureType.isParameterized(null)).isFalse();
-        assertThat(FixtureType.isParameterized(type)).isFalse();
-        assertThat(FixtureType.isParameterized(listType)).isTrue();
-        assertThat(FixtureType.isParameterized(classType)).isTrue();
-        assertThat(FixtureType.isParameterized(genericType)).isTrue();
+        assertThat(SpecimenType.isParameterized(null)).isFalse();
+        assertThat(SpecimenType.isParameterized(type)).isFalse();
+        assertThat(SpecimenType.isParameterized(listType)).isTrue();
+        assertThat(SpecimenType.isParameterized(classType)).isTrue();
+        assertThat(SpecimenType.isParameterized(genericType)).isTrue();
     }
 
     @Test
     void isCollection() {
-        assertThat(new FixtureType<Collection<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<List<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<NavigableSet<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<SortedSet<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<Set<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<Deque<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<BlockingDeque<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<Queue<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<BlockingQueue<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<TransferQueue<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<ArrayList<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<HashSet<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<TreeSet<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<ArrayDeque<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<LinkedBlockingDeque<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<LinkedList<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<LinkedBlockingQueue<String>>() {}.isCollection()).isTrue();
-        assertThat(new FixtureType<LinkedTransferQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Collection<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<List<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<NavigableSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<SortedSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Set<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Deque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<BlockingDeque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Queue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<BlockingQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<TransferQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<ArrayList<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<HashSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<TreeSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<ArrayDeque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedBlockingDeque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedList<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedBlockingQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedTransferQueue<String>>() {}.isCollection()).isTrue();
     }
 
     @TestWithCases
@@ -120,20 +120,20 @@ class FixtureTypeTest {
     @TestCase(class1 = LinkedBlockingQueue.class)
     @TestCase(class1 = LinkedTransferQueue.class)
     void isCollectionFromClass(Class<Collection> collectionType) {
-        assertThat(FixtureType.fromClass(collectionType).isCollection()).isTrue();
+        assertThat(SpecimenType.fromClass(collectionType).isCollection()).isTrue();
     }
 
     @Test
     void isMap() {
-        assertThat(new FixtureType<Map>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<ConcurrentNavigableMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<ConcurrentMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<NavigableMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<SortedMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<TreeMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<ConcurrentSkipListMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<ConcurrentHashMap>(){}.isMap()).isTrue();
-        assertThat(new FixtureType<HashMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<Map>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentNavigableMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<NavigableMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<SortedMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<TreeMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentSkipListMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentHashMap>(){}.isMap()).isTrue();
+        assertThat(new SpecimenType<HashMap>(){}.isMap()).isTrue();
     }
 
     @TestWithCases
@@ -147,20 +147,20 @@ class FixtureTypeTest {
     @TestCase(class1 = ConcurrentHashMap.class)
     @TestCase(class1 = HashMap.class)
     void isMapFromClass(Class<Map> mapType) {
-        assertThat(FixtureType.fromClass(mapType).isMap()).isTrue();
+        assertThat(SpecimenType.fromClass(mapType).isMap()).isTrue();
     }
 
     @Test
     void isBoxed() {
-        assertThat(new FixtureType<String>() {}.isBoxed()).isFalse(); // false!
-        assertThat(new FixtureType<Byte>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Short>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Integer>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Long>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Float>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Double>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Character>() {}.isBoxed()).isTrue();
-        assertThat(new FixtureType<Boolean>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<String>() {}.isBoxed()).isFalse(); // false!
+        assertThat(new SpecimenType<Byte>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Short>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Integer>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Long>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Float>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Double>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Character>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Boolean>() {}.isBoxed()).isTrue();
     }
 
     @TestWithCases
@@ -174,7 +174,7 @@ class FixtureTypeTest {
     @TestCase(class1 = Character.class, bool2 = true)
     @TestCase(class1 = Boolean.class, bool2 = true)
     void isBoxedFromClass(Class<?> value, boolean expected) {
-        assertThat(FixtureType.fromClass(value).isBoxed()).isEqualTo(expected);
+        assertThat(SpecimenType.fromClass(value).isBoxed()).isEqualTo(expected);
     }
 
     @TestWithCases
@@ -188,40 +188,40 @@ class FixtureTypeTest {
     @TestCase(class1 = char.class, bool2 = true)
     @TestCase(class1 = boolean.class, bool2 = true)
     void isPrimitive(Class<?> value, boolean expected) {
-        assertThat(FixtureType.fromClass(value).isPrimitive()).isEqualTo(expected);
+        assertThat(SpecimenType.fromClass(value).isPrimitive()).isEqualTo(expected);
     }
 
     @Test
     void isEnum() {
-        assertThat(FixtureType.fromClass(String.class).isEnum()).isFalse();
-        assertThat(FixtureType.fromClass(TestEnum.class).isEnum()).isTrue();
-        assertThat(new FixtureType<TestEnum>() {}.isEnum()).isTrue();
+        assertThat(SpecimenType.fromClass(String.class).isEnum()).isFalse();
+        assertThat(SpecimenType.fromClass(TestEnum.class).isEnum()).isTrue();
+        assertThat(new SpecimenType<TestEnum>() {}.isEnum()).isTrue();
     }
 
     @Test
     void isArray() {
-        assertThat(FixtureType.fromClass(List.class).isArray()).isFalse();
-        assertThat(FixtureType.fromClass(int[].class).isArray()).isTrue();
-        assertThat(new FixtureType<Integer[]>() {}.isArray()).isTrue();
+        assertThat(SpecimenType.fromClass(List.class).isArray()).isFalse();
+        assertThat(SpecimenType.fromClass(int[].class).isArray()).isTrue();
+        assertThat(new SpecimenType<Integer[]>() {}.isArray()).isTrue();
     }
 
     @Test
     void isInterface() {
-        assertThat(FixtureType.fromClass(String.class).isInterface()).isFalse();
-        assertThat(FixtureType.fromClass(List.class).isInterface()).isTrue();
-        assertThat(new FixtureType<ITestGeneric<String, List<Optional>>>() {}.isInterface()).isTrue();
+        assertThat(SpecimenType.fromClass(String.class).isInterface()).isFalse();
+        assertThat(SpecimenType.fromClass(List.class).isInterface()).isTrue();
+        assertThat(new SpecimenType<ITestGeneric<String, List<Optional>>>() {}.isInterface()).isTrue();
     }
 
     @Test
     void isTimeType() {
-        assertThat(new FixtureType<String>(){}.isTimeType()).isFalse(); // false
-        assertThat(new FixtureType<Duration>(){}.isTimeType()).isTrue();
-        assertThat(new FixtureType<JapaneseEra>(){}.isTimeType()).isTrue();
-        assertThat(new FixtureType<MonthDay>(){}.isTimeType()).isTrue();
-        assertThat(new FixtureType<Period>(){}.isTimeType()).isTrue();
-        assertThat(new FixtureType<ZoneId>(){}.isTimeType()).isTrue();
-        assertThat(new FixtureType<ZoneOffset>(){}.isTimeType()).isTrue();
-        assertThat(new FixtureType<ZonedDateTime>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<String>(){}.isTimeType()).isFalse(); // false
+        assertThat(new SpecimenType<Duration>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<JapaneseEra>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<MonthDay>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<Period>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<ZoneId>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<ZoneOffset>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<ZonedDateTime>(){}.isTimeType()).isTrue();
     }
 
     @TestWithCases
@@ -234,27 +234,27 @@ class FixtureTypeTest {
     @TestCase(class1 = ZoneOffset.class, bool2 = true)
     @TestCase(class1 = ZonedDateTime.class, bool2 = true)
     void isTimeTypeFromClass(Class<?> value, boolean expected) {
-        assertThat(FixtureType.fromClass(value).isTimeType()).isEqualTo(expected);
+        assertThat(SpecimenType.fromClass(value).isTimeType()).isEqualTo(expected);
     }
 
     @Test
     void getGenericTypeArgument() {
-        var sut = new FixtureType<Map<String, Optional<Integer>>>(){};
+        var sut = new SpecimenType<Map<String, Optional<Integer>>>(){};
 
         assertThat(sut.getGenericTypeArgument(0)).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArgument(1)).isInstanceOf(ParameterizedType.class);
         assertThat(((ParameterizedType)(sut.getGenericTypeArgument(1))).getRawType()).isEqualTo(Optional.class);
         assertThat(((ParameterizedType)(sut.getGenericTypeArgument(1))).getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
-        assertThatExceptionOfType(FixtureTypeException.class)
-                .isThrownBy(() -> FixtureType.fromClass(String.class).getGenericTypeArgument(0))
+        assertThatExceptionOfType(SpecimenTypeException.class)
+                .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArgument(0))
                 .withMessageContaining(" is not a ParameterizedType")
                 .withNoCause();
     }
 
     @Test
     void getGenericTypeArguments() {
-        var sut = new FixtureType<Map<String, Optional<Integer>>>(){};
+        var sut = new SpecimenType<Map<String, Optional<Integer>>>(){};
 
         assertThat(sut.getGenericTypeArguments()).hasSize(2);
         assertThat(sut.getGenericTypeArguments()[0]).isEqualTo(String.class);
@@ -262,46 +262,46 @@ class FixtureTypeTest {
         assertThat(((ParameterizedType)(sut.getGenericTypeArguments()[1])).getRawType()).isEqualTo(Optional.class);
         assertThat(((ParameterizedType)(sut.getGenericTypeArguments()[1])).getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
-        assertThatExceptionOfType(FixtureTypeException.class)
-                .isThrownBy(() -> FixtureType.fromClass(String.class).getGenericTypeArguments())
+        assertThatExceptionOfType(SpecimenTypeException.class)
+                .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArguments())
                 .withMessageContaining(" is not a ParameterizedType")
                 .withNoCause();
     }
 
     @Test
     void getTypeParameterName() {
-        var sut = new FixtureType<TestObjectGeneric<String, Optional<Integer>>>(){};
+        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>(){};
 
         assertThat(sut.getTypeParameterName(0)).isEqualTo("T");
         assertThat(sut.getTypeParameterName(1)).isEqualTo("U");
 
-        assertThatExceptionOfType(FixtureTypeException.class)
-                .isThrownBy(() -> FixtureType.fromClass(String.class).getGenericTypeArguments())
+        assertThatExceptionOfType(SpecimenTypeException.class)
+                .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArguments())
                 .withMessageContaining(" is not a ParameterizedType")
                 .withNoCause();
     }
 
     @Test
     void getTypeParameterNames() {
-        var sut = new FixtureType<TestObjectGeneric<String, Optional<Integer>>>(){};
+        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>(){};
 
         assertThat(sut.getTypeParameterNames()).hasSize(2);
         assertThat(sut.getTypeParameterNames()[0]).isEqualTo("T");
         assertThat(sut.getTypeParameterNames()[1]).isEqualTo("U");
 
-        assertThatExceptionOfType(FixtureTypeException.class)
-                .isThrownBy(() -> FixtureType.fromClass(String.class).getGenericTypeArguments())
+        assertThatExceptionOfType(SpecimenTypeException.class)
+                .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArguments())
                 .withMessageContaining(" is not a ParameterizedType")
                 .withNoCause();
     }
 
     @Test
     void getComponentType() {
-        assertThat(new FixtureType<int[]>(){}.getComponentType()).isEqualTo(int.class);
-        assertThat(new FixtureType<Integer[]>(){}.getComponentType()).isEqualTo(Integer.class);
+        assertThat(new SpecimenType<int[]>(){}.getComponentType()).isEqualTo(int.class);
+        assertThat(new SpecimenType<Integer[]>(){}.getComponentType()).isEqualTo(Integer.class);
 
-        assertThatExceptionOfType(FixtureTypeException.class)
-                .isThrownBy(() -> FixtureType.fromClass(String.class).getComponentType())
+        assertThatExceptionOfType(SpecimenTypeException.class)
+                .isThrownBy(() -> SpecimenType.fromClass(String.class).getComponentType())
                 .withMessageContaining(" is not an array")
                 .withNoCause();
     }
@@ -310,25 +310,25 @@ class FixtureTypeTest {
     @TestCase(class1 = int[].class, class2 = int.class)
     @TestCase(class1 = Integer[].class, class2 = Integer.class)
     void getComponentTypeFromClass(Class<?> value, Class<?> expected) {
-        assertThat(FixtureType.fromClass(value).getComponentType()).isEqualTo(expected);
+        assertThat(SpecimenType.fromClass(value).getComponentType()).isEqualTo(expected);
     }
 
     @Test
     void getEnumConstants() {
-        assertThat(FixtureType.fromClass(TestEnum.class).getEnumConstants().length).isEqualTo(3);
-        assertThat(new FixtureType<TestEnum>(){}.getEnumConstants().length).isEqualTo(3);
+        assertThat(SpecimenType.fromClass(TestEnum.class).getEnumConstants().length).isEqualTo(3);
+        assertThat(new SpecimenType<TestEnum>(){}.getEnumConstants().length).isEqualTo(3);
 
-        assertThatExceptionOfType(FixtureTypeException.class)
-                .isThrownBy(() -> FixtureType.fromClass(String.class).getEnumConstants())
+        assertThatExceptionOfType(SpecimenTypeException.class)
+                .isThrownBy(() -> SpecimenType.fromClass(String.class).getEnumConstants())
                 .withMessageContaining(" is not an enum")
                 .withNoCause();
     }
 
     @Test
     void asParameterizedType() {
-        assertThat(new FixtureType<Optional<String>>() {}.asParameterizedType().getRawType()).isEqualTo(Optional.class);
-        assertThat(new FixtureType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments().length).isEqualTo(1);
-        assertThat(new FixtureType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments()[0].getTypeName()).isEqualTo(String.class.getName());
+        assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getRawType()).isEqualTo(Optional.class);
+        assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments().length).isEqualTo(1);
+        assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments()[0].getTypeName()).isEqualTo(String.class.getName());
     }
 
     @TestWithCases
@@ -337,20 +337,20 @@ class FixtureTypeTest {
     @TestCase(class1 = Map.class)
     @TestCase(class1 = Optional.class)
     void fromClass(Class<?> type) {
-        FixtureType<?> sut = FixtureType.fromClass(type);
+        SpecimenType<?> sut = SpecimenType.fromClass(type);
 
         assertThat(sut.isParameterized()).isFalse();
         assertThat(sut.asClass()).isEqualTo(type);
-        assertThatExceptionOfType(FixtureTypeException.class).isThrownBy(() -> sut.asParameterizedType())
+        assertThatExceptionOfType(SpecimenTypeException.class).isThrownBy(() -> sut.asParameterizedType())
                 .withMessageContaining(" is not a ParameterizedType")
                 .withNoCause();
     }
 
     @Test
     void fromType() {
-        Type type = new FixtureType<Optional<String>>() {}.asParameterizedType();
+        Type type = new SpecimenType<Optional<String>>() {}.asParameterizedType();
 
-        var sut = FixtureType.fromClass(type);
+        var sut = SpecimenType.fromClass(type);
 
         assertThat(sut.isParameterized()).isTrue();
         assertThat(sut.asClass()).isEqualTo(Optional.class);
@@ -359,18 +359,18 @@ class FixtureTypeTest {
 
     @Test
     void createForObjectClass() {
-        var sut = new FixtureType<String>() {};
+        var sut = new SpecimenType<String>() {};
 
         assertThat(sut.asClass()).isEqualTo(String.class);
         assertThat(sut.isParameterized()).isFalse();
-        assertThatExceptionOfType(FixtureTypeException.class).isThrownBy(() -> sut.asParameterizedType())
+        assertThatExceptionOfType(SpecimenTypeException.class).isThrownBy(() -> sut.asParameterizedType())
                 .withMessageContaining(" is not a ParameterizedType")
                 .withNoCause();
     }
 
     @Test
     void createForGenericClass() {
-        var sut = new FixtureType<Optional<String>>() {};
+        var sut = new SpecimenType<Optional<String>>() {};
 
         assertThat(sut.asClass()).isEqualTo(Optional.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -381,7 +381,7 @@ class FixtureTypeTest {
 
     @Test
     void createForListInterface() {
-        var sut = new FixtureType<List<String>>() {};
+        var sut = new SpecimenType<List<String>>() {};
 
         assertThat(sut.asClass()).isEqualTo(List.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -392,7 +392,7 @@ class FixtureTypeTest {
 
     @Test
     void createForMapInterface() {
-        var sut = new FixtureType<Map<String, Integer>>() {};
+        var sut = new SpecimenType<Map<String, Integer>>() {};
 
         assertThat(sut.asClass()).isEqualTo(Map.class);
         assertThat(sut.isParameterized()).isTrue();

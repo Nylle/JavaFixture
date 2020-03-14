@@ -13,10 +13,10 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
 
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Configuration configuration;
 
-    public SpecimenBuilder(final FixtureType<T> type, final Configuration configuration) {
+    public SpecimenBuilder(final SpecimenType<T> type, final Configuration configuration) {
         this.type = type;
         this.configuration = configuration;
     }

@@ -339,13 +339,13 @@ class JavaFixtureTest {
     }
 
     @Nested
-    @DisplayName("when using FixtureType<T>")
-    class WhenFixtureType {
+    @DisplayName("when using SpecimenType<T>")
+    class WhenSpecimenType {
         @Test
         void canCreateGenericObject() {
             JavaFixture fixture = new JavaFixture(configuration);
 
-            var result = fixture.create(new FixtureType<TestObjectGeneric<String, Optional<Integer>>>() {});
+            var result = fixture.create(new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {});
 
             assertThat(result).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getT()).isInstanceOf(String.class);
@@ -358,7 +358,7 @@ class JavaFixtureTest {
         void canCreateGenericInterface() {
             JavaFixture fixture = new JavaFixture(configuration);
 
-            var result = fixture.create(new FixtureType<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
+            var result = fixture.create(new SpecimenType<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
 
             assertThat(result).isInstanceOf(ITestGeneric.class);
             assertThat(result.publicField).isInstanceOf(Integer.class);
@@ -379,7 +379,7 @@ class JavaFixtureTest {
         void canCreateMapsAndLists() {
             JavaFixture fixture = new JavaFixture(configuration);
 
-            var result = fixture.create(new FixtureType<Map<String, Map<String, List<Optional<String>>>>>() {});
+            var result = fixture.create(new SpecimenType<Map<String, Map<String, List<Optional<String>>>>>() {});
 
             assertThat(result).isInstanceOf(Map.class);
             assertThat(result.values()).isNotEmpty();
@@ -398,7 +398,7 @@ class JavaFixtureTest {
         void canCreateMany() {
             JavaFixture fixture = new JavaFixture(configuration);
 
-            var result = fixture.createMany(new FixtureType<Optional<Integer>>() {}).collect(toList());
+            var result = fixture.createMany(new SpecimenType<Optional<Integer>>() {}).collect(toList());
 
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
@@ -414,7 +414,7 @@ class JavaFixtureTest {
             List<Optional<String>> result = new ArrayList<>();
             result.add(Optional.of("existing"));
 
-            fixture.addManyTo(result, new FixtureType<>() {});
+            fixture.addManyTo(result, new SpecimenType<>() {});
 
             assertThat(result).isNotNull();
             assertThat(result.size()).isEqualTo(4);
@@ -431,7 +431,7 @@ class JavaFixtureTest {
 
             JavaFixture fixture = new JavaFixture(configuration);
 
-            var result = fixture.build(new FixtureType<TestObjectGeneric<List<String>, String>>() {})
+            var result = fixture.build(new SpecimenType<TestObjectGeneric<List<String>, String>>() {})
                     .without("primitiveInt")
                     .without("string")
                     .with("u", "foo")

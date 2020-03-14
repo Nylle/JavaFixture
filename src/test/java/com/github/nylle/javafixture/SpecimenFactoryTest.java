@@ -48,17 +48,17 @@ class SpecimenFactoryTest {
     @TestCase(class1 = Instant.class, class2 = TimeSpecimen.class)
     @TestCase(class1 = Object.class, class2 = ObjectSpecimen.class)
     void build(Class<?> value, Class<?> expected) {
-        assertThat(new SpecimenFactory(new Context(new Configuration())).build(FixtureType.fromClass(value))).isExactlyInstanceOf(expected);
+        assertThat(new SpecimenFactory(new Context(new Configuration())).build(SpecimenType.fromClass(value))).isExactlyInstanceOf(expected);
     }
 
     @Test
     void buildGeneric() throws NoSuchFieldException {
         var sut = new SpecimenFactory(new Context(new Configuration()));
 
-        assertThat(sut.build(new FixtureType<List<String>>(){})).isExactlyInstanceOf(CollectionSpecimen.class);
-        assertThat(sut.build(new FixtureType<Map<String, Integer>>(){})).isExactlyInstanceOf(MapSpecimen.class);
-        assertThat(sut.build(new FixtureType<Class<String>>(){})).isExactlyInstanceOf(GenericSpecimen.class);
-        assertThat(sut.build(new FixtureType<TestObjectGeneric<String, List<Integer>>>(){})).isExactlyInstanceOf(GenericSpecimen.class);
+        assertThat(sut.build(new SpecimenType<List<String>>(){})).isExactlyInstanceOf(CollectionSpecimen.class);
+        assertThat(sut.build(new SpecimenType<Map<String, Integer>>(){})).isExactlyInstanceOf(MapSpecimen.class);
+        assertThat(sut.build(new SpecimenType<Class<String>>(){})).isExactlyInstanceOf(GenericSpecimen.class);
+        assertThat(sut.build(new SpecimenType<TestObjectGeneric<String, List<Integer>>>(){})).isExactlyInstanceOf(GenericSpecimen.class);
 
     }
 

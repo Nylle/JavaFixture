@@ -2,9 +2,9 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,11 +22,11 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class TimeSpecimen<T> implements ISpecimen<T> {
 
-    private final FixtureType<T> type;
+    private final SpecimenType<T> type;
     private final Random random;
     private final Context context;
 
-    public TimeSpecimen(final FixtureType<T> type, Context context) {
+    public TimeSpecimen(final SpecimenType<T> type, Context context) {
         this.context = context;
         if (type == null) {
             throw new IllegalArgumentException("type: null");

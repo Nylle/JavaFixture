@@ -20,16 +20,16 @@ public class Context {
         return configuration;
     }
 
-    public boolean isCached(FixtureType type) {
+    public boolean isCached(SpecimenType type) {
         return cache.containsKey(type.hashCode());
     }
 
-    public <T> T cached(FixtureType type, T instance) {
+    public <T> T cached(SpecimenType type, T instance) {
         cache.putIfAbsent(type.hashCode(), instance);
         return (T) cache.get(type.hashCode());
     }
 
-    public <T> T cached(FixtureType type) {
+    public <T> T cached(SpecimenType type) {
         return (T) cache.get(type.hashCode());
     }
 }

@@ -21,7 +21,7 @@ public class ProxyFactory implements InvocationHandler {
         this.specimens = specimens;
     }
 
-    public static <T> Object create(final FixtureType<T> type, final SpecimenFactory specimenFactory) {
+    public static <T> Object create(final SpecimenType<T> type, final SpecimenFactory specimenFactory) {
         return Proxy.newProxyInstance(type.asClass().getClassLoader(), new Class[]{type.asClass()}, new ProxyFactory(specimenFactory, new HashMap<>()));
     }
 
@@ -41,16 +41,16 @@ public class ProxyFactory implements InvocationHandler {
     }
 
     private ISpecimen<?> resolveSpecimen(final Method method) {
-        if (FixtureType.isParameterized(method.getGenericReturnType())) {
+        if (SpecimenType.isParameterized(method.getGenericReturnType())) {
             return specimenFactory.build(
-                    FixtureType.fromRawType(
-                            FixtureType.castToClass(((ParameterizedType) (method.getGenericReturnType())).getRawType()),
+                    SpecimenType.fromRawType(
+                            SpecimenType.castToClass(((ParameterizedType) (method.getGenericReturnType())).getRawType()),
                             stream(((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments())
                                     .map(t -> resolveType(t))
                                     .toArray(size -> new Type[size])));
         }
 
-        return specimenFactory.build(FixtureType.fromClass(method.getReturnType()));
+        return specimenFactory.build(SpecimenType.fromClass(method.getReturnType()));
     }
 
     private Type resolveType(Type type) {

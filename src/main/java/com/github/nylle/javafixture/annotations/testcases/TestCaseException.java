@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.extensions.testcases;
+package com.github.nylle.javafixture.annotations.testcases;
 
 public class TestCaseException extends RuntimeException {
 

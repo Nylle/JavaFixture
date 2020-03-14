@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.extensions.testcases;
+package com.github.nylle.javafixture.annotations.fixture;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@ArgumentsSource(TestCasesProvider.class)
+@ArgumentsSource(JavaFixtureProvider.class)
 @ParameterizedTest
-public @interface TestWithCases {
+public @interface TestWithFixture {
 }

@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.extensions.fixture;
+package com.github.nylle.javafixture.annotations.fixture;
 
 import com.github.nylle.javafixture.JavaFixture;
 import com.github.nylle.javafixture.SpecimenType;

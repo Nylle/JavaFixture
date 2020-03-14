@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.extensions.testcases.TestCase;
-import com.github.nylle.javafixture.extensions.testcases.TestWithCases;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;

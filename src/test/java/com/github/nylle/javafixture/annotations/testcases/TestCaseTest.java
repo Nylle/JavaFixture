@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.extensions.testcases;
+package com.github.nylle.javafixture.annotations.testcases;
 
 import java.util.ArrayList;
 import java.util.HashSet;

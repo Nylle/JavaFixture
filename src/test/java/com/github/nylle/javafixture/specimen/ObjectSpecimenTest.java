@@ -2,8 +2,8 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.generic.FixtureType;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

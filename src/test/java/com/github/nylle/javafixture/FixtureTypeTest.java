@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.generic;
+package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.extensions.testcases.TestCase;
 import com.github.nylle.javafixture.extensions.testcases.TestWithCases;

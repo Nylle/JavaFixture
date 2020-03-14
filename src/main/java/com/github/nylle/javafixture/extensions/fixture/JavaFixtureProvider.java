@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture.extensions.fixture;
 
+import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.JavaFixture;
-import com.github.nylle.javafixture.generic.FixtureType;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;

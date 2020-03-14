@@ -2,11 +2,11 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.FixtureType;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.ProxyFactory;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.generic.FixtureType;
 
 import java.lang.reflect.Field;
 import java.util.Map;

@@ -1,7 +1,5 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.generic.FixtureType;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

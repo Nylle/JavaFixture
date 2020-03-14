@@ -1,6 +1,5 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.generic.FixtureType;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;

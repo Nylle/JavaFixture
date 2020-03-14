@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.generic;
+package com.github.nylle.javafixture;
 
 public class FixtureTypeException extends RuntimeException {
 

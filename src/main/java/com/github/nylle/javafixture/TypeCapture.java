@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.generic;
+package com.github.nylle.javafixture;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

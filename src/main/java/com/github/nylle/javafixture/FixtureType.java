@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.generic;
+package com.github.nylle.javafixture;
 
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;

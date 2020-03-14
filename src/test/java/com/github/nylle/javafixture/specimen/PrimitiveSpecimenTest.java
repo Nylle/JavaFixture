@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.generic.FixtureType;
+import com.github.nylle.javafixture.FixtureType;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

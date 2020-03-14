@@ -1,7 +1,5 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.generic.FixtureType;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

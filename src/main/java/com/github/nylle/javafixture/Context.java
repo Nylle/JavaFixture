@@ -1,7 +1,5 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.generic.FixtureType;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

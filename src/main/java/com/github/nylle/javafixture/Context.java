@@ -1,11 +1,13 @@
 package com.github.nylle.javafixture;
 
-import java.util.HashMap;
+import com.github.nylle.javafixture.generic.FixtureType;
+
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Context {
     private final Configuration configuration;
-    private final Map<SpecimenType, Object> cache = new HashMap<>();
+    private final Map<Integer, Object> cache = new ConcurrentHashMap<>();
 
     public Context(Configuration configuration) {
 
@@ -20,17 +22,17 @@ public class Context {
         return configuration;
     }
 
-    public boolean isCached(SpecimenType specimenType) {
-        return cache.containsKey(specimenType);
+    public boolean isCached(FixtureType type) {
+        return cache.containsKey(type.hashCode());
     }
 
-    public <T> T cached(SpecimenType specimenType, T instance) {
-        cache.putIfAbsent(specimenType, instance);
-        return (T) cache.get(specimenType);
+    public <T> T cached(FixtureType type, T instance) {
+        cache.putIfAbsent(type.hashCode(), instance);
+        return (T) cache.get(type.hashCode());
     }
 
-    public <T> T cached(SpecimenType specimenType) {
-        return (T) cache.get(specimenType);
+    public <T> T cached(FixtureType type) {
+        return (T) cache.get(type.hashCode());
     }
 }
 

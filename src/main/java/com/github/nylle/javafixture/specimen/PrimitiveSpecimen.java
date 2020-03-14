@@ -1,9 +1,9 @@
 package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.generic.FixtureType;
 
 import java.nio.charset.Charset;
 import java.util.Random;
@@ -13,17 +13,17 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
-    private final Class<T> type;
+    private final FixtureType<T> type;
     private final Random random;
 
-    public PrimitiveSpecimen(final Class<T> type) {
+    public PrimitiveSpecimen(final FixtureType<T> type) {
 
         if(type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (!type.isPrimitive() && !ReflectionHelper.isBoxedOrString(type)) {
-            throw new IllegalArgumentException("type: " + type.getName());
+        if (!type.isPrimitive() && !type.isBoxed() && type.asClass() != String.class) {
+            throw new IllegalArgumentException("type: " + type.asClass().getName());
         }
 
         this.type = type;
@@ -37,39 +37,39 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if (type.equals(String.class)) {
+        if (type.asClass().equals(String.class)) {
             return (T) UUID.randomUUID().toString();
         }
 
-        if (type.equals(Boolean.class) || type.equals(boolean.class)) {
+        if (type.asClass().equals(Boolean.class) || type.asClass().equals(boolean.class)) {
             return (T) Boolean.valueOf(random.nextBoolean());
         }
 
-        if (type.equals(Character.class) || type.equals(char.class)) {
+        if (type.asClass().equals(Character.class) || type.asClass().equals(char.class)) {
             return (T) Character.valueOf(UUID.randomUUID().toString().charAt(0));
         }
 
-        if (type.equals(Byte.class) || type.equals(byte.class)) {
+        if (type.asClass().equals(Byte.class) || type.asClass().equals(byte.class)) {
             return (T) Byte.valueOf(UUID.randomUUID().toString().getBytes(Charset.defaultCharset())[0]);
         }
 
-        if (type.equals(Short.class) || type.equals(short.class)) {
+        if (type.asClass().equals(Short.class) || type.asClass().equals(short.class)) {
             return (T) Short.valueOf((short)random.nextInt(Short.MAX_VALUE + 1));
         }
 
-        if (type.equals(Integer.class) || type.equals(int.class)) {
+        if (type.asClass().equals(Integer.class) || type.asClass().equals(int.class)) {
             return (T) Integer.valueOf(random.nextInt());
         }
 
-        if (type.equals(Long.class) || type.equals(long.class)) {
+        if (type.asClass().equals(Long.class) || type.asClass().equals(long.class)) {
             return (T) Long.valueOf(random.nextLong());
         }
 
-        if (type.equals(Float.class) || type.equals(float.class)) {
+        if (type.asClass().equals(Float.class) || type.asClass().equals(float.class)) {
             return (T) Float.valueOf(random.nextFloat());
         }
 
-        if (type.equals(Double.class) || type.equals(double.class)) {
+        if (type.asClass().equals(Double.class) || type.asClass().equals(double.class)) {
             return (T) Double.valueOf(random.nextDouble());
         }
 

@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.generic.FixtureType;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import org.junit.jupiter.api.Test;
 
@@ -17,14 +18,14 @@ class EnumSpecimenTest {
 
     @Test
     void onlyEnumTypes() {
-        assertThatThrownBy(() -> new EnumSpecimen<>(Object.class))
+        assertThatThrownBy(() -> new EnumSpecimen<>(FixtureType.fromClass(Object.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Object.class.getName());
     }
 
     @Test
     void createEnum() {
-        var sut = new EnumSpecimen<>(TestEnum.class);
+        var sut = new EnumSpecimen<>(FixtureType.fromClass(TestEnum.class));
 
         var actual = sut.create();
 

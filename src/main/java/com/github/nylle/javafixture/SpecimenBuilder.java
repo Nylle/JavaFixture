@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.generic.FixtureType;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,18 +15,17 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
 
-    private final Class<T> typeReference;
+    private final FixtureType<T> type;
     private final Configuration configuration;
 
-
-    public SpecimenBuilder(final Class<T> typeReference, final Configuration configuration) {
-        this.typeReference = typeReference;
+    public SpecimenBuilder(final FixtureType<T> type, final Configuration configuration) {
+        this.type = type;
         this.configuration = configuration;
     }
 
     @Override
     public T create() {
-        return customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create(new CustomizationContext(ignoredFields, customFields)));
+        return customize(new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(ignoredFields, customFields)));
     }
 
     @Override
@@ -34,7 +35,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
 
     @Override
     public Stream<T> createMany(final int size) {
-        return IntStream.range(0, size).boxed().map(x -> customize(new SpecimenFactory(new Context(configuration)).build(typeReference).create(new CustomizationContext(ignoredFields, customFields))));
+        return IntStream.range(0, size).boxed().map(x -> customize(create()));
     }
 
     @Override

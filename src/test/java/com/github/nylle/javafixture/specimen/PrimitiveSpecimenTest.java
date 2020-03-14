@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.generic.FixtureType;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,21 +9,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class PrimitiveSpecimenTest {
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> { new PrimitiveSpecimen<>(null); })
+        assertThatThrownBy(() -> new PrimitiveSpecimen<>(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void onlyPrimitiveTypes() {
-        assertThatThrownBy(() -> { new PrimitiveSpecimen<>(Object.class); })
+        assertThatThrownBy(() -> new PrimitiveSpecimen<>(FixtureType.fromClass(Object.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Object.class.getName());
     }
 
     @Test
     void createString() {
-        var sut = new PrimitiveSpecimen<>(String.class);
+        var sut = new PrimitiveSpecimen<String>(FixtureType.fromClass(String.class));
 
         var actual = sut.create();
 
@@ -32,7 +33,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createBoolean() {
-        var sut = new PrimitiveSpecimen<>(boolean.class);
+        var sut = new PrimitiveSpecimen<>(FixtureType.fromClass(boolean.class));
 
         var actual = sut.create();
 
@@ -42,7 +43,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createByte() {
-        var sut = new PrimitiveSpecimen<>(byte.class);
+        var sut = new PrimitiveSpecimen<>(FixtureType.fromClass(byte.class));
 
         var actual = sut.create();
 
@@ -52,7 +53,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createShort() {
-        var sut = new PrimitiveSpecimen<>(short.class);
+        var sut = new PrimitiveSpecimen<Short>(FixtureType.fromClass(short.class));
 
         var actual = sut.create();
 
@@ -62,7 +63,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createInteger() {
-        var sut = new PrimitiveSpecimen<>(int.class);
+        var sut = new PrimitiveSpecimen<Integer>(FixtureType.fromClass(int.class));
 
         var actual = sut.create();
 
@@ -72,7 +73,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createLong() {
-        var sut = new PrimitiveSpecimen<>(long.class);
+        var sut = new PrimitiveSpecimen<Long>(FixtureType.fromClass(long.class));
 
         var actual = sut.create();
 
@@ -82,7 +83,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createFloat() {
-        var sut = new PrimitiveSpecimen<>(float.class);
+        var sut = new PrimitiveSpecimen<Float>(FixtureType.fromClass(float.class));
 
         var actual = sut.create();
 
@@ -92,7 +93,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createDouble() {
-        var sut = new PrimitiveSpecimen<>(double.class);
+        var sut = new PrimitiveSpecimen<Double>(FixtureType.fromClass(double.class));
 
         var actual = sut.create();
 

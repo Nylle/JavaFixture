@@ -3,10 +3,9 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.generic.FixtureType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -23,24 +22,15 @@ import java.util.stream.IntStream;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class MapSpecimen<T, K, V> implements ISpecimen<T> {
-    private final Class<T> type;
-    private final Class<K> genericKeyType;
+    private final FixtureType<T> type;
     private final Context context;
-    private final SpecimenFactory specimenFactory;
-    private final SpecimenType specimenType;
+    private ISpecimen<K> keySpecimen;
     private ISpecimen<V> valueSpecimen;
 
-    public MapSpecimen(final Class<T> type, final Class<K> genericKeyType, final Class<V> genericValueType, final Context context, final SpecimenFactory specimenFactory) {
+    public MapSpecimen(final FixtureType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
-        }
-
-        if (genericKeyType == null && genericValueType != null) {
-            throw new IllegalArgumentException("genericKeyType: null");
-        }
-        if (genericValueType == null && genericKeyType != null) {
-            throw new IllegalArgumentException("genericValueType: null");
         }
 
         if (context == null) {
@@ -51,22 +41,17 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!ReflectionHelper.isMap(type)) {
-            throw new IllegalArgumentException("type: " + type.getName());
+        if (!type.isMap()) {
+            throw new IllegalArgumentException("type: " + type.asClass().getName());
         }
 
         this.type = type;
-        this.genericKeyType = genericKeyType;
         this.context = context;
-        this.specimenFactory = specimenFactory;
-        this.specimenType = SpecimenType.forMap(type, genericKeyType, genericValueType);
-        this.valueSpecimen = genericValueType == null ? null : specimenFactory.build(genericValueType);
-    }
 
-    public MapSpecimen(final Class<T> type, final Class<K> genericKeyType, Class<V> genericValueType, final Context context, final SpecimenFactory specimenFactory, final ISpecimen<V> specimen) {
-
-        this(type, genericKeyType, genericValueType, context, specimenFactory);
-        this.valueSpecimen = specimen;
+        if(type.isParameterized()) {
+            this.keySpecimen = specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(0)));
+            this.valueSpecimen = specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(1)));
+        }
     }
 
     @Override
@@ -76,18 +61,16 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if (context.isCached(specimenType)) {
-            return (T) context.cached(specimenType);
+        if (context.isCached(type)) {
+            return (T) context.cached(type);
         }
 
-        Map<K, V> map = context.cached(specimenType, type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type));
+        Map<K, V> map = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type.asClass()));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
-                .filter(x -> genericKeyType != null && valueSpecimen != null)
-                .forEach(x -> map.put(
-                        specimenFactory.build(genericKeyType).create(),
-                        valueSpecimen.create()));
+                .filter(x -> keySpecimen != null && valueSpecimen != null)
+                .forEach(x -> map.put(keySpecimen.create(), valueSpecimen.create()));
 
         return (T) map;
     }

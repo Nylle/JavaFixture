@@ -3,10 +3,9 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.generic.FixtureType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -32,12 +31,11 @@ import java.util.stream.IntStream;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
-    private final Class<T> type;
+    private final FixtureType<T> type;
     private final Context context;
-    private final SpecimenType specimenType;
     private ISpecimen<G> specimen;
 
-    public CollectionSpecimen(final Class<T> type, final Class<G> genericType, final Context context, final SpecimenFactory specimenFactory) {
+    public CollectionSpecimen(final FixtureType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -51,24 +49,17 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!ReflectionHelper.isCollection(type)) {
-            throw new IllegalArgumentException("type: " + type.getName());
+        if (!type.isCollection()) {
+            throw new IllegalArgumentException("type: " + type.asClass().getName());
         }
 
         this.type = type;
-        if (genericType != null) {
-            this.specimen = specimenFactory.build(genericType);
-        }
         this.context = context;
-        this.specimenType = SpecimenType.forCollection(type, genericType);
+
+        if(type.isParameterized()) {
+            this.specimen = specimenFactory.build(FixtureType.fromClass(type.getGenericTypeArgument(0)));
+        }
     }
-
-    public CollectionSpecimen(final Class<T> type, Class<G> genericType, final Context context, final SpecimenFactory specimenFactory, final ISpecimen<G> specimen) {
-
-        this(type, genericType, context, specimenFactory);
-        this.specimen = specimen;
-    }
-
 
     @Override
     public T create() {
@@ -77,12 +68,11 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if (context.isCached(specimenType)) {
-            return (T) context.cached(specimenType);
+        if (context.isCached(type)) {
+            return (T) context.cached(type);
         }
 
-        Collection<G> collection = context.cached(specimenType, type.isInterface() ? createFromInterfaceType(type) : createFromConcreteType(type));
-
+        Collection<G> collection = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type.asClass()));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()

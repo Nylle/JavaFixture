@@ -3,6 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.generic.FixtureType;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,35 +44,45 @@ class CollectionSpecimenTest {
     
     @Test
     void onlyCollectionTypes() {
-        assertThatThrownBy(() -> new CollectionSpecimen<>(Map.class, Object.class, context, specimenFactory))
+        assertThatThrownBy(() -> new CollectionSpecimen<>(FixtureType.fromClass(Map.class), context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Map.class.getName());
     }
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new CollectionSpecimen<>(null, Object.class, context, specimenFactory))
+        assertThatThrownBy(() -> new CollectionSpecimen<>(null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, Object.class, null, specimenFactory))
+        assertThatThrownBy(() -> new CollectionSpecimen<>(FixtureType.fromClass(List.class), null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new CollectionSpecimen<>(List.class, Object.class, context, null))
+        assertThatThrownBy(() -> new CollectionSpecimen<>(FixtureType.fromClass(List.class), context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }
 
     @Test
+    void nonParameterizedCollectionIsEmpty() {
+        var sut = new CollectionSpecimen<>(new FixtureType<Collection>(){}, context, specimenFactory);
+
+        var actual = sut.create();
+
+        assertThat(actual).isInstanceOf(ArrayList.class);
+        assertThat(actual.size()).isEqualTo(0);
+    }
+
+    @Test
     void createArrayListFromCollectionInterface() {
-        var sut = new CollectionSpecimen<>(Collection.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<Collection<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -82,7 +93,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayListFromListInterface() {
-        var sut = new CollectionSpecimen<>(List.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<List<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -93,7 +104,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSetFromNavigableSetInterface() {
-        var sut = new CollectionSpecimen<>(NavigableSet.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<NavigableSet<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -104,7 +115,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSetFromSortedSetInterface() {
-        var sut = new CollectionSpecimen<>(SortedSet.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<SortedSet<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -115,7 +126,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSetFromSetInterface() {
-        var sut = new CollectionSpecimen<>(Set.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<Set<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -126,7 +137,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingDequeFromBlockingDequeInterface() {
-        var sut = new CollectionSpecimen<>(BlockingDeque.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<BlockingDeque<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -137,7 +148,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayDequeFromDequeInterface() {
-        var sut = new CollectionSpecimen<>(Deque.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<Deque<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -148,7 +159,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedTransferQueueFromTransferQueueInterface() {
-        var sut = new CollectionSpecimen<>(TransferQueue.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<TransferQueue<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -159,7 +170,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingQueueFromBlockingQueueInterface() {
-        var sut = new CollectionSpecimen<>(BlockingQueue.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<BlockingQueue<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -170,7 +181,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedListFromQueueInterface() {
-        var sut = new CollectionSpecimen<>(Queue.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<Queue<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -181,7 +192,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayList() {
-        var sut = new CollectionSpecimen<>(ArrayList.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<ArrayList<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -192,7 +203,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSet() {
-        var sut = new CollectionSpecimen<>(TreeSet.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<TreeSet<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -203,7 +214,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSet() {
-        var sut = new CollectionSpecimen<>(HashSet.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<HashSet<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -214,7 +225,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingDeque() {
-        var sut = new CollectionSpecimen<>(LinkedBlockingDeque.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<LinkedBlockingDeque<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -225,7 +236,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayDeque() {
-        var sut = new CollectionSpecimen<>(ArrayDeque.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<ArrayDeque<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -236,7 +247,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedTransferQueue() {
-        var sut = new CollectionSpecimen<>(LinkedTransferQueue.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<LinkedTransferQueue<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -247,7 +258,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingQueue() {
-        var sut = new CollectionSpecimen<>(LinkedBlockingQueue.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<LinkedBlockingQueue<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -258,7 +269,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedList() {
-        var sut = new CollectionSpecimen<>(LinkedList.class, String.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<LinkedList<String>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
@@ -270,8 +281,8 @@ class CollectionSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new CollectionSpecimen<>(List.class, String.class, context, specimenFactory).create();
-        var cached = new CollectionSpecimen<>(List.class, String.class, context, specimenFactory).create();
+        var original = new CollectionSpecimen<>(new FixtureType<List<String>>(){}, context, specimenFactory).create();
+        var cached = new CollectionSpecimen<>(new FixtureType<List<String>>(){}, context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(List.class);
         assertThat(original.size()).isEqualTo(2);
@@ -281,24 +292,24 @@ class CollectionSpecimenTest {
     }
 
     @Test
-    void nestedListsLoseGenericTypeAndAreEmpty() {
-        var sut = new CollectionSpecimen<>(List.class, List.class, context, specimenFactory);
+    void nestedLists() {
+        var sut = new CollectionSpecimen<>(new FixtureType<List<List<String>>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 
         assertThat(actual).isExactlyInstanceOf(ArrayList.class);
-        assertThat(((ArrayList<ArrayList<Object>>)actual).size()).isEqualTo(2);
+        assertThat(actual.size()).isEqualTo(2);
 
         assertThat(actual.get(0)).isExactlyInstanceOf(ArrayList.class);
-        assertThat(((List)actual.get(0)).size()).isEqualTo(0);
+        assertThat(actual.get(0).size()).isEqualTo(2);
         assertThat(actual.get(1)).isExactlyInstanceOf(ArrayList.class);
-        assertThat(((List)actual.get(1)).size()).isEqualTo(0);
+        assertThat(actual.get(1).size()).isEqualTo(2);
     }
 
     @Test
     void nonPrimitiveElementsAreSameInstance() {
 
-        var sut = new CollectionSpecimen<>(List.class, TestObject.class, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new FixtureType<List<TestObject>>(){}, context, specimenFactory);
 
         var actual = sut.create();
 

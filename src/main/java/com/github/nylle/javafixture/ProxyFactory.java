@@ -29,7 +29,7 @@ public class ProxyFactory implements InvocationHandler {
         return Proxy.newProxyInstance(type.asClass().getClassLoader(), new Class[]{type.asClass()}, new ProxyFactory(specimenFactory, new HashMap<>()));
     }
 
-    public static <T> Object createGeneric(final Class<T> type, final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
+    public static <T> Object create(final Class<T> type, final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
         return Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new ProxyFactory(specimenFactory, specimens));
     }
 

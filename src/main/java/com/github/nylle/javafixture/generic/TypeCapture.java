@@ -18,7 +18,7 @@ abstract class TypeCapture<T> {
         return ((ParameterizedType) superclass).getActualTypeArguments()[0];
     }
 
-    public static ParameterizedType create(final Class<?> rawType, final Type[] actualTypeArguments) {
+    static ParameterizedType create(final Class<?> rawType, final Type[] actualTypeArguments) {
         if (rawType == null) {
             throw new IllegalArgumentException("rawType: null");
         }

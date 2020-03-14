@@ -111,7 +111,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         }
 
         if(type.isInterface()) {
-            return (T) context.cached(type, ProxyFactory.createGeneric(type.asClass(), specimenFactory, specimens));
+            return (T) context.cached(type, ProxyFactory.create(type.asClass(), specimenFactory, specimens));
         }
 
         var result = context.cached(type, newInstance(type.asClass()));

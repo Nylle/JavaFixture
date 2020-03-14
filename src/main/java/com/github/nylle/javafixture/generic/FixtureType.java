@@ -28,7 +28,7 @@ public class FixtureType<T> extends TypeCapture<T> {
     }
 
     public static <T> FixtureType<T> fromRawType(final Class<?> rawType, final Type[] actualTypeArguments) {
-        return new FixtureType<>(new OpenParameterizedType(rawType, actualTypeArguments));
+        return new FixtureType<>(TypeCapture.create(rawType, actualTypeArguments));
     }
 
     public Class<T> asClass() {

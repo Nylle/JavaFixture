@@ -33,7 +33,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
 
     @Override
     public Stream<T> createMany(final int size) {
-        return IntStream.range(0, size).boxed().map(x -> customize(create()));
+        return IntStream.range(0, size).boxed().map(x -> create());
     }
 
     @Override

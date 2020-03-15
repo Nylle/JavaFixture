@@ -26,7 +26,7 @@ public class Fixture {
     }
 
     public <T> T create(final SpecimenType<T> type) {
-        return new SpecimenBuilder<T>(type, configuration).create();
+        return new SpecimenBuilder<>(type, configuration).create();
     }
 
     public <T> Stream<T> createMany(final Class<T> type) {
@@ -34,11 +34,11 @@ public class Fixture {
     }
 
     public <T> Stream<T> createMany(final SpecimenType<T> type) {
-        return new SpecimenBuilder<T>(type, configuration).createMany();
+        return new SpecimenBuilder<>(type, configuration).createMany();
     }
 
     public <T> ISpecimenBuilder<T> build(final Class<T> type) {
-        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration);
+        return new SpecimenBuilder<>(SpecimenType.fromClass(type), configuration);
     }
 
     public <T> ISpecimenBuilder<T> build(final SpecimenType<T> type) {
@@ -50,6 +50,6 @@ public class Fixture {
     }
 
     public <T> void addManyTo(Collection<T> result, final SpecimenType<T> type) {
-        result.addAll(new SpecimenBuilder<T>(type, configuration).createMany().collect(Collectors.toList()));
+        result.addAll(new SpecimenBuilder<>(type, configuration).createMany().collect(Collectors.toList()));
     }
 }

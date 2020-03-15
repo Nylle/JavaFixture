@@ -282,8 +282,8 @@ class FixtureTest {
             assertThat(result.getGeneric().getT()).isInstanceOf(String.class);
             assertThat(result.getGeneric().getU()).isInstanceOf(Integer.class);
 
-            assertThat(result.getaClass()).isInstanceOf(Class.class);
-            assertThat(result.getaClass()).isEqualTo(Object.class);
+            assertThat(result.getAClass()).isInstanceOf(Class.class);
+            assertThat(result.getAClass()).isEqualTo(Object.class);
 
             assertThat(result.getOptional()).isInstanceOf(Optional.class);
             assertThat(result.getOptional().isPresent()).isTrue();

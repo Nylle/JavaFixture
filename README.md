@@ -173,7 +173,7 @@ Optional<String> result = fixture.create(new SpecimenType<Optional<String>>(){})
 ```
 Please note the empty curly braces (`{}`) after the call to the constructor of `SpecimenType`. These are necessary for generic reflection through an abstract superclass.
 
-`SpecimenType` can also be used for non-generic classes, but will lose any parameterization for generic classes:
+`SpecimenType` can also be used for non-generic classes, but will lose any parametrisation for generic classes:
 ```java
 Optional result = fixture.create(SpecimenType.fromClass(Optional.class));
 ```

@@ -11,14 +11,13 @@ import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 public class SpecimenType<T> extends TypeCapture<T> {
 
@@ -48,6 +47,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
         if (isParameterized()) {
             return (ParameterizedType) type;
         }
+
         throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
@@ -63,6 +63,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
         if (isParameterized()) {
             return ((ParameterizedType) type).getActualTypeArguments();
         }
+
         throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
@@ -70,21 +71,23 @@ public class SpecimenType<T> extends TypeCapture<T> {
         return getGenericTypeArguments()[index];
     }
 
-    public String getTypeParameterName(final int index) {
-        return getTypeParameterNames()[index];
-    }
-
     public String[] getTypeParameterNames() {
         if (isParameterized()) {
             return stream(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
         }
+
         throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
+    }
+
+    public String getTypeParameterName(final int index) {
+        return getTypeParameterNames()[index];
     }
 
     public Class<?> getComponentType() {
         if(isArray()) {
             return asClass().getComponentType();
         }
+
         throw new SpecimenTypeException(format("%s is not an array", type));
     }
 
@@ -92,6 +95,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
         if(isEnum()) {
             return asClass().getEnumConstants();
         }
+
         throw new SpecimenTypeException(format("%s is not an enum", type));
     }
 
@@ -100,49 +104,53 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public boolean isCollection() {
-        return Collection.class.isAssignableFrom(this.asClass());
+        return Collection.class.isAssignableFrom(asClass());
     }
 
     public boolean isMap() {
-        return Map.class.isAssignableFrom(this.asClass());
+        return Map.class.isAssignableFrom(asClass());
     }
 
     public boolean isTimeType() {
-        if (Temporal.class.isAssignableFrom(this.asClass())) {
+        if (Temporal.class.isAssignableFrom(asClass())) {
             return true;
         }
-        if (TemporalAdjuster.class.isAssignableFrom(this.asClass())) {
+
+        if (TemporalAdjuster.class.isAssignableFrom(asClass())) {
             return true;
         }
-        if (TemporalAmount.class.isAssignableFrom(this.asClass())) {
+
+        if (TemporalAmount.class.isAssignableFrom(asClass())) {
             return true;
         }
-        if (this.asClass().equals(ZoneId.class)) {
+
+        if (asClass().equals(ZoneId.class)) {
             return true;
         }
+
         return false;
     }
 
     public boolean isPrimitive() {
-        return this.asClass().isPrimitive();
+        return asClass().isPrimitive();
     }
 
     public boolean isBoxed() {
-        return this.asClass() == Double.class || this.asClass() == Float.class || this.asClass() == Long.class
-                || this.asClass() == Integer.class || this.asClass() == Short.class || this.asClass() == Character.class
-                || this.asClass() == Byte.class || this.asClass() == Boolean.class;
+        return asClass() == Double.class || asClass() == Float.class || asClass() == Long.class
+                || asClass() == Integer.class || asClass() == Short.class || asClass() == Character.class
+                || asClass() == Byte.class || asClass() == Boolean.class;
     }
 
     public boolean isEnum() {
-        return this.asClass().isEnum();
+        return asClass().isEnum();
     }
 
     public boolean isArray() {
-        return this.asClass().isArray();
+        return asClass().isArray();
     }
 
     public boolean isInterface() {
-        return this.asClass().isInterface();
+        return asClass().isInterface();
     }
 
     public static Class<?> castToClass(Type type) {
@@ -177,24 +185,13 @@ public class SpecimenType<T> extends TypeCapture<T> {
             return false;
         }
 
-        if(isParameterized() && that.isParameterized()) {
-
-            if(getGenericTypeArguments().length != that.getGenericTypeArguments().length) {
-                return false;
-            }
-
-            if(!IntStream.range(0, getGenericTypeArguments().length).boxed().allMatch(i -> Objects.equals(getGenericTypeArgument(i), that.getGenericTypeArgument(i)))) {
-                return false;
-            }
-
-        }
-
-        return Objects.equals(type, that.type);
+        return isParameterized() && that.isParameterized()
+                ? Objects.equals(type, that.type) && Arrays.equals(getGenericTypeArguments(), that.getGenericTypeArguments())
+                : Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return isParameterized() ? Objects.hash(type, stream(getGenericTypeArguments()).map(x -> x.getTypeName()).collect(toList())) : Objects.hash(type);
+        return Objects.hash(type);
     }
-
 }

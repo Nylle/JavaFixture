@@ -21,7 +21,7 @@ public class TestObjectWithGenerics {
         return generic;
     }
 
-    public Class<Object> getaClass() {
+    public Class<Object> getAClass() {
         return aClass;
     }
 

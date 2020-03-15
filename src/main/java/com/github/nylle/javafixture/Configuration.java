@@ -14,11 +14,12 @@ public class Configuration {
 
     /**
      * Creates a new default configuration with the following values
-     *
-     * maxCollectionSize = 10
-     * minCollectionSize = 2
-     * streamSize = 3
-     * clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
+     * <p><ul>
+     * <li>maxCollectionSize = 10
+     * <li>minCollectionSize = 2
+     * <li>streamSize = 3
+     * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
+     * </ul><p>
      */
     public Configuration() {
     }
@@ -26,9 +27,9 @@ public class Configuration {
     /**
      * Creates a new configuration with the specified values
      *
-     * @param maxCollectionSize
-     * @param minCollectionSize
-     * @param streamSize
+     * @param maxCollectionSize the maximum size of arrays, collections and maps
+     * @param minCollectionSize the minimum size of arrays, collections and maps
+     * @param streamSize the exact size of the result stream when creating many objects at once
      */
     public Configuration(int maxCollectionSize, int minCollectionSize, int streamSize) {
         this.maxCollectionSize = maxCollectionSize;
@@ -37,40 +38,35 @@ public class Configuration {
     }
 
     /**
-     * Returns the maximum size of collections and maps
-     * @return
+     * @return the maximum size of arrays, collections and maps
      */
     public int getMaxCollectionSize() {
         return maxCollectionSize;
     }
 
     /**
-     * Returns the minimum size of collections and maps
-     * @return
+     * @return the minimum size of arrays, collections and maps
      */
     public int getMinCollectionSize() {
         return minCollectionSize;
     }
 
     /**
-     * Returns the stream size when creating many objects at once
-     * @return
+     * @return the stream size when creating many objects at once
      */
     public int getStreamSize() {
         return streamSize;
     }
 
     /**
-     * Returns the clock used when creating time-based objects.
-     * @return
+     * @return the clock used when creating time-based objects
      */
     public Clock getClock() {
         return clock;
     }
 
     /**
-     * Returns a random value between minimum and maximum size of collections and maps
-     * @return
+     * @return a random value between minimum and maximum size of arrays, collections and maps
      */
     public int getRandomCollectionSize() {
         return ThreadLocalRandom.current().nextInt(minCollectionSize, maxCollectionSize + 1);
@@ -78,20 +74,20 @@ public class Configuration {
 
     /**
      * Creates a new default configuration with the following values
-     *
-     * maxCollectionSize = 10
-     * minCollectionSize = 2
-     * streamSize = 3
-     * clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
+     * <p><ul>
+     * <li>maxCollectionSize = 10
+     * <li>minCollectionSize = 2
+     * <li>streamSize = 3
+     * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
+     * </ul><p>
      */
     public static Configuration configure() {
         return new Configuration();
     }
 
     /**
-     * Sets the stream size when creating many objects at once
-     * @param streamSize
-     * @return
+     * @param streamSize the stream size when creating many objects at once
+     * @return this {@code Configuration}
      */
     public Configuration streamSize(int streamSize) {
         this.streamSize = streamSize;
@@ -99,10 +95,11 @@ public class Configuration {
     }
 
     /**
-     * Sets the minimum and maximum length for collections and maps
-     * @param min
-     * @param max
-     * @return
+     * Sets the minimum and maximum length for arrays, collections and maps
+     *
+     * @param min the minimum size of arrays, collections and maps
+     * @param max the maximum size of arrays, collections and maps
+     * @return this {@code Configuration}
      */
     public Configuration collectionSizeRange(int min, int max) {
         this.minCollectionSize = min;
@@ -110,6 +107,10 @@ public class Configuration {
         return this;
     }
 
+    /**
+     * @param clock the clock to use when generating time-based objects
+     * @return this {@code Configuration}
+     */
     public Configuration clock(Clock clock) {
         this.clock = clock;
         return this;

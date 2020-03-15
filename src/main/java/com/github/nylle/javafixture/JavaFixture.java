@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture;
 
 /**
- * This class is deprecated. Please use {@code Fixture} instead.
+ * This class is deprecated. Please use {@link Fixture} instead.
  */
 @Deprecated()
 public class JavaFixture extends Fixture {

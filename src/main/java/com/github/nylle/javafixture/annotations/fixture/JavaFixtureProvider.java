@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture.annotations.fixture;
 
-import com.github.nylle.javafixture.JavaFixture;
+import com.github.nylle.javafixture.Fixture;
 import com.github.nylle.javafixture.SpecimenType;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,6 +17,6 @@ public class JavaFixtureProvider implements ArgumentsProvider, AnnotationConsume
 
     @Override
     public Stream<Arguments> provideArguments(ExtensionContext context) {
-        return Stream.of(Arguments.of(context.getTestMethod().stream().flatMap(m -> stream(m.getGenericParameterTypes()).map(t -> new JavaFixture().create(SpecimenType.fromClass(t)))).toArray()));
+        return Stream.of(Arguments.of(context.getTestMethod().stream().flatMap(m -> stream(m.getGenericParameterTypes()).map(t -> new Fixture().create(SpecimenType.fromClass(t)))).toArray()));
     }
 }

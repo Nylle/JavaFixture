@@ -28,12 +28,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.github.nylle.javafixture.JavaFixture.fixture;
+import static com.github.nylle.javafixture.Fixture.fixture;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class JavaFixtureTest {
+class FixtureTest {
 
     private final Configuration configuration = new Configuration();
 
@@ -43,7 +43,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreatePrimitives() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             int integerResult = fixture.create(int.class);
 
@@ -63,7 +63,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateInstance() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestPrimitive result = fixture.create(TestPrimitive.class);
 
@@ -73,7 +73,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateInstanceWithoutDefaultConstructor() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestObjectWithoutDefaultConstructor result = fixture.create(TestObjectWithoutDefaultConstructor.class);
 
@@ -83,7 +83,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateMany() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             List<TestPrimitive> result = fixture.createMany(TestPrimitive.class).collect(Collectors.toList());
 
@@ -96,7 +96,7 @@ class JavaFixtureTest {
 
         @Test
         void canAddManyTo() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             List<TestPrimitive> result = new ArrayList<>();
             result.add(new TestPrimitive());
@@ -110,7 +110,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateManyWithCustomization() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             List<TestPrimitive> result = fixture.build(TestPrimitive.class)
                     .with(x -> x.setHello("world"))
@@ -143,7 +143,7 @@ class JavaFixtureTest {
 
         @Test
         void canOverrideBySetter() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestPrimitive result = fixture.build(TestPrimitive.class).with(x -> x.setHello("world")).create();
 
@@ -152,7 +152,7 @@ class JavaFixtureTest {
 
         @Test
         void canOverridePublicField() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestPrimitive result = fixture.build(TestPrimitive.class).with(x -> x.publicField = "world").create();
 
@@ -161,7 +161,7 @@ class JavaFixtureTest {
 
         @Test
         void canOverridePrivateField() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestPrimitive result = fixture.build(TestPrimitive.class).with("hello", "world").create();
 
@@ -170,7 +170,7 @@ class JavaFixtureTest {
 
         @Test
         void canOmitPrivateField() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestPrimitive result = fixture.build(TestPrimitive.class).without("hello").create();
 
@@ -179,7 +179,7 @@ class JavaFixtureTest {
 
         @Test
         void canOmitPrivatePrimitiveFieldAndInitializesDefaultValue() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             TestPrimitive result = fixture.build(TestPrimitive.class).without("primitive").create();
 
@@ -188,7 +188,7 @@ class JavaFixtureTest {
 
         @Test
         void canPerformAction() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             ContractPosition cp = fixture.create(ContractPosition.class);
             Contract contract = fixture.build(Contract.class).with(x -> x.addContractPosition(cp)).with(x -> x.setBaseContractPosition(cp)).create();
@@ -198,7 +198,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateComplexModel() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             Contract result = fixture.create(Contract.class);
             assertThat(result).isInstanceOf(Contract.class);
@@ -219,7 +219,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateThrowable() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             Throwable result = fixture.create(Throwable.class);
             assertThat(result).isInstanceOf(Throwable.class);
@@ -232,7 +232,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateNestedParameterizedCollections() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             var classWithMapWithList = fixture.create(TestObjectWithNestedMapsAndLists.class);
 
@@ -267,7 +267,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateParameterizedObject() {
-            final JavaFixture fixture = new JavaFixture(new Configuration().collectionSizeRange(2, 2));
+            final Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
             final var result = fixture.create(TestObjectWithGenerics.class);
 
@@ -292,7 +292,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateNestedParameterizedObject() {
-            final JavaFixture fixture = new JavaFixture(new Configuration().collectionSizeRange(2, 2));
+            final Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
             final var result = fixture.create(TestObjectWithNestedGenerics.class);
 
@@ -343,7 +343,7 @@ class JavaFixtureTest {
     class WhenSpecimenType {
         @Test
         void canCreateGenericObject() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             var result = fixture.create(new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {});
 
@@ -356,7 +356,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateGenericInterface() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             var result = fixture.create(new SpecimenType<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
 
@@ -377,7 +377,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateMapsAndLists() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             var result = fixture.create(new SpecimenType<Map<String, Map<String, List<Optional<String>>>>>() {});
 
@@ -396,7 +396,7 @@ class JavaFixtureTest {
 
         @Test
         void canCreateMany() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             var result = fixture.createMany(new SpecimenType<Optional<Integer>>() {}).collect(toList());
 
@@ -409,7 +409,7 @@ class JavaFixtureTest {
 
         @Test
         void canAddManyTo() {
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             List<Optional<String>> result = new ArrayList<>();
             result.add(Optional.of("existing"));
@@ -429,7 +429,7 @@ class JavaFixtureTest {
         @Test
         void canBeCustomized() {
 
-            JavaFixture fixture = new JavaFixture(configuration);
+            Fixture fixture = new Fixture(configuration);
 
             var result = fixture.build(new SpecimenType<TestObjectGeneric<List<String>, String>>() {})
                     .without("primitiveInt")

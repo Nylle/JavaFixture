@@ -38,11 +38,11 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         }
 
         if (!type.isParameterized()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         if (type.isCollection() || type.isMap()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;
@@ -75,7 +75,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type, ProxyFactory.create(type.asClass(), specimenFactory, specimens));
         }
 
-        var result = context.cached(type, type.asInstance());
+        var result = context.cached(type, type.toInstance());
 
         stream(type.asClass().getDeclaredFields())
                 .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))

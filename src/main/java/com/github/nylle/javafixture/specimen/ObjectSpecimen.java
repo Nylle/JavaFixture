@@ -32,7 +32,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         }
 
         if (type.isPrimitive() || type.isEnum() || type.isBoxed() || type.asClass() == String.class || type.isMap() || type.isCollection() || type.isInterface()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;
@@ -52,7 +52,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        var result = context.cached(type, type.asInstance());
+        var result = context.cached(type, type.toInstance());
 
         Arrays.stream(type.asClass().getDeclaredFields())
                 .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))

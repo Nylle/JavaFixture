@@ -30,7 +30,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
         }
 
         if(!type.isInterface() || type.isMap() || type.isCollection()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

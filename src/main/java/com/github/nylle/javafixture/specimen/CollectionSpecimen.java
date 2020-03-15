@@ -50,7 +50,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         }
 
         if (!type.isCollection()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

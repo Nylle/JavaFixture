@@ -51,7 +51,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
         throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
-    public T asInstance() {
+    public T toInstance() {
         try {
             return asClass().getDeclaredConstructor().newInstance();
         } catch (Exception e) {
@@ -97,6 +97,14 @@ public class SpecimenType<T> extends TypeCapture<T> {
         }
 
         throw new SpecimenTypeException(format("%s is not an enum", type));
+    }
+
+    public String getName() {
+        if(isParameterized()) {
+            return asParameterizedType().getTypeName();
+        }
+
+        return asClass().getName();
     }
 
     public boolean isParameterized() {

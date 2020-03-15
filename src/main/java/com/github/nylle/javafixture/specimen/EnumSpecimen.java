@@ -20,7 +20,7 @@ public class EnumSpecimen<T> implements ISpecimen<T> {
         }
 
         if (!type.isEnum()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

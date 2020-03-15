@@ -30,7 +30,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
         }
 
         if (!type.isArray()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

@@ -23,7 +23,7 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         }
 
         if (!type.isPrimitive() && !type.isBoxed() && type.asClass() != String.class) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

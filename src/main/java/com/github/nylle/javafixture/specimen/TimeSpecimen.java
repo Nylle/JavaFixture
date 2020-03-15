@@ -33,7 +33,7 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         }
 
         if (!type.isTimeType()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         if (context == null) {

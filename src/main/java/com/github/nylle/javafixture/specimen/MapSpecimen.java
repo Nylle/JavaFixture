@@ -42,7 +42,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         }
 
         if (!type.isMap()) {
-            throw new IllegalArgumentException("type: " + type.asClass().getName());
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;

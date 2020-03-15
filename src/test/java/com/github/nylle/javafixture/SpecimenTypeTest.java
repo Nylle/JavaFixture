@@ -325,6 +325,12 @@ class SpecimenTypeTest {
     }
 
     @Test
+    void getName() {
+        assertThat(SpecimenType.fromClass(Optional.class).getName()).isEqualTo("java.util.Optional");
+        assertThat(new SpecimenType<Optional<String>>(){}.getName()).isEqualTo("java.util.Optional<java.lang.String>");
+    }
+
+    @Test
     void asParameterizedType() {
         assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getRawType()).isEqualTo(Optional.class);
         assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments().length).isEqualTo(1);

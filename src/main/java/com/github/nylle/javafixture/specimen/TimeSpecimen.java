@@ -3,8 +3,8 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,17 +22,17 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class TimeSpecimen<T> implements ISpecimen<T> {
 
-    private final Class<T> type;
+    private final SpecimenType<T> type;
     private final Random random;
     private final Context context;
 
-    public TimeSpecimen(Class<T> type, Context context) {
+    public TimeSpecimen(final SpecimenType<T> type, Context context) {
         this.context = context;
         if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (!ReflectionHelper.isTimeType(type)) {
+        if (!type.isTimeType()) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -51,37 +51,37 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if (Temporal.class.isAssignableFrom(type)) {
+        if (Temporal.class.isAssignableFrom(type.asClass())) {
             try {
-                Method now = type.getMethod("now", Clock.class);
+                Method now = type.asClass().getMethod("now", Clock.class);
                 return (T) now.invoke(null, context.getConfiguration().getClock());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new SpecimenException("Unsupported type: " + type);
+                throw new SpecimenException("Unsupported type: " + type.asClass());
             }
         }
-        if (type.equals(MonthDay.class)) {
+        if (type.asClass().equals(MonthDay.class)) {
             return (T) MonthDay.now(context.getConfiguration().getClock());
         }
 
-        if (type.equals(JapaneseEra.class)) {
+        if (type.asClass().equals(JapaneseEra.class)) {
             return (T) JapaneseEra.values()[random.nextInt(JapaneseEra.values().length)];
         }
 
-        if (type.equals(ZoneOffset.class)) {
+        if (type.asClass().equals(ZoneOffset.class)) {
             return (T) ZoneOffset.ofHours(new Random().nextInt(19));
         }
-        if (type.equals(Duration.class)) {
+        if (type.asClass().equals(Duration.class)) {
             return (T) Duration.ofDays(random.nextInt());
         }
 
-        if (type.equals(Period.class)) {
+        if (type.asClass().equals(Period.class)) {
             return (T) Period.ofDays(random.nextInt());
         }
 
-        if (type.equals(ZoneId.class)) {
+        if (type.asClass().equals(ZoneId.class)) {
             return (T) ZoneId.of(ZoneId.getAvailableZoneIds().iterator().next());
         }
 
-        throw new SpecimenException("Unsupported type: " + type);
+        throw new SpecimenException("Unsupported type: " + type.asClass());
     }
 }

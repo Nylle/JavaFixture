@@ -8,9 +8,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.nylle.javafixture.ReflectionHelper.isParameterizedType;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 public class ProxyFactory implements InvocationHandler {
 
@@ -23,31 +21,43 @@ public class ProxyFactory implements InvocationHandler {
         this.specimens = specimens;
     }
 
-    public static <T> Object create(final Class<T> type, final SpecimenFactory specimenFactory) {
-        return Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new ProxyFactory(specimenFactory, new HashMap<>()));
+    public static <T> Object create(final SpecimenType<T> type, final SpecimenFactory specimenFactory) {
+        return Proxy.newProxyInstance(type.asClass().getClassLoader(), new Class[]{type.asClass()}, new ProxyFactory(specimenFactory, new HashMap<>()));
     }
 
-    public static <T> Object createGeneric(final Class<T> type, final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
+    public static <T> Object create(final Class<T> type, final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
         return Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new ProxyFactory(specimenFactory, specimens));
     }
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) {
-        return method.getReturnType() == void.class
-                ? null
-                : methodResults.computeIfAbsent(method.toString(), key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create());
+        if (method.getReturnType() == void.class) {
+            return null;
+        }
+
+        return methodResults.computeIfAbsent(
+                method.toString(),
+                key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create());
     }
 
     private ISpecimen<?> resolveSpecimen(final Method method) {
-        return isParameterizedType(method.getGenericReturnType())
-                ? specimenFactory.build(method.getReturnType(), stream(((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()).map(t -> getParameterClass(t)).collect(toList()))
-                : specimenFactory.build(method.getReturnType());
+        if (SpecimenType.isParameterized(method.getGenericReturnType())) {
+            return specimenFactory.build(
+                    SpecimenType.fromRawType(
+                            SpecimenType.castToClass(((ParameterizedType) (method.getGenericReturnType())).getRawType()),
+                            stream(((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments())
+                                    .map(t -> resolveType(t))
+                                    .toArray(size -> new Type[size])));
+        }
+
+        return specimenFactory.build(SpecimenType.fromClass(method.getReturnType()));
     }
 
-    private Class<?> getParameterClass(Type type) {
-        var candidate = specimens.get(type.getTypeName());
-        return candidate != null
-                ? candidate.create().getClass()
-                : (Class<?>) type;
+    private Type resolveType(Type type) {
+        if (specimens.containsKey(type.getTypeName())) {
+            return specimens.get(type.getTypeName()).create().getClass();
+        }
+
+        return type;
     }
 }

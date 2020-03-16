@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.parameterized;
+package com.github.nylle.javafixture.annotations.testcases;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;

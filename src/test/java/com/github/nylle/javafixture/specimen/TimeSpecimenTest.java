@@ -3,8 +3,9 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.parameterized.TestCase;
-import com.github.nylle.javafixture.parameterized.TestWithCases;
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ class TimeSpecimenTest {
 
     @Test
     void onlyTemporalTypes() {
-        assertThatThrownBy(() -> new TimeSpecimen<>(Map.class, context))
+        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(Map.class), context))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Map.class.getName());
     }
@@ -68,7 +69,7 @@ class TimeSpecimenTest {
     @TestCase(class1 = ZoneId.class)
     @TestCase(class1 = ZoneOffset.class)
     void createDuration(Class type) {
-        var sut = new TimeSpecimen<>(type, context);
+        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 
         var actual = sut.create();
 
@@ -78,14 +79,14 @@ class TimeSpecimenTest {
 
     @Test
     void throwsExceptionForUnknownType() {
-        assertThatThrownBy(() -> new TimeSpecimen<>(Mockito.mock(TemporalAmount.class).getClass(), context).create())
+        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(TemporalAmount.class), context).create())
                 .isInstanceOf(SpecimenException.class)
                 .hasMessageContaining("Unsupported type:");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new TimeSpecimen<>(Instant.class, null))
+        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
@@ -107,7 +108,7 @@ class TimeSpecimenTest {
     @TestCase(class1 = ZonedDateTime.class)
     @DisplayName("create should return a valid object")
     void create(Class type) {
-        var sut = new TimeSpecimen<>(type, context).create();
+        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create();
         // if the object is not valid, the toString method will fail, is cannot print it
         assertThat(sut.toString()).isNotEmpty();
     }
@@ -118,7 +119,7 @@ class TimeSpecimenTest {
         when(mockClock.instant()).thenReturn(Instant.MIN);
         context = new Context(Configuration.configure().clock(mockClock));
 
-        var sut = new TimeSpecimen<>(Instant.class, context);
+        var sut = new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), context);
 
         var actual = sut.create();
 

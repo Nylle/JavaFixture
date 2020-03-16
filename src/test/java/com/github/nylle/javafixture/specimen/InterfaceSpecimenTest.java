@@ -3,6 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestInterface;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,35 +27,35 @@ class InterfaceSpecimenTest {
 
     @Test
     void onlyInterfaceTypes() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(Map.class, context, specimenFactory))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Map.class.getName());
     }
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(null, context, specimenFactory))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>((SpecimenType)null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(TestInterface.class, null, specimenFactory))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(TestInterface.class), null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(TestInterface.class, context, null))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(TestInterface.class), context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }
 
     @Test
     void create() {
-        var sut = new InterfaceSpecimen<>(TestInterface.class, context, specimenFactory);
+        var sut = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory);
 
         var actual = sut.create();
 
@@ -69,8 +70,8 @@ class InterfaceSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new InterfaceSpecimen<>(TestInterface.class, context, specimenFactory).create();
-        var cached = new InterfaceSpecimen<>(TestInterface.class, context, specimenFactory).create();
+        var original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
+        var cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(TestInterface.class);
         assertThat(original).isSameAs(cached);

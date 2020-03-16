@@ -2,6 +2,7 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.util.Random;
 
@@ -9,10 +10,10 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class EnumSpecimen<T> implements ISpecimen<T> {
 
-    private final Class<T> type;
+    private final SpecimenType<T> type;
     private final Random random;
 
-    public EnumSpecimen(final Class<T> type) {
+    public EnumSpecimen(final SpecimenType<T> type) {
 
         if(type == null) {
             throw new IllegalArgumentException("type: null");

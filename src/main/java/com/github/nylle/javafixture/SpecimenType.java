@@ -1,43 +1,180 @@
 package com.github.nylle.javafixture;
 
-import java.util.List;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.time.ZoneId;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
-import static java.util.Arrays.asList;
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
 
-public class SpecimenType {
+public class SpecimenType<T> extends TypeCapture<T> {
 
-    private final Class<?> type;
-    private final List<Class<?>> genericTypes;
+    private final Type type;
 
-    private SpecimenType(final Class<?> type, final Class<?>... genericTypes) {
+    private SpecimenType(final Type type) {
         this.type = type;
-        this.genericTypes = asList(genericTypes);
     }
 
-    public static SpecimenType forObject(final Class<?> type) {
-        return new SpecimenType(type);
+    protected SpecimenType() {
+        this.type = capture();
     }
 
-    public static SpecimenType forCollection(final Class<?> type, final Class<?> T) {
-        return new SpecimenType(type, T);
+    public static <T> SpecimenType<T> fromClass(final Type typeReference) {
+        return new SpecimenType<>(typeReference);
     }
 
-    public static SpecimenType forMap(final Class<?> type, final Class<?> K, final Class<?> V) {
-        return new SpecimenType(type, K, V);
+    public static <T> SpecimenType<T> fromRawType(final Class<?> rawType, final Type[] actualTypeArguments) {
+        return new SpecimenType<>(TypeCapture.create(rawType, actualTypeArguments));
     }
 
-    public static SpecimenType forGeneric(final Class<?> type, final Class<?>... genericTypes) {
-        return new SpecimenType(type, genericTypes);
+    public Class<T> asClass() {
+        return (Class<T>) castToClass(type);
     }
 
-    public Class<?> getType() {
-        return type;
+    public ParameterizedType asParameterizedType() {
+        if (isParameterized()) {
+            return (ParameterizedType) type;
+        }
+
+        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
     }
 
-    public List<Class<?>> getGenericTypes() {
-        return genericTypes;
+    public T toInstance() {
+        try {
+            return asClass().getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(asClass())).newInstance();
+        }
+    }
+
+    public Type[] getGenericTypeArguments() {
+        if (isParameterized()) {
+            return ((ParameterizedType) type).getActualTypeArguments();
+        }
+
+        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
+    }
+
+    public Type getGenericTypeArgument(final int index) {
+        return getGenericTypeArguments()[index];
+    }
+
+    public String[] getTypeParameterNames() {
+        if (isParameterized()) {
+            return stream(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
+        }
+
+        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
+    }
+
+    public String getTypeParameterName(final int index) {
+        return getTypeParameterNames()[index];
+    }
+
+    public Class<?> getComponentType() {
+        if(isArray()) {
+            return asClass().getComponentType();
+        }
+
+        throw new SpecimenTypeException(format("%s is not an array", type));
+    }
+
+    public T[] getEnumConstants() {
+        if(isEnum()) {
+            return asClass().getEnumConstants();
+        }
+
+        throw new SpecimenTypeException(format("%s is not an enum", type));
+    }
+
+    public String getName() {
+        if(isParameterized()) {
+            return asParameterizedType().getTypeName();
+        }
+
+        return asClass().getName();
+    }
+
+    public boolean isParameterized() {
+        return isParameterized(type);
+    }
+
+    public boolean isCollection() {
+        return Collection.class.isAssignableFrom(asClass());
+    }
+
+    public boolean isMap() {
+        return Map.class.isAssignableFrom(asClass());
+    }
+
+    public boolean isTimeType() {
+        if (Temporal.class.isAssignableFrom(asClass())) {
+            return true;
+        }
+
+        if (TemporalAdjuster.class.isAssignableFrom(asClass())) {
+            return true;
+        }
+
+        if (TemporalAmount.class.isAssignableFrom(asClass())) {
+            return true;
+        }
+
+        if (asClass().equals(ZoneId.class)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isPrimitive() {
+        return asClass().isPrimitive();
+    }
+
+    public boolean isBoxed() {
+        return asClass() == Double.class || asClass() == Float.class || asClass() == Long.class
+                || asClass() == Integer.class || asClass() == Short.class || asClass() == Character.class
+                || asClass() == Byte.class || asClass() == Boolean.class;
+    }
+
+    public boolean isEnum() {
+        return asClass().isEnum();
+    }
+
+    public boolean isArray() {
+        return asClass().isArray();
+    }
+
+    public boolean isInterface() {
+        return asClass().isInterface();
+    }
+
+    public static Class<?> castToClass(Type type) {
+        if (type instanceof WildcardType) {
+            return Object.class;
+        }
+
+        if (isParameterized(type)) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        return (Class<?>) type;
+    }
+
+    public static boolean isParameterized(final Type type) {
+        return type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
     }
 
     @Override
@@ -52,20 +189,17 @@ public class SpecimenType {
 
         final SpecimenType that = (SpecimenType) o;
 
-        if(genericTypes.size() != that.genericTypes.size()) {
+        if(isParameterized() != that.isParameterized()) {
             return false;
         }
 
-        boolean allGenericTypesAreEqual = IntStream
-                .range(0, genericTypes.size())
-                .boxed()
-                .allMatch(i -> Objects.equals(genericTypes.get(i), that.genericTypes.get(i)));
-
-        return Objects.equals(type, that.type) && allGenericTypesAreEqual;
+        return isParameterized() && that.isParameterized()
+                ? Objects.equals(type, that.type) && Arrays.equals(getGenericTypeArguments(), that.getGenericTypeArguments())
+                : Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, genericTypes);
+        return Objects.hash(type);
     }
 }

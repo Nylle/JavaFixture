@@ -13,21 +13,17 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static com.github.nylle.javafixture.ReflectionHelper.newInstance;
-import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toMap;
 
 public class GenericSpecimen<T> implements ISpecimen<T> {
 
-    private final Class<T> type;
+    private final SpecimenType<T> type;
     private final Context context;
     private final SpecimenFactory specimenFactory;
-    private final SpecimenType specimenType;
     private final Map<String, ISpecimen<?>> specimens;
 
-
-    public GenericSpecimen(final Class<T> type, final Context context, final SpecimenFactory specimenFactory, final ISpecimen<?>... specimens) throws IllegalArgumentException {
+    public GenericSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) throws IllegalArgumentException {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -41,27 +37,23 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (specimens == null) {
-            throw new IllegalArgumentException("specimens: null");
+        if (!type.isParameterized()) {
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
-        if (specimens.length == 0) {
-            throw new IllegalArgumentException("no specimens provided");
-        }
-
-        if (type.getTypeParameters() == null || type.getTypeParameters().length == 0) {
-            throw new IllegalArgumentException(format("type does not appear to be generic: %s", type));
-        }
-
-        if (type.getTypeParameters().length != specimens.length) {
-            throw new IllegalArgumentException(format("number of type parameters (%d) does not match number of provided specimens: %d", type.getTypeParameters().length, specimens.length));
+        if (type.isCollection() || type.isMap()) {
+            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;
         this.context = context;
         this.specimenFactory = specimenFactory;
-        this.specimenType = SpecimenType.forGeneric(type, stream(specimens).map(s -> s.create().getClass()).toArray(size -> new Class<?>[size]));
-        this.specimens = IntStream.range(0, type.getTypeParameters().length).boxed().collect(toMap(i -> type.getTypeParameters()[i].getName(), i -> specimens[i]));
+
+        this.specimens = IntStream.range(0, type.getGenericTypeArguments().length)
+                .boxed()
+                .collect(toMap(
+                        i -> type.getTypeParameterName(i),
+                        i -> specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(i)))));
     }
 
     @Override
@@ -71,21 +63,21 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if (type.equals(Class.class)) {
+        if (type.asClass().equals(Class.class)) {
             return (T) specimens.entrySet().stream().findFirst().get().getValue().create().getClass();
         }
 
-        if (context.isCached(specimenType)) {
-            return (T) context.cached(specimenType);
+        if (context.isCached(type)) {
+            return (T) context.cached(type);
         }
 
         if(type.isInterface()) {
-            return (T) context.cached(specimenType, ProxyFactory.createGeneric(type, specimenFactory, specimens));
+            return (T) context.cached(type, ProxyFactory.create(type.asClass(), specimenFactory, specimens));
         }
 
-        var result = context.cached(specimenType, newInstance(type));
+        var result = context.cached(type, type.toInstance());
 
-        stream(type.getDeclaredFields())
+        stream(type.asClass().getDeclaredFields())
                 .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))
                 .filter(field -> !ReflectionHelper.isStatic(field))
                 .forEach(field -> customize(field, result, customizationContext));
@@ -97,7 +89,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         if(customizationContext.getCustomFields().containsKey(field.getName())) {
             ReflectionHelper.setField(field, result, customizationContext.getCustomFields().get(field.getName()));
         } else {
-            ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(field.getType())).create());
+            ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());
         }
     }
 }

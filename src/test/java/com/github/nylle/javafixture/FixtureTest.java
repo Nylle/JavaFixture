@@ -345,7 +345,7 @@ class FixtureTest {
         void canCreateGenericObject() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.create(new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {});
+            var result = fixture.create(new T<TestObjectGeneric<String, Optional<Integer>>>() {});
 
             assertThat(result).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getT()).isInstanceOf(String.class);
@@ -358,7 +358,7 @@ class FixtureTest {
         void canCreateGenericInterface() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.create(new SpecimenType<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
+            var result = fixture.create(new T<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
 
             assertThat(result).isInstanceOf(ITestGeneric.class);
             assertThat(result.publicField).isInstanceOf(Integer.class);
@@ -379,7 +379,7 @@ class FixtureTest {
         void canCreateMapsAndLists() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.create(new SpecimenType<Map<String, Map<String, List<Optional<String>>>>>() {});
+            var result = fixture.create(new T<Map<String, Map<String, List<Optional<String>>>>>() {});
 
             assertThat(result).isInstanceOf(Map.class);
             assertThat(result.values()).isNotEmpty();
@@ -398,7 +398,7 @@ class FixtureTest {
         void canCreateMany() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.createMany(new SpecimenType<Optional<Integer>>() {}).collect(toList());
+            var result = fixture.createMany(new T<Optional<Integer>>() {}).collect(toList());
 
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
@@ -414,7 +414,7 @@ class FixtureTest {
             List<Optional<String>> result = new ArrayList<>();
             result.add(Optional.of("existing"));
 
-            fixture.addManyTo(result, new SpecimenType<>() {});
+            fixture.addManyTo(result, new T<>() {});
 
             assertThat(result).isNotNull();
             assertThat(result.size()).isEqualTo(4);
@@ -431,7 +431,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.build(new SpecimenType<TestObjectGeneric<List<String>, String>>() {})
+            var result = fixture.build(new T<TestObjectGeneric<List<String>, String>>() {})
                     .without("primitiveInt")
                     .without("string")
                     .with("u", "foo")

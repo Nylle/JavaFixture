@@ -176,10 +176,8 @@ Please note the empty curly braces (`{}`) after the call to the constructor of `
 `SpecimenType` can also be used for non-generic classes, but will lose any parametrisation for generic classes:
 ```java
 Optional result = fixture.create(SpecimenType.fromClass(Optional.class));
-```
-This syntax however is equivalent to:
-```java
-Optional result = fixture.create(Optional.class);
+
+Optional result = fixture.create(Optional.class); // convenience method for above
 ```
 
 ## Configuration

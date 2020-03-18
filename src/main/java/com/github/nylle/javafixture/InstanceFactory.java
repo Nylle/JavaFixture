@@ -43,7 +43,8 @@ public class InstanceFactory {
                             .map(s -> s.create())
                             .toArray(size -> new Object[size]));
         } catch (Exception e) {
-            throw new SpecimenException(format("Unable to construct class %s with constructor %s", type.asClass(), constructor.toString()), e);
+            throw new SpecimenException(format("Unable to construct class %s with constructor %s: %s",
+                    type.asClass(), constructor.toString(), e.getMessage()), e);
         }
     }
 

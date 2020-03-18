@@ -11,6 +11,7 @@ The purpose of this project is to generate full object graphs for use in test su
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Generics](#generics)
+- [Random Constructor](#constructor)
 - [Configuration](#configuration)
 - [JUnit5 Support](#junit5-support)
 - [Parameterized Tests](#parameterized-tests)
@@ -179,6 +180,15 @@ Optional result = fixture.create(SpecimenType.fromClass(Optional.class));
 
 Optional result = fixture.create(Optional.class); // convenience method for above
 ```
+
+## Constructor
+There might be some cases when you want to create an object not by instantiating it and setting all fields, but by calling one of its constructors and feeding it random values.
+```java
+var result = fixture.construct(new SpecimenType<MyGeneric<String>>(){});
+
+var result = fixture.construct(String.class);
+```
+_Keep in mind that only public constructors are allowed._
 
 ## Configuration
 The values below are the default values, used when no configuration is provided.

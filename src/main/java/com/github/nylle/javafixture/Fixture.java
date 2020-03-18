@@ -73,8 +73,8 @@ public class Fixture {
      * @param <T> the type of the object to be created
      * @return a new object of the specified type {@code T}
      */
-    public <T> T createThroughRandomConstructor(final Class<T> type) {
-        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createThroughRandomConstructor();
+    public <T> T construct(final Class<T> type) {
+        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).construct();
     }
 
     /**
@@ -84,8 +84,8 @@ public class Fixture {
      * @param <T> the type of the object to be created
      * @return a new object of the specified type {@code T}
      */
-    public <T> T createThroughRandomConstructor(final SpecimenType<T> type) {
-        return new SpecimenBuilder<>(type, configuration).createThroughRandomConstructor();
+    public <T> T construct(final SpecimenType<T> type) {
+        return new SpecimenBuilder<>(type, configuration).construct();
     }
 
     /**

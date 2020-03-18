@@ -343,7 +343,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.createThroughRandomConstructor(TestObjectWithGenericConstructor.class);
+            var result = fixture.construct(TestObjectWithGenericConstructor.class);
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
@@ -467,7 +467,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.createThroughRandomConstructor(new SpecimenType<TestObjectWithGenericConstructor>() {});
+            var result = fixture.construct(new SpecimenType<TestObjectWithGenericConstructor>() {});
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);

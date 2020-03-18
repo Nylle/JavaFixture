@@ -86,6 +86,10 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
         return this;
     }
 
+    T createThroughRandomConstructor() {
+        return new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(true));
+    }
+
     private T customize(T instance) {
         functions.forEach(f -> f.accept(instance));
         return instance;

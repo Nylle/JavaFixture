@@ -77,6 +77,10 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type, instanceFactory.proxy(type, specimens));
         }
 
+        if(customizationContext.useRandomConstructor()) {
+            return context.cached(type, instanceFactory.construct(type));
+        }
+
         var result = context.cached(type, instanceFactory.instantiate(type));
 
         stream(type.asClass().getDeclaredFields())

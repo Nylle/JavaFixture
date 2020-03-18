@@ -67,6 +67,28 @@ public class Fixture {
     }
 
     /**
+     * Creates a new object of the specified type, using a random constructor if available
+     *
+     * @param type the {@code Class<T>} based on which the object is created
+     * @param <T> the type of the object to be created
+     * @return a new object of the specified type {@code T}
+     */
+    public <T> T createThroughRandomConstructor(final Class<T> type) {
+        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createThroughRandomConstructor();
+    }
+
+    /**
+     * Creates a new object of the specified type, using a random constructor if available
+     *
+     * @param type the {@code SpecimenType<T>} based on which the object is created
+     * @param <T> the type of the object to be created
+     * @return a new object of the specified type {@code T}
+     */
+    public <T> T createThroughRandomConstructor(final SpecimenType<T> type) {
+        return new SpecimenBuilder<>(type, configuration).createThroughRandomConstructor();
+    }
+
+    /**
      * Creates a {@code Stream} of objects of the specified type, recursively populated with random values
      *
      * @param type the {@code Class<T>} based on which the objects are created

@@ -55,6 +55,10 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
+        if(customizationContext.useRandomConstructor()) {
+            return context.cached(type, instanceFactory.construct(type));
+        }
+
         var result = context.cached(type, instanceFactory.instantiate(type));
 
         Arrays.stream(type.asClass().getDeclaredFields())

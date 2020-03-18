@@ -3,7 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.ProxyFactory;
+import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
@@ -13,7 +13,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
     private final Context context;
-    private final SpecimenFactory specimenFactory;
+    private final InstanceFactory instanceFactory;
 
     public InterfaceSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
@@ -35,7 +35,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
         this.type = type;
         this.context = context;
-        this.specimenFactory = specimenFactory;
+        this.instanceFactory = new InstanceFactory(specimenFactory);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        return (T) context.cached(type, ProxyFactory.create(type, specimenFactory));
+        return (T) context.cached(type, instanceFactory.proxy(type));
     }
 }
 

@@ -196,12 +196,14 @@ The values below are the default values, used when no configuration is provided.
 var config = Configuration.configure()
                     .collectionSizeRange(2, 10)
                     .streamSize(3)
+                    .usePositiveNumbersOnly(false)
                     .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC));
 
 var fixture = new Fixture(config);
 ```
 - `collectionSizeRange` determines the range from which a random collection size will be picked when creating any collection, map or array
 - `streamSize` determines the number of objects to be returned when using `Stream<T> Fixture.createMany(Class<T>)`
+- `usePositiveNumbersOnly` defines whether to generate only positive numbers including 0 for `short`, `int`, `long`, `float`, and `double`
 - `clock` sets the clock to use when creating time-based values
 
 ## JUnit5 Support

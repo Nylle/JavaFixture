@@ -1,22 +1,22 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.PseudoRandom;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenType;
-
-import java.nio.charset.Charset;
-import java.util.Random;
-import java.util.UUID;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
-    private final Random random;
+    private final PseudoRandom pseudoRandom;
+    private final Configuration configuration;
 
-    public PrimitiveSpecimen(final SpecimenType<T> type) {
+    public PrimitiveSpecimen(final SpecimenType<T> type, final Context context) {
 
         if(type == null) {
             throw new IllegalArgumentException("type: null");
@@ -27,7 +27,8 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         }
 
         this.type = type;
-        this.random = new Random();
+        this.pseudoRandom = new PseudoRandom();
+        this.configuration = context.getConfiguration();
     }
 
     @Override
@@ -38,39 +39,39 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
     @Override
     public T create(final CustomizationContext customizationContext) {
         if (type.asClass().equals(String.class)) {
-            return (T) UUID.randomUUID().toString();
+            return (T) pseudoRandom.nextString();
         }
 
         if (type.asClass().equals(Boolean.class) || type.asClass().equals(boolean.class)) {
-            return (T) Boolean.valueOf(random.nextBoolean());
+            return (T) pseudoRandom.nextBool();
         }
 
         if (type.asClass().equals(Character.class) || type.asClass().equals(char.class)) {
-            return (T) Character.valueOf(UUID.randomUUID().toString().charAt(0));
+            return (T) pseudoRandom.nextChar();
         }
 
         if (type.asClass().equals(Byte.class) || type.asClass().equals(byte.class)) {
-            return (T) Byte.valueOf(UUID.randomUUID().toString().getBytes(Charset.defaultCharset())[0]);
+            return (T) pseudoRandom.nextByte();
         }
 
         if (type.asClass().equals(Short.class) || type.asClass().equals(short.class)) {
-            return (T) Short.valueOf((short)random.nextInt(Short.MAX_VALUE + 1));
+            return (T) pseudoRandom.nextShort(configuration.usePositiveNumbersOnly());
         }
 
         if (type.asClass().equals(Integer.class) || type.asClass().equals(int.class)) {
-            return (T) Integer.valueOf(random.nextInt());
+            return (T) pseudoRandom.nextInt(configuration.usePositiveNumbersOnly());
         }
 
         if (type.asClass().equals(Long.class) || type.asClass().equals(long.class)) {
-            return (T) Long.valueOf(random.nextLong());
+            return (T) pseudoRandom.nextLong(configuration.usePositiveNumbersOnly());
         }
 
         if (type.asClass().equals(Float.class) || type.asClass().equals(float.class)) {
-            return (T) Float.valueOf(random.nextFloat());
+            return (T) pseudoRandom.nextFloat(configuration.usePositiveNumbersOnly());
         }
 
         if (type.asClass().equals(Double.class) || type.asClass().equals(double.class)) {
-            return (T) Double.valueOf(random.nextDouble());
+            return (T) pseudoRandom.nextDouble(configuration.usePositiveNumbersOnly());
         }
 
         throw new SpecimenException("Unsupported type: "+ type);

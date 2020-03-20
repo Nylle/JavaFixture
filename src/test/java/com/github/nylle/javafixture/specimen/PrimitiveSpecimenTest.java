@@ -1,29 +1,34 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.Test;
 
+import static com.github.nylle.javafixture.Configuration.configure;
+import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PrimitiveSpecimenTest {
+
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new PrimitiveSpecimen<>(null))
+        assertThatThrownBy(() -> new PrimitiveSpecimen<>(null, new Context(configure())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void onlyPrimitiveTypes() {
-        assertThatThrownBy(() -> new PrimitiveSpecimen<>(SpecimenType.fromClass(Object.class)))
+        assertThatThrownBy(() -> new PrimitiveSpecimen<>(fromClass(Object.class), new Context(configure())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Object.class.getName());
     }
 
     @Test
     void createString() {
-        var sut = new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class));
+        var sut = new PrimitiveSpecimen<String>(fromClass(String.class), new Context(configure()));
 
         var actual = sut.create();
 
@@ -33,7 +38,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createBoolean() {
-        var sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(boolean.class));
+        var sut = new PrimitiveSpecimen<>(fromClass(boolean.class), new Context(configure()));
 
         var actual = sut.create();
 
@@ -43,7 +48,7 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createByte() {
-        var sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(byte.class));
+        var sut = new PrimitiveSpecimen<>(fromClass(byte.class), new Context(configure()));
 
         var actual = sut.create();
 
@@ -51,54 +56,63 @@ class PrimitiveSpecimenTest {
         assertThat(actual.toString().length()).isGreaterThan(0);
     }
 
-    @Test
-    void createShort() {
-        var sut = new PrimitiveSpecimen<Short>(SpecimenType.fromClass(short.class));
+    @TestWithCases
+    @TestCase(bool1 = false, short2 = Short.MIN_VALUE, short3 = Short.MAX_VALUE)
+    @TestCase(bool1 = true, short2 = 0, short3 = Short.MAX_VALUE)
+    void createShort(boolean positiveOnly, short min, short max) {
+        var sut = new PrimitiveSpecimen<Short>(fromClass(short.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
         var actual = sut.create();
 
         assertThat(actual).isInstanceOf(Short.class);
-        assertThat(actual).isBetween(Short.MIN_VALUE, Short.MAX_VALUE);
+        assertThat(actual).isBetween(min, max);
     }
 
-    @Test
-    void createInteger() {
-        var sut = new PrimitiveSpecimen<Integer>(SpecimenType.fromClass(int.class));
+    @TestWithCases
+    @TestCase(bool1 = false, int2 = Integer.MIN_VALUE, int3 = Integer.MAX_VALUE)
+    @TestCase(bool1 = true, int2 = 0, int3 = Integer.MAX_VALUE)
+    void createInteger(boolean positiveOnly, int min, int max) {
+        var sut = new PrimitiveSpecimen<Integer>(fromClass(int.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
         var actual = sut.create();
 
         assertThat(actual).isInstanceOf(Integer.class);
-        assertThat(actual).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertThat(actual).isBetween(min, max);
     }
 
-    @Test
-    void createLong() {
-        var sut = new PrimitiveSpecimen<Long>(SpecimenType.fromClass(long.class));
+    @TestWithCases
+    @TestCase(bool1 = false, long2 = Long.MIN_VALUE, long3 = Long.MAX_VALUE)
+    @TestCase(bool1 = true, long2 = 0, long3 = Long.MAX_VALUE)
+    void createLong(boolean positiveOnly, long min, long max) {
+        var sut = new PrimitiveSpecimen<Long>(fromClass(long.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
         var actual = sut.create();
 
         assertThat(actual).isInstanceOf(Long.class);
-        assertThat(actual).isBetween(Long.MIN_VALUE, Long.MAX_VALUE);
+        assertThat(actual).isBetween(min, max);
     }
 
-    @Test
-    void createFloat() {
-        var sut = new PrimitiveSpecimen<Float>(SpecimenType.fromClass(float.class));
+    @TestWithCases
+    @TestCase(bool1 = false, float2 = Float.MIN_VALUE, float3 = Float.MAX_VALUE)
+    @TestCase(bool1 = true, float2 = 0, float3 = Float.MAX_VALUE)
+    void createFloat(boolean positiveOnly, float min, float max) {
+        var sut = new PrimitiveSpecimen<Float>(fromClass(float.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
         var actual = sut.create();
 
         assertThat(actual).isInstanceOf(Float.class);
-        assertThat(actual).isBetween(Float.MIN_VALUE, Float.MAX_VALUE);
+        assertThat(actual).isBetween(min, max);
     }
 
-    @Test
-    void createDouble() {
-        var sut = new PrimitiveSpecimen<Double>(SpecimenType.fromClass(double.class));
+    @TestWithCases
+    @TestCase(bool1 = false, double2 = Double.MIN_VALUE, double3 = Double.MAX_VALUE)
+    @TestCase(bool1 = true, double2 = 0, double3 = Double.MAX_VALUE)
+    void createDouble(boolean positiveOnly, double min, double max) {
+        var sut = new PrimitiveSpecimen<Double>(fromClass(double.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
         var actual = sut.create();
 
         assertThat(actual).isInstanceOf(Double.class);
-        assertThat(actual).isBetween(Double.MIN_VALUE, Double.MAX_VALUE);
+        assertThat(actual).isBetween(min, max);
     }
-
 }

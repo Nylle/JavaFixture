@@ -21,7 +21,7 @@ public class SpecimenFactory {
     public <T> ISpecimen<T> build(final SpecimenType<T> type) {
 
         if (type.isPrimitive() || type.isBoxed() || type.asClass() == String.class) {
-            return new PrimitiveSpecimen<>(type);
+            return new PrimitiveSpecimen<>(type, context);
         }
 
         if (type.isEnum()) {

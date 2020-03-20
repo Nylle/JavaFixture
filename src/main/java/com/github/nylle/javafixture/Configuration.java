@@ -9,6 +9,7 @@ public class Configuration {
     private int maxCollectionSize = 10;
     private int minCollectionSize = 2;
     private int streamSize = 3;
+    private boolean usePositiveNumbersOnly = false;
 
     private Clock clock = Clock.fixed(Instant.now(), ZoneOffset.UTC);
 
@@ -18,6 +19,7 @@ public class Configuration {
      * <li>maxCollectionSize = 10
      * <li>minCollectionSize = 2
      * <li>streamSize = 3
+     * <li>usePositiveNumbersOnly = false
      * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
      * </ul><p>
      */
@@ -31,10 +33,26 @@ public class Configuration {
      * @param minCollectionSize the minimum size of arrays, collections and maps
      * @param streamSize the exact size of the result stream when creating many objects at once
      */
-    public Configuration(int maxCollectionSize, int minCollectionSize, int streamSize) {
+    public Configuration(final int maxCollectionSize, final int minCollectionSize, final int streamSize) {
         this.maxCollectionSize = maxCollectionSize;
         this.minCollectionSize = minCollectionSize;
         this.streamSize = streamSize;
+        this.usePositiveNumbersOnly = false;
+    }
+
+    /**
+     * Creates a new configuration with the specified values
+     *
+     * @param maxCollectionSize the maximum size of arrays, collections and maps
+     * @param minCollectionSize the minimum size of arrays, collections and maps
+     * @param streamSize the exact size of the result stream when creating many objects at once
+     * @param usePositiveNumbersOnly whether to generate only positive numbers including 0
+     */
+    public Configuration(final int maxCollectionSize, final int minCollectionSize, final int streamSize, final boolean usePositiveNumbersOnly) {
+        this.maxCollectionSize = maxCollectionSize;
+        this.minCollectionSize = minCollectionSize;
+        this.streamSize = streamSize;
+        this.usePositiveNumbersOnly = usePositiveNumbersOnly;
     }
 
     /**
@@ -73,11 +91,19 @@ public class Configuration {
     }
 
     /**
+     * @return whether to generate only positive numbers including 0
+     */
+    public boolean usePositiveNumbersOnly() {
+        return this.usePositiveNumbersOnly;
+    }
+
+    /**
      * Creates a new default configuration with the following values
      * <p><ul>
      * <li>maxCollectionSize = 10
      * <li>minCollectionSize = 2
      * <li>streamSize = 3
+     * <li>usePositiveNumbersOnly = false
      * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
      * </ul><p>
      */
@@ -113,6 +139,15 @@ public class Configuration {
      */
     public Configuration clock(Clock clock) {
         this.clock = clock;
+        return this;
+    }
+
+    /**
+     * @param usePositiveNumbersOnly whether to generate only positive numbers including 0
+     * @return this {@code Configuration}
+     */
+    public Configuration usePositiveNumbersOnly(boolean usePositiveNumbersOnly) {
+        this.usePositiveNumbersOnly = usePositiveNumbersOnly;
         return this;
     }
 }

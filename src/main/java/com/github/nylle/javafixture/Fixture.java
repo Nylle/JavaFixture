@@ -15,6 +15,7 @@ public class Fixture {
      * <li>maxCollectionSize = 10
      * <li>minCollectionSize = 2
      * <li>streamSize = 3
+     * <li>usePositiveNumbersOnly = false
      * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
      * </ul><p>
      */
@@ -37,6 +38,7 @@ public class Fixture {
      * <li>maxCollectionSize = 10
      * <li>minCollectionSize = 2
      * <li>streamSize = 3
+     * <li>usePositiveNumbersOnly = false
      * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
      * </ul><p>
      */

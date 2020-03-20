@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenericInterfaces;
 import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenerics;
@@ -336,6 +337,21 @@ class FixtureTest {
             assertThat(result.getTestGeneric().getU().getTestGeneric().getU()).isInstanceOf(Integer.class);
 
         }
+
+        @Test
+        void createThroughRandomConstructor() {
+
+            Fixture fixture = new Fixture(configuration);
+
+            var result = fixture.construct(TestObjectWithGenericConstructor.class);
+
+            assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
+            assertThat(result.getValue()).isInstanceOf(String.class);
+            assertThat(result.getInteger()).isInstanceOf(Optional.class);
+            assertThat(result.getInteger()).isPresent();
+            assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
+            assertThat(result.getPrivateField()).isNull();
+        }
     }
 
     @Nested
@@ -445,6 +461,20 @@ class FixtureTest {
             assertThat(result.getString()).isNull();
             assertThat(result.getPrimitiveInt()).isEqualTo(0);
         }
-    }
 
+        @Test
+        void createThroughRandomConstructor() {
+
+            Fixture fixture = new Fixture(configuration);
+
+            var result = fixture.construct(new SpecimenType<TestObjectWithGenericConstructor>() {});
+
+            assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
+            assertThat(result.getValue()).isInstanceOf(String.class);
+            assertThat(result.getInteger()).isInstanceOf(Optional.class);
+            assertThat(result.getInteger()).isPresent();
+            assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
+            assertThat(result.getPrivateField()).isNull();
+        }
+    }
 }

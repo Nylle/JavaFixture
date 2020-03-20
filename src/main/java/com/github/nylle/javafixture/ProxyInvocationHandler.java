@@ -3,30 +3,21 @@ package com.github.nylle.javafixture;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
 
-public class ProxyFactory implements InvocationHandler {
+public class ProxyInvocationHandler implements InvocationHandler {
 
     private final SpecimenFactory specimenFactory;
     private final Map<String, Object> methodResults = new HashMap<>();
     private final Map<String, ISpecimen<?>> specimens;
 
-    private ProxyFactory(final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
+    public ProxyInvocationHandler(final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
         this.specimenFactory = specimenFactory;
         this.specimens = specimens;
-    }
-
-    public static <T> Object create(final SpecimenType<T> type, final SpecimenFactory specimenFactory) {
-        return Proxy.newProxyInstance(type.asClass().getClassLoader(), new Class[]{type.asClass()}, new ProxyFactory(specimenFactory, new HashMap<>()));
-    }
-
-    public static <T> Object create(final Class<T> type, final SpecimenFactory specimenFactory, final Map<String, ISpecimen<?>> specimens) {
-        return Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new ProxyFactory(specimenFactory, specimens));
     }
 
     @Override

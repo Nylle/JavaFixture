@@ -3,6 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
@@ -16,6 +17,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
     private final SpecimenType<T> type;
     private final Context context;
     private final SpecimenFactory specimenFactory;
+    private final InstanceFactory instanceFactory;
 
     public ObjectSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
@@ -38,6 +40,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         this.type = type;
         this.context = context;
         this.specimenFactory = specimenFactory;
+        this.instanceFactory = new InstanceFactory(specimenFactory);
     }
 
     @Override
@@ -52,7 +55,11 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        var result = context.cached(type, type.toInstance());
+        if(customizationContext.useRandomConstructor()) {
+            return context.cached(type, instanceFactory.construct(type));
+        }
+
+        var result = context.cached(type, instanceFactory.instantiate(type));
 
         Arrays.stream(type.asClass().getDeclaredFields())
                 .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))

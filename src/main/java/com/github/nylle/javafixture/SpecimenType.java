@@ -1,9 +1,5 @@
 package com.github.nylle.javafixture;
 
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -49,14 +45,6 @@ public class SpecimenType<T> extends TypeCapture<T> {
         }
 
         throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
-    }
-
-    public T toInstance() {
-        try {
-            return asClass().getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            return (T) ((ObjectInstantiator) ((Objenesis) new ObjenesisStd()).getInstantiatorOf(asClass())).newInstance();
-        }
     }
 
     public Type[] getGenericTypeArguments() {

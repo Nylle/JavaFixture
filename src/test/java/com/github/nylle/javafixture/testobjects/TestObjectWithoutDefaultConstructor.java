@@ -9,4 +9,8 @@ public class TestObjectWithoutDefaultConstructor {
     public TestObjectWithoutDefaultConstructor(List<String> strings) {
         this.strings = strings;
     }
+
+    public List<String> getStrings() {
+        return strings;
+    }
 }

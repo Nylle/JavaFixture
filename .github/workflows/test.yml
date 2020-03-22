@@ -1,4 +1,4 @@
-name: Java Test
+name: Test
 on: [ push ]
 
 jobs:

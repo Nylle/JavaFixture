@@ -1,3 +1,4 @@
+[![Test](https://github.com/Nylle/JavaFixture/workflows/Test/badge.svg?branch=master)](https://github.com/Nylle/JavaFixture/actions?query=workflow%3ATest)
 [![Build Status](https://travis-ci.org/Nylle/JavaFixture.svg?branch=master)](https://travis-ci.org/Nylle/JavaFixture)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|2.1.0|)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)

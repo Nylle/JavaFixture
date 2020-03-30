@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.Period;
 import java.time.ZoneId;
@@ -22,7 +24,6 @@ import java.time.chrono.JapaneseEra;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -241,6 +242,10 @@ class SpecimenTypeTest {
     @TestCase(class1 = ZoneId.class, bool2 = true)
     @TestCase(class1 = ZoneOffset.class, bool2 = true)
     @TestCase(class1 = ZonedDateTime.class, bool2 = true)
+    @TestCase(class1 = Instant.class, bool2 = true)
+    @TestCase(class1 = LocalDate.class, bool2 = true)
+    @TestCase(class1 = java.util.Date.class, bool2 = true)
+    @TestCase(class1 = java.sql.Date.class, bool2 = true)
     void isTimeTypeFromClass(Class<?> value, boolean expected) {
         assertThat(SpecimenType.fromClass(value).isTimeType()).isEqualTo(expected);
     }

@@ -125,6 +125,14 @@ public class SpecimenType<T> extends TypeCapture<T> {
             return true;
         }
 
+        if (asClass().equals(java.util.Date.class)) {
+            return true;
+        }
+
+        if (asClass().equals(java.sql.Date.class)) {
+            return true;
+        }
+
         return false;
     }
 

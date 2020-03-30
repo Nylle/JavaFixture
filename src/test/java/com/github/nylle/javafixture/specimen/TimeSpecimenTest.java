@@ -106,10 +106,12 @@ class TimeSpecimenTest {
     @TestCase(class1 = Year.class)
     @TestCase(class1 = YearMonth.class)
     @TestCase(class1 = ZonedDateTime.class)
+    @TestCase(class1 = java.sql.Date.class)
+    @TestCase(class1 = java.util.Date.class)
     @DisplayName("create should return a valid object")
     void create(Class type) {
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create();
-        // if the object is not valid, the toString method will fail, is cannot print it
+        // if the object is not valid, the toString method will fail, it cannot print it
         assertThat(sut.toString()).isNotEmpty();
     }
 

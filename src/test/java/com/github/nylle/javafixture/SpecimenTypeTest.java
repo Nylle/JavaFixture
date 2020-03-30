@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
+import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
@@ -21,6 +22,7 @@ import java.time.chrono.JapaneseEra;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -210,6 +212,12 @@ class SpecimenTypeTest {
         assertThat(SpecimenType.fromClass(String.class).isInterface()).isFalse();
         assertThat(SpecimenType.fromClass(List.class).isInterface()).isTrue();
         assertThat(new SpecimenType<ITestGeneric<String, List<Optional>>>() {}.isInterface()).isTrue();
+    }
+
+    @Test
+    void isAbstract() {
+        assertThat(SpecimenType.fromClass(TestObject.class).isAbstract()).isFalse();
+        assertThat(SpecimenType.fromClass(TestAbstractClass.class).isAbstract()).isTrue();
     }
 
     @Test

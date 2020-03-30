@@ -9,7 +9,9 @@ import java.util.Map;
 
 import static java.util.Arrays.stream;
 
-public class ProxyInvocationHandler implements InvocationHandler {
+import javassist.util.proxy.MethodHandler;
+
+public class ProxyInvocationHandler implements InvocationHandler, MethodHandler {
 
     private final SpecimenFactory specimenFactory;
     private final Map<String, Object> methodResults = new HashMap<>();
@@ -29,6 +31,17 @@ public class ProxyInvocationHandler implements InvocationHandler {
         return methodResults.computeIfAbsent(
                 method.toString(),
                 key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create());
+    }
+
+    @Override
+    public Object invoke(final Object self, final Method thisMethod, final Method proceed, final Object[] args) {
+        if (thisMethod.getReturnType() == void.class) {
+            return null;
+        }
+
+        return methodResults.computeIfAbsent(
+                thisMethod.toString(),
+                key -> specimens.getOrDefault(thisMethod.getGenericReturnType().getTypeName(), resolveSpecimen(thisMethod)).create());
     }
 
     private ISpecimen<?> resolveSpecimen(final Method method) {

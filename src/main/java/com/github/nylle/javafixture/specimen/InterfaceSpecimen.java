@@ -29,7 +29,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if(!type.isInterface() || type.isMap() || type.isCollection()) {
+        if(!type.isAbstract() || type.isMap() || type.isCollection()) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 

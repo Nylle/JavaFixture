@@ -44,12 +44,12 @@ public class SpecimenFactory {
             return new ArraySpecimen<>(type, context, this);
         }
 
-        if (type.isInterface()) {
-            return new InterfaceSpecimen<>(type, context, this);
-        }
-
         if (type.isTimeType()) {
             return new TimeSpecimen<>(type, context);
+        }
+
+        if (type.isAbstract()) {
+            return new InterfaceSpecimen<>(type, context, this);
         }
 
         return new ObjectSpecimen<>(type, context, this);

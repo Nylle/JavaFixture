@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
+import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.Period;
 import java.time.ZoneId;
@@ -213,6 +216,12 @@ class SpecimenTypeTest {
     }
 
     @Test
+    void isAbstract() {
+        assertThat(SpecimenType.fromClass(TestObject.class).isAbstract()).isFalse();
+        assertThat(SpecimenType.fromClass(TestAbstractClass.class).isAbstract()).isTrue();
+    }
+
+    @Test
     void isTimeType() {
         assertThat(new SpecimenType<String>(){}.isTimeType()).isFalse(); // false
         assertThat(new SpecimenType<Duration>(){}.isTimeType()).isTrue();
@@ -233,6 +242,10 @@ class SpecimenTypeTest {
     @TestCase(class1 = ZoneId.class, bool2 = true)
     @TestCase(class1 = ZoneOffset.class, bool2 = true)
     @TestCase(class1 = ZonedDateTime.class, bool2 = true)
+    @TestCase(class1 = Instant.class, bool2 = true)
+    @TestCase(class1 = LocalDate.class, bool2 = true)
+    @TestCase(class1 = java.util.Date.class, bool2 = true)
+    @TestCase(class1 = java.sql.Date.class, bool2 = true)
     void isTimeTypeFromClass(Class<?> value, boolean expected) {
         assertThat(SpecimenType.fromClass(value).isTimeType()).isEqualTo(expected);
     }

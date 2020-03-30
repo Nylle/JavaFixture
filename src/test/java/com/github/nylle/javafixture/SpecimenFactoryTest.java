@@ -46,13 +46,15 @@ class SpecimenFactoryTest {
     @TestCase(class1 = ZonedDateTime.class, class2 = TimeSpecimen.class)
     @TestCase(class1 = ZoneOffset.class, class2 = TimeSpecimen.class)
     @TestCase(class1 = Instant.class, class2 = TimeSpecimen.class)
+    @TestCase(class1 = java.util.Date.class, class2 = TimeSpecimen.class)
+    @TestCase(class1 = java.sql.Date.class, class2 = TimeSpecimen.class)
     @TestCase(class1 = Object.class, class2 = ObjectSpecimen.class)
     void build(Class<?> value, Class<?> expected) {
         assertThat(new SpecimenFactory(new Context(new Configuration())).build(SpecimenType.fromClass(value))).isExactlyInstanceOf(expected);
     }
 
     @Test
-    void buildGeneric() throws NoSuchFieldException {
+    void buildGeneric() {
         var sut = new SpecimenFactory(new Context(new Configuration()));
 
         assertThat(sut.build(new SpecimenType<List<String>>(){})).isExactlyInstanceOf(CollectionSpecimen.class);

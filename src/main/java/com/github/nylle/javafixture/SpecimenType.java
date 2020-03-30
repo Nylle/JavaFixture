@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -124,6 +125,14 @@ public class SpecimenType<T> extends TypeCapture<T> {
             return true;
         }
 
+        if (asClass().equals(java.util.Date.class)) {
+            return true;
+        }
+
+        if (asClass().equals(java.sql.Date.class)) {
+            return true;
+        }
+
         return false;
     }
 
@@ -147,6 +156,10 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public boolean isInterface() {
         return asClass().isInterface();
+    }
+
+    public boolean isAbstract() {
+        return Modifier.isAbstract(asClass().getModifiers());
     }
 
     public static Class<?> castToClass(Type type) {

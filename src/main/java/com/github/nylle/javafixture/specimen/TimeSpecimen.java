@@ -1,15 +1,12 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.SpecimenType;
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Clock;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.time.Period;
 import java.time.ZoneId;
@@ -18,7 +15,11 @@ import java.time.chrono.JapaneseEra;
 import java.time.temporal.Temporal;
 import java.util.Random;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenType;
 
 public class TimeSpecimen<T> implements ISpecimen<T> {
 
@@ -59,6 +60,16 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
                 throw new SpecimenException("Unsupported type: " + type.asClass());
             }
         }
+
+        if (type.asClass().equals(java.util.Date.class)) {
+            return (T) java.sql.Timestamp.valueOf(LocalDateTime.now(context.getConfiguration().getClock()));
+        }
+
+
+        if (type.asClass().equals(java.sql.Date.class)) {
+            return (T) java.sql.Date.valueOf(LocalDateTime.now(context.getConfiguration().getClock()).toLocalDate());
+        }
+
         if (type.asClass().equals(MonthDay.class)) {
             return (T) MonthDay.now(context.getConfiguration().getClock());
         }

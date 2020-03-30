@@ -23,7 +23,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <scope>test</scope>
 </dependency>
 ```

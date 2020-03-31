@@ -2,7 +2,10 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithEnumMap;
+import com.github.nylle.javafixture.testobjects.TestObjectWithEnumSet;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithNestedGenericInterfaces;
@@ -408,6 +411,30 @@ class FixtureTest {
             assertThat(innerList.get(0)).isPresent();
             assertThat(innerList.get(0).get()).isInstanceOf(String.class);
             assertThat(innerList.get(0).get()).isNotEmpty();
+        }
+
+        @Test
+        void canCreateEnumSets() {
+
+            Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
+
+            var result = fixture.create(TestObjectWithEnumSet.class);
+
+            assertThat(result.getId()).isNotBlank();
+            assertThat(result.getEnums()).isNotEmpty();
+            assertThat(result.getEnums().iterator().next()).isInstanceOf(TestEnum.class);
+        }
+
+        @Test
+        void canCreateEnumMaps() {
+
+            Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
+
+            var result = fixture.create(TestObjectWithEnumMap.class);
+
+            assertThat(result.getId()).isNotBlank();
+            assertThat(result.getEnums()).isNotEmpty();
+            assertThat(result.getEnums().keySet().iterator().next()).isInstanceOf(TestEnum.class);
         }
 
         @Test

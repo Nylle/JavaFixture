@@ -4,6 +4,7 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -221,6 +223,16 @@ class CollectionSpecimenTest {
         assertThat(actual).isInstanceOf(HashSet.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
         assertThat(actual.size()).isEqualTo(2);
+    }
+
+    @Test
+    void createEnumSet() {
+        var sut = new CollectionSpecimen<>(new SpecimenType<EnumSet<TestEnum>>(){}, context, specimenFactory);
+
+        var actual = sut.create();
+
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.iterator().next()).isInstanceOf(TestEnum.class);
     }
 
     @Test

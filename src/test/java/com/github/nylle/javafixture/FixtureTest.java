@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumSet;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
@@ -419,7 +420,8 @@ class FixtureTest {
             var result = fixture.create(TestObjectWithEnumSet.class);
 
             assertThat(result.getId()).isNotBlank();
-            assertThat(result.getEnums()).hasSize(2);
+            assertThat(result.getEnums()).isNotEmpty();
+            assertThat(result.getEnums().keySet().iterator().next()).isInstanceOf(TestEnum.class);
         }
 
         @Test

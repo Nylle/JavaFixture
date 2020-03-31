@@ -231,7 +231,8 @@ class CollectionSpecimenTest {
 
         var actual = sut.create();
 
-        assertThat(actual).hasSize(2);
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.iterator().next()).isInstanceOf(TestEnum.class);
     }
 
     @Test

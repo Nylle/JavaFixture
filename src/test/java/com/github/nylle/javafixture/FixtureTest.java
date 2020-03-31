@@ -4,6 +4,7 @@ import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithEnumMap;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumSet;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
@@ -418,6 +419,18 @@ class FixtureTest {
             Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
             var result = fixture.create(TestObjectWithEnumSet.class);
+
+            assertThat(result.getId()).isNotBlank();
+            assertThat(result.getEnums()).isNotEmpty();
+            assertThat(result.getEnums().iterator().next()).isInstanceOf(TestEnum.class);
+        }
+
+        @Test
+        void canCreateEnumMaps() {
+
+            Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
+
+            var result = fixture.create(TestObjectWithEnumMap.class);
 
             assertThat(result.getId()).isNotBlank();
             assertThat(result.getEnums()).isNotEmpty();

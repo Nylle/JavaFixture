@@ -8,6 +8,7 @@ import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -65,7 +66,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        Map<K, V> map = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type.asClass()));
+        Map<K, V> map = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
@@ -75,9 +76,13 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         return (T) map;
     }
 
-    private Map<K, V> createFromConcreteType(final Class<T> type) {
+    private Map<K, V> createFromConcreteType(final SpecimenType<T> type) {
+        if (type.asClass().equals(EnumMap.class)) {
+            return (Map<K, V>) new EnumMap((Class<K>) type.getGenericTypeArgument(0));
+        }
+
         try {
-            return (Map<K, V>) type.getDeclaredConstructor().newInstance();
+            return (Map<K, V>) type.asClass().getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new SpecimenException("Unable to create map of type " + type.getName(), e);
         }

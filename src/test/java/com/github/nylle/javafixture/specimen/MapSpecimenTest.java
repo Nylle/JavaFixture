@@ -4,10 +4,12 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +166,17 @@ class MapSpecimenTest {
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual.entrySet().stream()
                 .allMatch(x -> x.getKey().getClass().equals(String.class) && x.getValue().getClass().equals(Integer.class)))
+                .isTrue();
+    }
+
+    @Test
+    void createEnumMap() {
+        var actual = new MapSpecimen<>(new SpecimenType<EnumMap<TestEnum, Integer>>(){}, context, specimenFactory).create();
+
+        assertThat(actual).isInstanceOf(EnumMap.class);
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.entrySet().stream()
+                .allMatch(x -> x.getKey().getClass().equals(TestEnum.class) && x.getValue().getClass().equals(Integer.class)))
                 .isTrue();
     }
 

@@ -12,6 +12,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.concurrent.TransferQueue;
 import java.util.stream.IntStream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import static java.util.stream.Collectors.toList;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     private final SpecimenType<T> type;
@@ -56,7 +58,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         this.type = type;
         this.context = context;
 
-        if(type.isParameterized()) {
+        if (type.isParameterized()) {
             this.specimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
         }
     }
@@ -72,7 +74,11 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        Collection<G> collection = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type.asClass()));
+        if (type.asClass().equals(EnumSet.class)) {
+            return createEnumSet();
+        }
+
+        Collection<G> collection = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
@@ -82,9 +88,19 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         return (T) collection;
     }
 
-    private Collection<G> createFromConcreteType(final Class<?> type) {
+    private <G extends Enum> T createEnumSet() {
+        final List<G> elements = IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
+                .boxed()
+                .filter(x -> specimen != null)
+                .map(x -> (G) specimen.create())
+                .collect(toList());
+
+        return (T) EnumSet.of(elements.get(0), (G[]) elements.stream().skip(1).toArray(size -> new Enum[size]));
+    }
+
+    private Collection<G> createFromConcreteType(final SpecimenType<T> type) {
         try {
-            return (Collection<G>) type.getDeclaredConstructor().newInstance();
+            return (Collection<G>) type.asClass().getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new SpecimenException("Unable to create collection of type " + type.getName(), e);
         }

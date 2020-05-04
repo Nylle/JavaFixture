@@ -76,6 +76,17 @@ ArrayList:
 - String: "9452541b-c6f9-4316-b254-28d00b327d0d"
 - String: "4ed0f3c4-5ea3-4dbb-b31c-f92c036af463"
 
+### Collection of Strings with Desired Size
+```java
+List<String> result = fixture.build(String.class).createMany(4).collect(Collectors.toList());
+```
+#### Sample Result
+ArrayList: 
+- String: "333af3f6-4ed1-4580-9cae-aaee271d7ba7"
+- String: "9452541b-c6f9-4316-b254-28d00b327d0d"
+- String: "4ed0f3c4-5ea3-4dbb-b31c-f92c036af463"
+- String: "52ac46e4-1b21-40c8-9213-31fc839fbdf7"
+
 ### Add to Collection
 ```java
 List<String> result = new ArrayList<>();

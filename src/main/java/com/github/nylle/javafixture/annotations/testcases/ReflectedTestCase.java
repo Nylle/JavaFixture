@@ -12,6 +12,17 @@ import static java.util.Arrays.stream;
 
 public class ReflectedTestCase {
 
+    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = Map.of(
+            Boolean.class, Boolean.TYPE,
+            Character.class, Character.TYPE,
+            Byte.class, Byte.TYPE,
+            Short.class, Short.TYPE,
+            Integer.class, Integer.TYPE,
+            Long.class, Long.TYPE,
+            Float.class, Float.TYPE,
+            Double.class, Double.TYPE
+    );
+
     private Map<Class<?>, List<?>> matrix = new HashMap<>();
 
     public ReflectedTestCase(TestCase testCase) {
@@ -22,7 +33,7 @@ public class ReflectedTestCase {
 
     @SuppressWarnings("unchecked")
     public <T> T getTestCaseValueFor(Class<T> type, int i) {
-        return (T) matrix.get(type).get(i);
+        return (T) matrix.get(primitiveWrapperMap.getOrDefault(type, type)).get(i);
     }
 
     @SuppressWarnings("unchecked")

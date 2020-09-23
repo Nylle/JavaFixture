@@ -22,9 +22,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -503,5 +505,18 @@ class FixtureTest {
             assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
         }
+    }
+
+    @Test
+    void canCreateDefaultConfiguration() {
+
+        var result = Fixture.configuration();
+
+        assertThat(result.getMaxCollectionSize()).isEqualTo(10);
+        assertThat(result.getMinCollectionSize()).isEqualTo(2);
+        assertThat(result.getStreamSize()).isEqualTo(3);
+        assertThat(result.usePositiveNumbersOnly()).isFalse();
+        assertThat(result.getClock().instant()).isBefore(Instant.now());
+        assertThat(result.getClock().getZone()).isEqualTo(ZoneOffset.UTC);
     }
 }

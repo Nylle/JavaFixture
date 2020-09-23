@@ -157,4 +157,20 @@ public class Fixture {
     public <T> void addManyTo(Collection<T> result, final SpecimenType<T> type) {
         result.addAll(new SpecimenBuilder<>(type, configuration).createMany().collect(Collectors.toList()));
     }
+
+    /**
+     * Returns a new default configuration with the following values
+     * <p><ul>
+     * <li>maxCollectionSize = 10
+     * <li>minCollectionSize = 2
+     * <li>streamSize = 3
+     * <li>usePositiveNumbersOnly = false
+     * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
+     * </ul><p>
+     *
+     * @return {@code Configuration}
+     */
+    public static Configuration configuration() {
+        return new Configuration();
+    }
 }

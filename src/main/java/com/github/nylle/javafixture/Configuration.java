@@ -150,4 +150,13 @@ public class Configuration {
         this.usePositiveNumbersOnly = usePositiveNumbersOnly;
         return this;
     }
+
+    /**
+     * Returns a new fixture with this configuration
+     *
+     * @return {@code Fixture}
+     */
+    public Fixture fixture() {
+        return new Fixture(this);
+    }
 }

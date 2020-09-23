@@ -1,5 +1,5 @@
 [![Tests](https://github.com/Nylle/JavaFixture/workflows/test/badge.svg?branch=master)](https://github.com/Nylle/JavaFixture/actions?query=workflow%3ATest)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|2.1.2|)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|2.2.0|)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 # JavaFixture
@@ -22,7 +22,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.1.2</version>
+    <version>2.2.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -211,6 +211,16 @@ var config = Configuration.configure()
                     .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC));
 
 var fixture = new Fixture(config);
+```
+
+The fixture can also be configured fluently inline:
+```
+var configuredFixture = Fixture.configuration()
+                               .collectionSizeRange(2, 10)
+                               .streamSize(3)
+                               .usePositiveNumbersOnly(false)
+                               .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC))
+                               .fixture();
 ```
 - `collectionSizeRange` determines the range from which a random collection size will be picked when creating any collection, map or array
 - `streamSize` determines the number of objects to be returned when using `Stream<T> Fixture.createMany(Class<T>)`

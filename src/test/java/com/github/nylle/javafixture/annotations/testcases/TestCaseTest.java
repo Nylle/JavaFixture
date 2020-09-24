@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -14,8 +16,6 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TestCaseTest {
 
@@ -67,7 +67,7 @@ class TestCaseTest {
 
         @TestWithCases
         @TestCase(bool1 = true, str2 = "true")
-        @TestCase(bool2 = false, str2 = "false")
+        @TestCase(bool1 = false, str2 = "false")
         void testBooleanType(Boolean bool, String expectedBooleanValue) {
             assertThat(bool).isEqualTo(Boolean.parseBoolean(expectedBooleanValue));
         }

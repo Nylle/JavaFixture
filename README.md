@@ -205,16 +205,16 @@ _Keep in mind that only public constructors are allowed._
 The values below are the default values, used when no configuration is provided.
 ```java
 var config = Configuration.configure()
-                    .collectionSizeRange(2, 10)
-                    .streamSize(3)
-                    .usePositiveNumbersOnly(false)
-                    .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC));
+                          .collectionSizeRange(2, 10)
+                          .streamSize(3)
+                          .usePositiveNumbersOnly(false)
+                          .clock(Clock.fixed(Instant.now(), ZoneOffset.UTC));
 
 var fixture = new Fixture(config);
 ```
 
 The fixture can also be configured fluently inline:
-```
+```java
 var configuredFixture = Fixture.configuration()
                                .collectionSizeRange(2, 10)
                                .streamSize(3)

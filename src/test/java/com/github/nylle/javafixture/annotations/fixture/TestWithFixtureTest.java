@@ -2,6 +2,7 @@ package com.github.nylle.javafixture.annotations.fixture;
 
 import com.github.nylle.javafixture.testobjects.example.Contract;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,5 +15,11 @@ public class TestWithFixtureTest {
         assertThat(optionalString).isInstanceOf(Optional.class);
         assertThat(optionalString).isPresent();
         assertThat(optionalString.get()).isInstanceOf(String.class);
+    }
+
+    @TestWithFixture(minCollectionSize = 11, maxCollectionSize = 11, positiveNumbersOnly = true)
+    void configurableFixture(List<Integer> input) {
+        assertThat(input).hasSize(11);
+        assertThat(input).allMatch(x -> x > 1);
     }
 }

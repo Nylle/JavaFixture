@@ -1,5 +1,13 @@
 package com.github.nylle.javafixture.specimen;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
+
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.stream.IntStream;
+
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
@@ -7,14 +15,6 @@ import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.stream.IntStream;
-
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toMap;
 
 public class GenericSpecimen<T> implements ISpecimen<T> {
 
@@ -73,11 +73,11 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        if(type.isInterface()) {
+        if (type.isInterface()) {
             return (T) context.cached(type, instanceFactory.proxy(type, specimens));
         }
 
-        if(customizationContext.useRandomConstructor()) {
+        if (customizationContext.useRandomConstructor()) {
             return context.cached(type, instanceFactory.construct(type));
         }
 
@@ -92,7 +92,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     }
 
     private void customize(Field field, T result, CustomizationContext customizationContext) {
-        if(customizationContext.getCustomFields().containsKey(field.getName())) {
+        if (customizationContext.getCustomFields().containsKey(field.getName())) {
             ReflectionHelper.setField(field, result, customizationContext.getCustomFields().get(field.getName()));
         } else {
             ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());

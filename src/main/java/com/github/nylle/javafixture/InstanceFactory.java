@@ -63,7 +63,7 @@ public class InstanceFactory {
     }
 
     public <T> Object proxy(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
-        if(type.isInterface()) {
+        if (type.isInterface()) {
             return Proxy.newProxyInstance(
                     type.asClass().getClassLoader(),
                     new Class[] { type.asClass() },

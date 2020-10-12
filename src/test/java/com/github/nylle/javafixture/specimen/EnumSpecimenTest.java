@@ -1,11 +1,12 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestEnum;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestEnum;
 
 class EnumSpecimenTest {
 

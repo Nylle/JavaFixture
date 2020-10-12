@@ -1,14 +1,7 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.annotations.testcases.TestCase;
-import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
-import com.github.nylle.javafixture.testobjects.ITestGeneric;
-import com.github.nylle.javafixture.testobjects.TestAbstractClass;
-import com.github.nylle.javafixture.testobjects.TestEnum;
-import com.github.nylle.javafixture.testobjects.TestObject;
-import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
-import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -50,8 +43,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import com.github.nylle.javafixture.testobjects.ITestGeneric;
+import com.github.nylle.javafixture.testobjects.TestAbstractClass;
+import com.github.nylle.javafixture.testobjects.TestEnum;
+import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 
 class SpecimenTypeTest {
 
@@ -256,8 +257,8 @@ class SpecimenTypeTest {
 
         assertThat(sut.getGenericTypeArgument(0)).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArgument(1)).isInstanceOf(ParameterizedType.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArgument(1))).getRawType()).isEqualTo(Optional.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArgument(1))).getActualTypeArguments()[0]).isEqualTo(Integer.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArgument(1))).getRawType()).isEqualTo(Optional.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArgument(1))).getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArgument(0))
@@ -272,8 +273,8 @@ class SpecimenTypeTest {
         assertThat(sut.getGenericTypeArguments()).hasSize(2);
         assertThat(sut.getGenericTypeArguments()[0]).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArguments()[1]).isInstanceOf(ParameterizedType.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArguments()[1])).getRawType()).isEqualTo(Optional.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArguments()[1])).getActualTypeArguments()[0]).isEqualTo(Integer.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArguments()[1])).getRawType()).isEqualTo(Optional.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArguments()[1])).getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArguments())

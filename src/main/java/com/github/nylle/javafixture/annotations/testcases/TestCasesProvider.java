@@ -1,16 +1,16 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.junit.jupiter.params.support.AnnotationConsumer;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.support.AnnotationConsumer;
 
 class TestCasesProvider implements ArgumentsProvider, AnnotationConsumer<TestWithCases> {
 

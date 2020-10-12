@@ -1,13 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestEnum;
-import com.github.nylle.javafixture.testobjects.TestObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -21,8 +15,15 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestEnum;
+import com.github.nylle.javafixture.testobjects.TestObject;
 
 class MapSpecimenTest {
     private Context context;
@@ -202,10 +203,10 @@ class MapSpecimenTest {
         assertThat(actual).isExactlyInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
 
-        for(var entry : actual.entrySet()) {
-            assertThat(((Map.Entry)entry).getKey()).isExactlyInstanceOf(String.class);
-            assertThat(((Map.Entry)entry).getValue()).isExactlyInstanceOf(HashMap.class);
-            assertThat(((Map)((Map.Entry)entry).getValue()).size()).isEqualTo(2);
+        for (var entry : actual.entrySet()) {
+            assertThat(((Map.Entry) entry).getKey()).isExactlyInstanceOf(String.class);
+            assertThat(((Map.Entry) entry).getValue()).isExactlyInstanceOf(HashMap.class);
+            assertThat(((Map) ((Map.Entry) entry).getValue()).size()).isEqualTo(2);
         }
     }
 
@@ -219,11 +220,11 @@ class MapSpecimenTest {
         assertThat(actual).isExactlyInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
 
-        var first = (Map.Entry)actual.entrySet().iterator().next();
+        var first = (Map.Entry) actual.entrySet().iterator().next();
         assertThat(first.getKey()).isExactlyInstanceOf(String.class);
         assertThat(first.getValue()).isExactlyInstanceOf(TestObject.class);
 
-        var second = (Map.Entry)actual.entrySet().iterator().next();
+        var second = (Map.Entry) actual.entrySet().iterator().next();
         assertThat(second.getKey()).isExactlyInstanceOf(String.class);
         assertThat(second.getValue()).isExactlyInstanceOf(TestObject.class);
 

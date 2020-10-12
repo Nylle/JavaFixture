@@ -1,11 +1,6 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.EnumMap;
@@ -20,7 +15,12 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.IntStream;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     private final SpecimenType<T> type;
@@ -49,7 +49,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         this.type = type;
         this.context = context;
 
-        if(type.isParameterized()) {
+        if (type.isParameterized()) {
             this.keySpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
             this.valueSpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(1)));
         }

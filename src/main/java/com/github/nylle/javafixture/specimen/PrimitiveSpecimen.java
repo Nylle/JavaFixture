@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
+
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
@@ -7,8 +9,6 @@ import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.PseudoRandom;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenType;
-
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
@@ -18,7 +18,7 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     public PrimitiveSpecimen(final SpecimenType<T> type, final Context context) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
@@ -74,7 +74,7 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
             return (T) pseudoRandom.nextDouble(configuration.usePositiveNumbersOnly());
         }
 
-        throw new SpecimenException("Unsupported type: "+ type);
+        throw new SpecimenException("Unsupported type: " + type);
     }
 }
 

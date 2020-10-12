@@ -1,14 +1,15 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
-import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
-import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
-
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
+import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
 
 class InstanceFactoryTest {
 

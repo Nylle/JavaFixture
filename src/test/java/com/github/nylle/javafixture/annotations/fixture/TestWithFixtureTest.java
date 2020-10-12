@@ -1,11 +1,11 @@
 package com.github.nylle.javafixture.annotations.fixture;
 
-import com.github.nylle.javafixture.testobjects.example.Contract;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.github.nylle.javafixture.testobjects.example.Contract;
 
 public class TestWithFixtureTest {
     @TestWithFixture

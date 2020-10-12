@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import static java.util.Arrays.stream;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,8 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.stream;
 
 public class ReflectedTestCase {
 
@@ -46,7 +46,7 @@ public class ReflectedTestCase {
     }
 
     private <T> List<T> addTo(List<T> list, T value) {
-        if(list == null) {
+        if (list == null) {
             list = new ArrayList<>();
         }
 

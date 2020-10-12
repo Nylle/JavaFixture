@@ -1,11 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -29,8 +25,12 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 import java.util.stream.IntStream;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static java.util.stream.Collectors.toList;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     private final SpecimenType<T> type;

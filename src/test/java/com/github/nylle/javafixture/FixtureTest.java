@@ -1,5 +1,26 @@
 package com.github.nylle.javafixture;
 
+import static com.github.nylle.javafixture.Fixture.fixture;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.File;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestEnum;
@@ -17,31 +38,24 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.github.nylle.javafixture.Fixture.fixture;
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 class FixtureTest {
 
     private final Configuration configuration = new Configuration();
+
+    @Test
+    void canCreateDefaultConfiguration() {
+
+        var result = Fixture.configuration();
+
+        assertThat(result.getMaxCollectionSize()).isEqualTo(10);
+        assertThat(result.getMinCollectionSize()).isEqualTo(2);
+        assertThat(result.getStreamSize()).isEqualTo(3);
+        assertThat(result.usePositiveNumbersOnly()).isFalse();
+        assertThat(result.getClock().instant()).isBefore(Instant.now());
+        assertThat(result.getClock().getZone()).isEqualTo(ZoneOffset.UTC);
+    }
 
     @Nested
     @DisplayName("when using Class<T>")
@@ -485,7 +499,7 @@ class FixtureTest {
 
             assertThat(result.getT()).isInstanceOf(List.class);
             assertThat(result.getT().size()).isGreaterThan(1);
-            assertThat(result.getT().get(result.getT().size()-1)).isEqualTo("bar");
+            assertThat(result.getT().get(result.getT().size() - 1)).isEqualTo("bar");
             assertThat(result.getU()).isEqualTo("foo");
             assertThat(result.getString()).isNull();
             assertThat(result.getPrimitiveInt()).isEqualTo(0);
@@ -505,18 +519,5 @@ class FixtureTest {
             assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
         }
-    }
-
-    @Test
-    void canCreateDefaultConfiguration() {
-
-        var result = Fixture.configuration();
-
-        assertThat(result.getMaxCollectionSize()).isEqualTo(10);
-        assertThat(result.getMinCollectionSize()).isEqualTo(2);
-        assertThat(result.getStreamSize()).isEqualTo(3);
-        assertThat(result.usePositiveNumbersOnly()).isFalse();
-        assertThat(result.getClock().instant()).isBefore(Instant.now());
-        assertThat(result.getClock().getZone()).isEqualTo(ZoneOffset.UTC);
     }
 }

@@ -1,10 +1,10 @@
 package com.github.nylle.javafixture;
 
+import static java.lang.String.format;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-import static java.lang.String.format;
 
 
 public class ReflectionHelper {

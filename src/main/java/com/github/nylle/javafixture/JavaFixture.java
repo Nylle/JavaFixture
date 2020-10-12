@@ -5,6 +5,11 @@ package com.github.nylle.javafixture;
  */
 @Deprecated()
 public class JavaFixture extends Fixture {
-    public JavaFixture() { super(); }
-    public JavaFixture(Configuration configuration) { super(configuration); }
+    public JavaFixture() {
+        super();
+    }
+
+    public JavaFixture(Configuration configuration) {
+        super(configuration);
+    }
 }

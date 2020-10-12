@@ -1,5 +1,8 @@
 package com.github.nylle.javafixture;
 
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -12,9 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-
-import static java.lang.String.format;
-import static java.util.Arrays.stream;
 
 public class SpecimenType<T> extends TypeCapture<T> {
 
@@ -34,6 +34,22 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public static <T> SpecimenType<T> fromRawType(final Class<?> rawType, final Type[] actualTypeArguments) {
         return new SpecimenType<>(TypeCapture.create(rawType, actualTypeArguments));
+    }
+
+    public static Class<?> castToClass(Type type) {
+        if (type instanceof WildcardType) {
+            return Object.class;
+        }
+
+        if (isParameterized(type)) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        return (Class<?>) type;
+    }
+
+    public static boolean isParameterized(final Type type) {
+        return type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
     }
 
     public Class<T> asClass() {
@@ -73,7 +89,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public Class<?> getComponentType() {
-        if(isArray()) {
+        if (isArray()) {
             return asClass().getComponentType();
         }
 
@@ -81,7 +97,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public T[] getEnumConstants() {
-        if(isEnum()) {
+        if (isEnum()) {
             return asClass().getEnumConstants();
         }
 
@@ -89,7 +105,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public String getName() {
-        if(isParameterized()) {
+        if (isParameterized()) {
             return asParameterizedType().getTypeName();
         }
 
@@ -162,22 +178,6 @@ public class SpecimenType<T> extends TypeCapture<T> {
         return Modifier.isAbstract(asClass().getModifiers());
     }
 
-    public static Class<?> castToClass(Type type) {
-        if (type instanceof WildcardType) {
-            return Object.class;
-        }
-
-        if (isParameterized(type)) {
-            return (Class<?>) ((ParameterizedType) type).getRawType();
-        }
-
-        return (Class<?>) type;
-    }
-
-    public static boolean isParameterized(final Type type) {
-        return type instanceof ParameterizedType && ((ParameterizedType) type).getActualTypeArguments().length > 0;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -190,7 +190,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
         final SpecimenType that = (SpecimenType) o;
 
-        if(isParameterized() != that.isParameterized()) {
+        if (isParameterized() != that.isParameterized()) {
             return false;
         }
 

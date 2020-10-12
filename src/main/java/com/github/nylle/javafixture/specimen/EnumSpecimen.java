@@ -1,12 +1,12 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.SpecimenType;
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 import java.util.Random;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.SpecimenType;
 
 public class EnumSpecimen<T> implements ISpecimen<T> {
 
@@ -15,7 +15,7 @@ public class EnumSpecimen<T> implements ISpecimen<T> {
 
     public EnumSpecimen(final SpecimenType<T> type) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 

@@ -1,14 +1,15 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.annotations.testcases.TestCase;
-import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
-import org.junit.jupiter.api.Test;
-
 import static com.github.nylle.javafixture.Configuration.configure;
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 
 class PrimitiveSpecimenTest {
 

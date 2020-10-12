@@ -1,16 +1,17 @@
 package com.github.nylle.javafixture.annotations.fixture;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Fixture;
-import com.github.nylle.javafixture.SpecimenType;
+import static java.util.Arrays.stream;
+
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
 
-import java.util.stream.Stream;
-
-import static java.util.Arrays.stream;
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Fixture;
+import com.github.nylle.javafixture.SpecimenType;
 
 public class JavaFixtureProvider implements ArgumentsProvider, AnnotationConsumer<TestWithFixture> {
 

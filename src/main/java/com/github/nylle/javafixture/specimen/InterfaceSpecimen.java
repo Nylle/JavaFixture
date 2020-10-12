@@ -1,13 +1,13 @@
 package com.github.nylle.javafixture.specimen;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
+
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
@@ -17,7 +17,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
     public InterfaceSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
@@ -29,7 +29,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if(!type.isAbstract() || type.isMap() || type.isCollection()) {
+        if (!type.isAbstract() || type.isMap() || type.isCollection()) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -45,7 +45,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if(context.isCached(type)){
+        if (context.isCached(type)) {
             return (T) context.cached(type);
         }
 

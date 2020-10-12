@@ -5,8 +5,8 @@ public interface ITestGeneric<T, U> {
 
     T getT();
 
-    U getU();
-
     void setT(T value);
+
+    U getU();
 
 }

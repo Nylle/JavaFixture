@@ -36,7 +36,7 @@ class InterfaceSpecimenTest {
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>((SpecimenType)null, context, specimenFactory))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>((SpecimenType) null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }

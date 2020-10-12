@@ -1,11 +1,12 @@
 package com.github.nylle.javafixture.annotations.fixture;
 
-import com.github.nylle.javafixture.Fixture;
-import com.github.nylle.javafixture.SpecimenType;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
+
+import com.github.nylle.javafixture.Fixture;
+import com.github.nylle.javafixture.SpecimenType;
 
 public class JavaFixtureExtension implements ParameterResolver {
     @Override

@@ -1,10 +1,11 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.annotations.testcases.TestCase;
-import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 
 class PseudoRandomTest {
 

@@ -1,19 +1,20 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestObject;
 
 class ObjectSpecimenTest {
 
@@ -70,11 +71,11 @@ class ObjectSpecimenTest {
         assertThat(actual.getStrings()).isInstanceOf(HashMap.class);
         assertThat(actual.getStrings().size()).isEqualTo(2);
 
-        var first = (Map.Entry)actual.getStrings().entrySet().iterator().next();
+        var first = (Map.Entry) actual.getStrings().entrySet().iterator().next();
         assertThat(first.getKey()).isExactlyInstanceOf(Integer.class);
         assertThat(first.getValue()).isExactlyInstanceOf(String.class);
 
-        var second = (Map.Entry)actual.getStrings().entrySet().iterator().next();
+        var second = (Map.Entry) actual.getStrings().entrySet().iterator().next();
         assertThat(second.getKey()).isExactlyInstanceOf(Integer.class);
         assertThat(second.getValue()).isExactlyInstanceOf(String.class);
     }

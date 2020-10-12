@@ -1,15 +1,8 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.annotations.testcases.TestCase;
-import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -34,9 +27,17 @@ import java.time.chrono.ThaiBuddhistDate;
 import java.time.temporal.TemporalAmount;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 
 class TimeSpecimenTest {
 

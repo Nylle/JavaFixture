@@ -1,5 +1,9 @@
 package com.github.nylle.javafixture.specimen;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
+
+import java.util.Arrays;
+
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
@@ -7,10 +11,6 @@ import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-
-import java.util.Arrays;
-
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
@@ -55,7 +55,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        if(customizationContext.useRandomConstructor()) {
+        if (customizationContext.useRandomConstructor()) {
             return context.cached(type, instanceFactory.construct(type));
         }
 

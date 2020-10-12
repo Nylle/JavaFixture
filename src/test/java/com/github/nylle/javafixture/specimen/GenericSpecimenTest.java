@@ -1,19 +1,20 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 
 class GenericSpecimenTest {
 

@@ -1,13 +1,7 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestEnum;
-import com.github.nylle.javafixture.testobjects.TestObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -30,8 +24,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestEnum;
+import com.github.nylle.javafixture.testobjects.TestObject;
 
 class CollectionSpecimenTest {
 
@@ -43,7 +44,7 @@ class CollectionSpecimenTest {
         context = new Context(new Configuration(2, 2, 3));
         specimenFactory = new SpecimenFactory(context);
     }
-    
+
     @Test
     void onlyCollectionTypes() {
         assertThatThrownBy(() -> new CollectionSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))

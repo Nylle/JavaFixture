@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture;
 
+import javassist.util.proxy.MethodHandler;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -8,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
-
-import javassist.util.proxy.MethodHandler;
 
 public class ProxyInvocationHandler implements InvocationHandler, MethodHandler {
 

@@ -73,11 +73,11 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        if(type.isInterface()) {
+        if (type.isInterface()) {
             return (T) context.cached(type, instanceFactory.proxy(type, specimens));
         }
 
-        if(customizationContext.useRandomConstructor()) {
+        if (customizationContext.useRandomConstructor()) {
             return context.cached(type, instanceFactory.construct(type));
         }
 
@@ -92,7 +92,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     }
 
     private void customize(Field field, T result, CustomizationContext customizationContext) {
-        if(customizationContext.getCustomFields().containsKey(field.getName())) {
+        if (customizationContext.getCustomFields().containsKey(field.getName())) {
             ReflectionHelper.setField(field, result, customizationContext.getCustomFields().get(field.getName()));
         } else {
             ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());

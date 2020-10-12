@@ -11,7 +11,7 @@ public class TestObjectWithNestedMapsAndLists {
 
     private Map<String, List<String>> mapWithList;
 
-    private List<Map<String,List<String>>> deeplyNestedList;
+    private List<Map<String, List<String>>> deeplyNestedList;
 
     public List<Map<String, List<String>>> getDeeplyNestedList() {
         return deeplyNestedList;

@@ -45,7 +45,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext) {
-        if(context.isCached(type)){
+        if (context.isCached(type)) {
             return (T) context.cached(type);
         }
 

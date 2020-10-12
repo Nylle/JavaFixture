@@ -43,7 +43,7 @@ class CollectionSpecimenTest {
         context = new Context(new Configuration(2, 2, 3));
         specimenFactory = new SpecimenFactory(context);
     }
-    
+
     @Test
     void onlyCollectionTypes() {
         assertThatThrownBy(() -> new CollectionSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))

@@ -56,6 +56,20 @@ public class Configuration {
     }
 
     /**
+     * Creates a new default configuration with the following values
+     * <p><ul>
+     * <li>maxCollectionSize = 10
+     * <li>minCollectionSize = 2
+     * <li>streamSize = 3
+     * <li>usePositiveNumbersOnly = false
+     * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
+     * </ul><p>
+     */
+    public static Configuration configure() {
+        return new Configuration();
+    }
+
+    /**
      * @return the maximum size of arrays, collections and maps
      */
     public int getMaxCollectionSize() {
@@ -95,20 +109,6 @@ public class Configuration {
      */
     public boolean usePositiveNumbersOnly() {
         return this.usePositiveNumbersOnly;
-    }
-
-    /**
-     * Creates a new default configuration with the following values
-     * <p><ul>
-     * <li>maxCollectionSize = 10
-     * <li>minCollectionSize = 2
-     * <li>streamSize = 3
-     * <li>usePositiveNumbersOnly = false
-     * <li>clock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
-     * </ul><p>
-     */
-    public static Configuration configure() {
-        return new Configuration();
     }
 
     /**

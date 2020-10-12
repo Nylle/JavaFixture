@@ -43,6 +43,19 @@ class FixtureTest {
 
     private final Configuration configuration = new Configuration();
 
+    @Test
+    void canCreateDefaultConfiguration() {
+
+        var result = Fixture.configuration();
+
+        assertThat(result.getMaxCollectionSize()).isEqualTo(10);
+        assertThat(result.getMinCollectionSize()).isEqualTo(2);
+        assertThat(result.getStreamSize()).isEqualTo(3);
+        assertThat(result.usePositiveNumbersOnly()).isFalse();
+        assertThat(result.getClock().instant()).isBefore(Instant.now());
+        assertThat(result.getClock().getZone()).isEqualTo(ZoneOffset.UTC);
+    }
+
     @Nested
     @DisplayName("when using Class<T>")
     class WhenClass {
@@ -485,7 +498,7 @@ class FixtureTest {
 
             assertThat(result.getT()).isInstanceOf(List.class);
             assertThat(result.getT().size()).isGreaterThan(1);
-            assertThat(result.getT().get(result.getT().size()-1)).isEqualTo("bar");
+            assertThat(result.getT().get(result.getT().size() - 1)).isEqualTo("bar");
             assertThat(result.getU()).isEqualTo("foo");
             assertThat(result.getString()).isNull();
             assertThat(result.getPrimitiveInt()).isEqualTo(0);
@@ -505,18 +518,5 @@ class FixtureTest {
             assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
         }
-    }
-
-    @Test
-    void canCreateDefaultConfiguration() {
-
-        var result = Fixture.configuration();
-
-        assertThat(result.getMaxCollectionSize()).isEqualTo(10);
-        assertThat(result.getMinCollectionSize()).isEqualTo(2);
-        assertThat(result.getStreamSize()).isEqualTo(3);
-        assertThat(result.usePositiveNumbersOnly()).isFalse();
-        assertThat(result.getClock().instant()).isBefore(Instant.now());
-        assertThat(result.getClock().getZone()).isEqualTo(ZoneOffset.UTC);
     }
 }

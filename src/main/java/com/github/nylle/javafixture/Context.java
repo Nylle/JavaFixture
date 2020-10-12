@@ -9,7 +9,7 @@ public class Context {
 
     public Context(Configuration configuration) {
 
-        if(configuration == null) {
+        if (configuration == null) {
             throw new IllegalArgumentException("configuration: null");
         }
 

@@ -55,7 +55,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        if(customizationContext.useRandomConstructor()) {
+        if (customizationContext.useRandomConstructor()) {
             return context.cached(type, instanceFactory.construct(type));
         }
 

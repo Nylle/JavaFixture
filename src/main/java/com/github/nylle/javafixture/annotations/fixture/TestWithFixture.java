@@ -16,6 +16,8 @@ import java.lang.annotation.Target;
 @ParameterizedTest
 public @interface TestWithFixture {
     int minCollectionSize() default 10;
+
     int maxCollectionSize() default 10;
+
     boolean positiveNumbersOnly() default false;
 }

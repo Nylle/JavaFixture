@@ -15,7 +15,7 @@ public class EnumSpecimen<T> implements ISpecimen<T> {
 
     public EnumSpecimen(final SpecimenType<T> type) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 

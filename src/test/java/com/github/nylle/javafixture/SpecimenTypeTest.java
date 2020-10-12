@@ -256,8 +256,8 @@ class SpecimenTypeTest {
 
         assertThat(sut.getGenericTypeArgument(0)).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArgument(1)).isInstanceOf(ParameterizedType.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArgument(1))).getRawType()).isEqualTo(Optional.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArgument(1))).getActualTypeArguments()[0]).isEqualTo(Integer.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArgument(1))).getRawType()).isEqualTo(Optional.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArgument(1))).getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArgument(0))
@@ -272,8 +272,8 @@ class SpecimenTypeTest {
         assertThat(sut.getGenericTypeArguments()).hasSize(2);
         assertThat(sut.getGenericTypeArguments()[0]).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArguments()[1]).isInstanceOf(ParameterizedType.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArguments()[1])).getRawType()).isEqualTo(Optional.class);
-        assertThat(((ParameterizedType)(sut.getGenericTypeArguments()[1])).getActualTypeArguments()[0]).isEqualTo(Integer.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArguments()[1])).getRawType()).isEqualTo(Optional.class);
+        assertThat(((ParameterizedType) (sut.getGenericTypeArguments()[1])).getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArguments())

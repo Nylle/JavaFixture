@@ -46,7 +46,7 @@ public class ReflectedTestCase {
     }
 
     private <T> List<T> addTo(List<T> list, T value) {
-        if(list == null) {
+        if (list == null) {
             list = new ArrayList<>();
         }
 

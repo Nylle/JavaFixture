@@ -18,7 +18,7 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     public PrimitiveSpecimen(final SpecimenType<T> type, final Context context) {
 
-        if(type == null) {
+        if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
@@ -74,7 +74,7 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
             return (T) pseudoRandom.nextDouble(configuration.usePositiveNumbersOnly());
         }
 
-        throw new SpecimenException("Unsupported type: "+ type);
+        throw new SpecimenException("Unsupported type: " + type);
     }
 }
 

@@ -202,10 +202,10 @@ class MapSpecimenTest {
         assertThat(actual).isExactlyInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
 
-        for(var entry : actual.entrySet()) {
-            assertThat(((Map.Entry)entry).getKey()).isExactlyInstanceOf(String.class);
-            assertThat(((Map.Entry)entry).getValue()).isExactlyInstanceOf(HashMap.class);
-            assertThat(((Map)((Map.Entry)entry).getValue()).size()).isEqualTo(2);
+        for (var entry : actual.entrySet()) {
+            assertThat(((Map.Entry) entry).getKey()).isExactlyInstanceOf(String.class);
+            assertThat(((Map.Entry) entry).getValue()).isExactlyInstanceOf(HashMap.class);
+            assertThat(((Map) ((Map.Entry) entry).getValue()).size()).isEqualTo(2);
         }
     }
 
@@ -219,11 +219,11 @@ class MapSpecimenTest {
         assertThat(actual).isExactlyInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
 
-        var first = (Map.Entry)actual.entrySet().iterator().next();
+        var first = (Map.Entry) actual.entrySet().iterator().next();
         assertThat(first.getKey()).isExactlyInstanceOf(String.class);
         assertThat(first.getValue()).isExactlyInstanceOf(TestObject.class);
 
-        var second = (Map.Entry)actual.entrySet().iterator().next();
+        var second = (Map.Entry) actual.entrySet().iterator().next();
         assertThat(second.getKey()).isExactlyInstanceOf(String.class);
         assertThat(second.getValue()).isExactlyInstanceOf(TestObject.class);
 

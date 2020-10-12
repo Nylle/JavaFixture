@@ -1,6 +1,10 @@
 package com.github.nylle.javafixture.specimen;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,11 +19,7 @@ import java.time.chrono.JapaneseEra;
 import java.time.temporal.Temporal;
 import java.util.Random;
 
-import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.ISpecimen;
-import com.github.nylle.javafixture.SpecimenException;
-import com.github.nylle.javafixture.SpecimenType;
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class TimeSpecimen<T> implements ISpecimen<T> {
 

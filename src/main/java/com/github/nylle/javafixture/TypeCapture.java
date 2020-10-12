@@ -8,16 +8,6 @@ import java.util.Objects;
 import static java.lang.String.format;
 
 abstract class TypeCapture<T> {
-    final Type capture() {
-        Type superclass = getClass().getGenericSuperclass();
-
-        if(!(superclass instanceof ParameterizedType)) {
-            throw new IllegalArgumentException(format("%s doesn't seem to have been instantiated with generic type arguments", superclass));
-        }
-
-        return ((ParameterizedType) superclass).getActualTypeArguments()[0];
-    }
-
     static ParameterizedType create(final Class<?> rawType, final Type[] actualTypeArguments) {
         if (rawType == null) {
             throw new IllegalArgumentException("rawType: null");
@@ -71,5 +61,15 @@ abstract class TypeCapture<T> {
                 return Arrays.hashCode(actualTypeArguments) ^ Objects.hashCode(rawType.getDeclaringClass()) ^ Objects.hashCode(rawType);
             }
         };
+    }
+
+    final Type capture() {
+        Type superclass = getClass().getGenericSuperclass();
+
+        if (!(superclass instanceof ParameterizedType)) {
+            throw new IllegalArgumentException(format("%s doesn't seem to have been instantiated with generic type arguments", superclass));
+        }
+
+        return ((ParameterizedType) superclass).getActualTypeArguments()[0];
     }
 }

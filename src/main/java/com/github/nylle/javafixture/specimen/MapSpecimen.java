@@ -49,7 +49,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         this.type = type;
         this.context = context;
 
-        if(type.isParameterized()) {
+        if (type.isParameterized()) {
             this.keySpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
             this.valueSpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(1)));
         }

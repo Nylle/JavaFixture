@@ -1,8 +1,10 @@
 package com.github.nylle.javafixture;
 
-import static java.lang.String.format;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
+
+import javassist.util.proxy.ProxyFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -11,11 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
-
-import javassist.util.proxy.ProxyFactory;
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 public class InstanceFactory {
 
@@ -63,7 +63,7 @@ public class InstanceFactory {
     }
 
     public <T> Object proxy(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
-        if(type.isInterface()) {
+        if (type.isInterface()) {
             return Proxy.newProxyInstance(
                     type.asClass().getClassLoader(),
                     new Class[] { type.asClass() },

@@ -1,5 +1,5 @@
 [![Tests](https://github.com/Nylle/JavaFixture/workflows/test/badge.svg?branch=master)](https://github.com/Nylle/JavaFixture/actions?query=workflow%3ATest)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](http://search.maven.org/#artifactdetails|com.github.nylle|javafixture|2.2.0|)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 # JavaFixture
@@ -22,7 +22,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -71,7 +71,7 @@ ParentDto result = fixture.create(ParentDto.class);
 List<String> result = fixture.createMany(String.class).collect(Collectors.toList());
 ```
 #### Sample Result
-ArrayList: 
+ArrayList:
 - String: "333af3f6-4ed1-4580-9cae-aaee271d7ba7"
 - String: "9452541b-c6f9-4316-b254-28d00b327d0d"
 - String: "4ed0f3c4-5ea3-4dbb-b31c-f92c036af463"
@@ -81,7 +81,7 @@ ArrayList:
 List<String> result = fixture.build(String.class).createMany(4).collect(Collectors.toList());
 ```
 #### Sample Result
-ArrayList: 
+ArrayList:
 - String: "333af3f6-4ed1-4580-9cae-aaee271d7ba7"
 - String: "9452541b-c6f9-4316-b254-28d00b327d0d"
 - String: "4ed0f3c4-5ea3-4dbb-b31c-f92c036af463"
@@ -94,7 +94,7 @@ result.add("HELLO!");
 fixture.addManyTo(result, String.class);
 ```
 #### Sample Result
-ArrayList: 
+ArrayList:
 - String: "HELLO!"
 - String: "333af3f6-4ed1-4580-9cae-aaee271d7ba7"
 - String: "9452541b-c6f9-4316-b254-28d00b327d0d"
@@ -263,18 +263,25 @@ All arguments of the test-method below will be provided as a random object gener
 @TestWithFixture
 void injectParameterViaMethodExtension(TestDto testObject, int intValue, Optional<String> genericObject) {
     assertThat(testObject).isInstanceOf(TestDto.class);
-    
+
     assertThat(intValue).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
-    
+
     assertThat(genericObject).isInstanceOf(Optional.class);
     assertThat(genericObject).isPresent();
     assertThat(genericObject.get()).isInstanceOf(String.class);
 }
 ```
-
+You can also configure Fixture inline:
+```java
+@TestWithFixture(minCollectionSize = 11, maxCollectionSize = 11, positiveNumbersOnly = true)
+void configurableFixture(List<Integer> input) {
+    assertThat(input).hasSize(11);
+    assertThat(input).allMatch(x -> x > 1);
+}
+```
 
 ### Parameterized Tests
-For some syntactic sugar, this library comes with a wrapper for JUnit5's parameterized 
+For some syntactic sugar, this library comes with a wrapper for JUnit5's parameterized
 test feature, called `@TestWithCases`.
 ```java
 @TestWithCases
@@ -292,9 +299,9 @@ the test's arguments.
 Due to Java's limited annotation design, the following rules apply:
 - Values can only be of type `String`, `Class` or primitive like `int`, `boolean`, `float`,
  etc.
-- Annotation parameters are indexed and they must fit to the test method argument. 
+- Annotation parameters are indexed and they must fit to the test method argument.
  _Example:_ `str1 = "foo"` can only be applied to the first argument which must be of type
   `String`, while `int2 = 3` can only be applied to the second argument which obviously must
-  be of type `int` and so on. 
+  be of type `int` and so on.
 - The current implementation only supports up to 6 arguments per test method.
 

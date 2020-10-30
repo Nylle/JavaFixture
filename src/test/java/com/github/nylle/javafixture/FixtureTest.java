@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
+import com.github.nylle.javafixture.testobjects.TestClassWithNestedClasses;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumMap;
@@ -17,6 +18,7 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -518,5 +520,18 @@ class FixtureTest {
             assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
         }
+    }
+
+    @Test
+    @Disabled("This is a known bug")
+    void xxx() {
+        var fixture = new Fixture();
+
+        var result = fixture.build(TestClassWithNestedClasses.NestedStaticDerivedClass.class)
+                .with("string", "foo")
+                .create();
+
+        assertThat(result.getStrings()).isNotEmpty();
+        assertThat(result.getString()).isEqualTo("foo");
     }
 }

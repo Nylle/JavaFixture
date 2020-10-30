@@ -524,7 +524,7 @@ class FixtureTest {
 
     @Test
     @Disabled("This is a known bug")
-    void xxx() {
+    void customizeFieldInNestedDerivedClass() {
         var fixture = new Fixture();
 
         var result = fixture.build(TestClassWithNestedClasses.NestedStaticDerivedClass.class)

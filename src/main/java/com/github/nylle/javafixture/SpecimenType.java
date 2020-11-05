@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -10,11 +11,13 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 public class SpecimenType<T> extends TypeCapture<T> {
 
@@ -176,6 +179,10 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public boolean isAbstract() {
         return Modifier.isAbstract(asClass().getModifiers());
+    }
+
+    public List<Constructor<T>> getDeclaredConstructors() {
+        return stream(this.asClass().getDeclaredConstructors()).map(x -> (Constructor<T>) x).collect(toList());
     }
 
     @Override

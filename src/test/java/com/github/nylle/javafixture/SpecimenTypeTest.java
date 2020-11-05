@@ -7,6 +7,7 @@ import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import org.junit.jupiter.api.Test;
 
@@ -419,5 +420,14 @@ class SpecimenTypeTest {
         assertThat(sut.asParameterizedType().getActualTypeArguments().length).isEqualTo(2);
         assertThat(sut.asParameterizedType().getActualTypeArguments()[0].getTypeName()).isEqualTo(String.class.getName());
         assertThat(sut.asParameterizedType().getActualTypeArguments()[1].getTypeName()).isEqualTo(Integer.class.getName());
+    }
+
+    @Test
+    void getDeclaredConstructors() {
+        var sut = new SpecimenType<TestObjectWithAllConstructors>() {};
+
+        var actual = sut.getDeclaredConstructors();
+
+        assertThat(actual).hasSize(3);
     }
 }

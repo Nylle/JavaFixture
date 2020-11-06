@@ -9,6 +9,7 @@ import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
+import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
@@ -429,5 +430,14 @@ class SpecimenTypeTest {
         var actual = sut.getDeclaredConstructors();
 
         assertThat(actual).hasSize(3);
+    }
+
+    @Test
+    void getFactoryMethods() {
+        var sut = new SpecimenType<TestObjectWithStaticMethods>() {};
+
+        var actual = sut.getFactoryMethods();
+
+        assertThat(actual).hasSize(2);
     }
 }

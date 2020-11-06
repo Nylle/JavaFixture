@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -183,6 +185,13 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public List<Constructor<T>> getDeclaredConstructors() {
         return stream(this.asClass().getDeclaredConstructors()).map(x -> (Constructor<T>) x).collect(toList());
+    }
+
+    public List<Method> getFactoryMethods() {
+        return stream(this.asClass().getDeclaredMethods())
+                .filter(x -> Modifier.isStatic(x.getModifiers()))
+                .filter(x -> x.getReturnType().equals(this.asClass()))
+                .collect(Collectors.toList());
     }
 
     @Override

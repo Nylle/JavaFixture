@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
+import com.github.nylle.javafixture.testobjects.TestObjectWithNonPublicFactoryMethods;
 import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
 import org.junit.jupiter.api.Test;
 
@@ -54,5 +55,15 @@ class InstanceFactoryTest {
         var actual = sut.manufacture(new SpecimenType<Charset>() {});
 
         assertThat(actual).isInstanceOf(Charset.class);
+    }
+
+    @Test
+    void canOnlyUsePublicFactoryMethods() {
+        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+        assertThatExceptionOfType(SpecimenException.class)
+                .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class)))
+                .withMessageContaining("Cannot manufacture class")
+                .withNoCause();
     }
 }

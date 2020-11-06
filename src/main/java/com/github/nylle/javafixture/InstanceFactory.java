@@ -44,6 +44,7 @@ public class InstanceFactory {
     public <T> T manufacture(final SpecimenType<T> type) {
         var results = type.getFactoryMethods()
                 .stream()
+                .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .map(x -> manufactureOrNull(x))
                 .filter(x -> x != null)
                 .map(x -> (T) x)

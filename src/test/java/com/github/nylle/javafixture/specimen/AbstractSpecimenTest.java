@@ -77,13 +77,13 @@ class AbstractSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new AbstractSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
-        var cached = new AbstractSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
+        var original = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create();
+        var cached = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create();
 
-        assertThat(original).isInstanceOf(TestInterface.class);
+        assertThat(original).isInstanceOf(TestAbstractClass.class);
         assertThat(original).isSameAs(cached);
         assertThat(original.toString()).isEqualTo(cached.toString());
-        assertThat(original.getTestObject()).isSameAs(cached.getTestObject());
+        assertThat(original.getString()).isSameAs(cached.getString());
     }
 }
 

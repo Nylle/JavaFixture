@@ -4,6 +4,7 @@ import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor
 import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
@@ -46,5 +47,16 @@ class InstanceFactoryTest {
                 .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class)))
                 .withMessageContaining("no public constructor found")
                 .withNoCause();
+    }
+
+    @Test
+    void canCreateProxyForAbstract() {
+
+        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+        var actual = sut.proxy(new SpecimenType<Charset>() {});
+
+        assertThat(actual).isInstanceOf(java.nio.charset.Charset.class);
+
     }
 }

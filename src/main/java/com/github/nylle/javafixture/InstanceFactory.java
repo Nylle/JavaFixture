@@ -12,7 +12,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import static java.lang.String.format;
@@ -42,6 +41,21 @@ public class InstanceFactory {
         return construct(type, constructors.get(random.nextInt(constructors.size())));
     }
 
+    public <T> T manufacture(final SpecimenType<T> type) {
+        var results = type.getFactoryMethods()
+                .stream()
+                .map(x -> manufactureOrNull(x))
+                .filter(x -> x != null)
+                .map(x -> (T) x)
+                .collect(toList());
+
+        if (results.isEmpty()) {
+            throw new SpecimenException(format("Cannot manufacture %s", type.asClass()));
+        }
+
+        return results.get(random.nextInt(results.size()));
+    }
+
     public <T> T instantiate(final SpecimenType<T> type) {
         try {
             return type.asClass().getDeclaredConstructor().newInstance();
@@ -62,30 +76,6 @@ public class InstanceFactory {
                     new ProxyInvocationHandler(specimenFactory, specimens));
         }
 
-        return manufacture(type, specimens);
-    }
-
-    private <T> T manufacture(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
-        var constructed = type.getDeclaredConstructors()
-                .stream()
-                .map(constructor -> constructOrNull(type, constructor))
-                .filter(Objects::nonNull)
-                .collect(toList());
-
-        if (!constructed.isEmpty()) {
-            return constructed.get(random.nextInt(constructed.size()));
-        }
-
-        var factoryCreated = type.getFactoryMethods()
-                .stream()
-                .map(x -> (T) manufactureOrNull(x))
-                .filter(Objects::nonNull)
-                .collect(toList());
-
-        if (!factoryCreated.isEmpty()) {
-            return factoryCreated.get(random.nextInt(factoryCreated.size()));
-        }
-
         return createProxyForAbstract(type, specimens);
     }
 
@@ -98,14 +88,6 @@ public class InstanceFactory {
                     .toArray());
         } catch (Exception e) {
             throw new SpecimenException(format("Unable to construct class %s with constructor %s: %s", type.asClass(), constructor.toString(), e.getMessage()), e);
-        }
-    }
-
-    private <T> T constructOrNull(final SpecimenType<T> type, final Constructor<?> constructor) {
-        try {
-            return construct(type, constructor);
-        } catch (SpecimenException ignored) {
-            return null;
         }
     }
 

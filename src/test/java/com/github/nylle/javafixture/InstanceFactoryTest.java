@@ -15,7 +15,6 @@ class InstanceFactoryTest {
 
     @Test
     void canCreateInstanceFromConstructor() {
-
         var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
         TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class));
@@ -40,7 +39,6 @@ class InstanceFactoryTest {
 
     @Test
     void canOnlyUsePublicConstructor() {
-
         var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
         assertThatExceptionOfType(SpecimenException.class)
@@ -50,13 +48,11 @@ class InstanceFactoryTest {
     }
 
     @Test
-    void canCreateProxyForAbstract() {
-
+    void canCreateInstanceFromAbstractClassUsingFactoryMethod() {
         var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-        var actual = sut.proxy(new SpecimenType<Charset>() {});
+        var actual = sut.manufacture(new SpecimenType<Charset>() {});
 
-        assertThat(actual).isInstanceOf(java.nio.charset.Charset.class);
-
+        assertThat(actual).isInstanceOf(Charset.class);
     }
 }

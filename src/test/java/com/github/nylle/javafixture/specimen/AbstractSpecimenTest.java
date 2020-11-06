@@ -4,17 +4,18 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestInterface;
-import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class InterfaceSpecimenTest {
+class AbstractSpecimenTest {
 
     private SpecimenFactory specimenFactory;
     private Context context;
@@ -26,52 +27,58 @@ class InterfaceSpecimenTest {
     }
 
     @Test
-    void onlyInterfaceTypes() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(Charset.class), context, specimenFactory))
+    void onlyAbstractTypes() {
+        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: " + Charset.class.getName());
+                .hasMessageContaining("type: " + Map.class.getName());
     }
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>((SpecimenType) null, context, specimenFactory))
+        assertThatThrownBy(() -> new AbstractSpecimen<>((SpecimenType) null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(TestInterface.class), null, specimenFactory))
+        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(TestInterface.class), null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(TestInterface.class), context, null))
+        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(TestInterface.class), context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }
 
     @Test
-    void createInterface() {
-        var sut = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory);
+    void createAbstractClass() {
+        var sut = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory);
 
         var actual = sut.create();
 
-        assertThat(actual).isInstanceOf(TestInterface.class);
-        assertThat(actual.publicField).isInstanceOf(Integer.class);
-        assertThat(actual.publicField).isEqualTo(1);
+        assertThat(actual).isInstanceOf(TestAbstractClass.class);
+        assertThat(actual.getString()).isNotBlank();
+        assertThat(actual.abstractMethod()).isNotBlank();
+    }
 
-        assertThat(actual.toString()).isInstanceOf(String.class);
-        assertThat(actual.getTestObject()).isInstanceOf(TestObject.class);
+    @Test
+    void createAbstractClassWithoutConstructor() {
+        var sut = new AbstractSpecimen<Charset>(SpecimenType.fromClass(Charset.class), context, specimenFactory);
+
+        var actual = sut.create();
+
+        assertThat(actual).isInstanceOf(Charset.class);
     }
 
     @Test
     void resultIsCached() {
 
-        var original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
-        var cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
+        var original = new AbstractSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
+        var cached = new AbstractSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(TestInterface.class);
         assertThat(original).isSameAs(cached);

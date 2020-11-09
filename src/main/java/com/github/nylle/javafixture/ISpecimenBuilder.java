@@ -14,6 +14,10 @@ public interface ISpecimenBuilder<T> {
 
     ISpecimenBuilder<T> with(String fieldName, Object value);
 
+    <U> ISpecimenBuilder<T> with(Class<U> type, U value);
+
+    <U> ISpecimenBuilder<T> with(SpecimenType<U> type, U value);
+
     ISpecimenBuilder<T> without(String fieldName);
 }
 

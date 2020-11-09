@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -12,6 +13,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final List<Consumer<T>> functions = new LinkedList<>();
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
+    private final Map<Integer, Object> predefinedInstances = new ConcurrentHashMap<>();
 
     private final SpecimenType<T> type;
     private final Configuration configuration;
@@ -26,7 +28,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
      */
     @Override
     public T create() {
-        return customize(new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(ignoredFields, customFields)));
+        return customize(new SpecimenFactory(new Context(configuration, predefinedInstances)).build(type).create(new CustomizationContext(ignoredFields, customFields)));
     }
 
     /**
@@ -70,6 +72,34 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     @Override
     public ISpecimenBuilder<T> with(final String fieldName, Object value) {
         customFields.put(fieldName, value);
+        return this;
+    }
+
+    /**
+     * Sets all fields with the specified type to the specified value during object creation.
+     *
+     * @param type the type of the fields to be set
+     * @param value the value to be set to the fields
+     * @param <U> the type of the value
+     * @return this builder for further customisation
+     */
+    @Override
+    public <U> ISpecimenBuilder<T> with(final Class<U> type, final U value) {
+        predefinedInstances.putIfAbsent(SpecimenType.fromClass(type).hashCode(), value);
+        return this;
+    }
+
+    /**
+     * Sets all fields with the specified type to the specified value during object creation.
+     *
+     * @param type the type of the fields to be set
+     * @param value the value to be set to the fields
+     * @param <U> the type of the value
+     * @return this builder for further customisation
+     */
+    @Override
+    public <U> ISpecimenBuilder<T> with(final SpecimenType<U> type, final U value) {
+        predefinedInstances.putIfAbsent(type.hashCode(), value);
         return this;
     }
 

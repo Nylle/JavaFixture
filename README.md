@@ -22,7 +22,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -132,6 +132,23 @@ TestDto result = fixture.build(TestDto.class)
 TestDto:
 - myPrivateField: String: "HELLO!"
 - myPublicField: int: 71
+
+### Set all fields for type
+```java
+ParentDto result = fixture.build(ParentDto.class)
+                          .with(String.class, "hello")
+                          .create();
+```
+#### Sample Result
+- ParentDto:
+    - id: String: "hello"
+    - child: ChildDto:
+        - id: String: "hello"
+        - names: ArrayList:
+            - String: "hello"
+            - String: "hello"
+            - String: "hello"
+
 
 ### Omit Field
 ```java

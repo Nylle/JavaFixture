@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestClassWithNestedClasses;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectWithDeepNesting;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumMap;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumSet;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
@@ -205,6 +206,18 @@ class FixtureTest {
             TestPrimitive result = fixture.build(TestPrimitive.class).without("primitive").create();
 
             assertThat(result.getPrimitive()).isEqualTo(0);
+        }
+
+        @Test
+        void canBeCustomizedWithType() {
+            var expected = Period.ofDays(42);
+            var result = fixture().build(Contract.class)
+                    .with(Period.class, expected)
+                    .create();
+
+            var actual = result.getBaseContractPosition().getRemainingPeriod();
+
+            assertThat(actual).isSameAs(expected);
         }
 
         @Test
@@ -504,6 +517,21 @@ class FixtureTest {
             assertThat(result.getU()).isEqualTo("foo");
             assertThat(result.getString()).isNull();
             assertThat(result.getPrimitiveInt()).isEqualTo(0);
+        }
+
+        @Test
+        void canBeCustomizedWithType() {
+            Fixture sut = new Fixture(configuration);
+
+            var expected = new TestObjectGeneric<String, Integer>();
+
+            var result = sut.build(TestObjectWithDeepNesting.class)
+                    .with(new SpecimenType<>() {}, expected)
+                    .create();
+
+            var actual = result.getNested().getGeneric();
+
+            assertThat(actual).isSameAs(expected);
         }
 
         @Test

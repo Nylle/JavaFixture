@@ -1,16 +1,28 @@
 package com.github.nylle.javafixture.specimen;
 
+import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static com.github.nylle.javafixture.Configuration.configure;
+import static com.github.nylle.javafixture.Fixture.fixture;
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PrimitiveSpecimenTest {
+
+    @Test
+    void contextIsRequired() {
+        assertThatThrownBy(() -> new PrimitiveSpecimen<>(SpecimenType.fromClass(Integer.class), null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("context: null");
+    }
 
     @Test
     void typeIsRequired() {
@@ -115,4 +127,27 @@ class PrimitiveSpecimenTest {
         assertThat(actual).isInstanceOf(Double.class);
         assertThat(actual).isBetween(min, max);
     }
+
+    @TestWithCases
+    @TestCase(class1 = String.class)
+    @TestCase(class1 = Boolean.class)
+    @TestCase(class1 = Character.class)
+    @TestCase(class1 = Byte.class)
+    @TestCase(class1 = Short.class)
+    @TestCase(class1 = Integer.class)
+    @TestCase(class1 = Long.class)
+    @TestCase(class1 = Float.class)
+    @TestCase(class1 = Double.class)
+    void canBePredefined(Class type) {
+        var expected = fixture().create(type);
+
+        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type).hashCode(), expected));
+
+        var sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(type), context);
+
+        var actual = sut.create();
+
+        assertThat(actual).isSameAs(expected);
+    }
+
 }

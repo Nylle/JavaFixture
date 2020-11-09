@@ -26,7 +26,7 @@ public class SpecimenFactory {
         }
 
         if (type.isEnum()) {
-            return new EnumSpecimen<>(type);
+            return new EnumSpecimen<>(type, context);
         }
 
         if (type.isCollection()) {

@@ -34,6 +34,7 @@ import java.time.chrono.ThaiBuddhistDate;
 import java.time.temporal.TemporalAmount;
 import java.util.Map;
 
+import static com.github.nylle.javafixture.Fixture.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -91,7 +92,6 @@ class TimeSpecimenTest {
                 .hasMessageContaining("context: null");
     }
 
-
     @TestWithCases
     @TestCase(class1 = Instant.class)
     @TestCase(class1 = HijrahDate.class)
@@ -119,12 +119,46 @@ class TimeSpecimenTest {
     void createWithClock() {
         Clock mockClock = Mockito.mock(Clock.class);
         when(mockClock.instant()).thenReturn(Instant.MIN);
-        context = new Context(Configuration.configure().clock(mockClock));
+        var context = new Context(Configuration.configure().clock(mockClock));
 
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), context);
 
         var actual = sut.create();
 
         assertThat(actual).isEqualTo(Instant.MIN);
+    }
+
+    @TestWithCases
+    @TestCase(class1 = Instant.class)
+    @TestCase(class1 = HijrahDate.class)
+    @TestCase(class1 = JapaneseDate.class)
+    @TestCase(class1 = LocalDate.class)
+    @TestCase(class1 = LocalDateTime.class)
+    @TestCase(class1 = LocalTime.class)
+    @TestCase(class1 = MinguoDate.class)
+    @TestCase(class1 = OffsetDateTime.class)
+    @TestCase(class1 = OffsetTime.class)
+    @TestCase(class1 = ThaiBuddhistDate.class)
+    @TestCase(class1 = Year.class)
+    @TestCase(class1 = YearMonth.class)
+    @TestCase(class1 = ZonedDateTime.class)
+    @TestCase(class1 = java.sql.Date.class)
+    @TestCase(class1 = java.util.Date.class)
+    @TestCase(class1 = Duration.class)
+    @TestCase(class1 = JapaneseEra.class)
+    @TestCase(class1 = MonthDay.class)
+    @TestCase(class1 = Period.class)
+    @TestCase(class1 = ZoneId.class)
+    @TestCase(class1 = ZoneOffset.class)
+    void canBePredefined(Class type) {
+        var expected = fixture().create(type);
+
+        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type).hashCode(), expected));
+
+        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
+
+        var actual = sut.create();
+
+        assertThat(actual).isSameAs(expected);
     }
 }

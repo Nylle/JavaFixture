@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Context {
     private final Configuration configuration;
-    private final Map<Integer, Object> cache = new ConcurrentHashMap<>();
+    private final Map<Integer, Object> cache;
 
     public Context(Configuration configuration) {
 
@@ -14,6 +14,17 @@ public class Context {
         }
 
         this.configuration = configuration;
+        this.cache = new ConcurrentHashMap<>();
+    }
+
+    public Context(Configuration configuration, Map<Integer, Object> predefinedInstances) {
+
+        if (configuration == null) {
+            throw new IllegalArgumentException("configuration: null");
+        }
+
+        this.configuration = configuration;
+        this.cache = new ConcurrentHashMap<>(predefinedInstances);
     }
 
     public Configuration getConfiguration() {
@@ -32,5 +43,10 @@ public class Context {
     public <T> T cached(SpecimenType type) {
         return (T) cache.get(type.hashCode());
     }
+
+    public <T> T preDefined(SpecimenType type, T instance) {
+        return cache.containsKey(type.hashCode()) ? (T) cache.get(type.hashCode()) : instance;
+    }
+
 }
 

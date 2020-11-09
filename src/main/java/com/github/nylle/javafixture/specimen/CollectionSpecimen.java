@@ -75,7 +75,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         }
 
         if (type.asClass().equals(EnumSet.class)) {
-            return createEnumSet();
+            return context.cached(type, createEnumSet());
         }
 
         Collection<G> collection = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type));

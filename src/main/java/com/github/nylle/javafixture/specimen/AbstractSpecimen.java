@@ -4,18 +4,19 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
+import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
-public class InterfaceSpecimen<T> implements ISpecimen<T> {
+public class AbstractSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
     private final Context context;
     private final InstanceFactory instanceFactory;
 
-    public InterfaceSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public AbstractSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -29,7 +30,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!type.isInterface() || type.isMap() || type.isCollection()) {
+        if (!type.isAbstract() || type.isMap() || type.isCollection()) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -49,7 +50,11 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             return (T) context.cached(type);
         }
 
-        return (T) context.cached(type, instanceFactory.proxy(type));
+        try {
+            return (T) context.cached(type, instanceFactory.proxy(type));
+        } catch(SpecimenException ignored) {
+            return (T) context.cached(type, instanceFactory.manufacture(type));
+        }
     }
 }
 

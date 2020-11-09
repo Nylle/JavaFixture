@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.specimen.AbstractSpecimen;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
@@ -48,8 +49,12 @@ public class SpecimenFactory {
             return new TimeSpecimen<>(type, context);
         }
 
-        if (type.isAbstract()) {
+        if (type.isInterface()) {
             return new InterfaceSpecimen<>(type, context, this);
+        }
+
+        if (type.isAbstract()) {
+            return new AbstractSpecimen<>(type, context, this);
         }
 
         return new ObjectSpecimen<>(type, context, this);

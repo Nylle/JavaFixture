@@ -1,9 +1,11 @@
 package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
+import com.github.nylle.javafixture.testobjects.TestObjectWithNonPublicFactoryMethods;
 import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
@@ -14,7 +16,6 @@ class InstanceFactoryTest {
 
     @Test
     void canCreateInstanceFromConstructor() {
-
         var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
         TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class));
@@ -39,12 +40,30 @@ class InstanceFactoryTest {
 
     @Test
     void canOnlyUsePublicConstructor() {
-
         var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
         assertThatExceptionOfType(SpecimenException.class)
                 .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class)))
                 .withMessageContaining("no public constructor found")
+                .withNoCause();
+    }
+
+    @Test
+    void canCreateInstanceFromAbstractClassUsingFactoryMethod() {
+        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+        var actual = sut.manufacture(new SpecimenType<Charset>() {});
+
+        assertThat(actual).isInstanceOf(Charset.class);
+    }
+
+    @Test
+    void canOnlyUsePublicFactoryMethods() {
+        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+        assertThatExceptionOfType(SpecimenException.class)
+                .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class)))
+                .withMessageContaining("Cannot manufacture class")
                 .withNoCause();
     }
 }

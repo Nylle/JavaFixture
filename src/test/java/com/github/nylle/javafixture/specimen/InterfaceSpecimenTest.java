@@ -4,13 +4,12 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestInterface;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.nio.charset.Charset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,10 +26,10 @@ class InterfaceSpecimenTest {
     }
 
     @Test
-    void onlyAbstractTypes() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
+    void onlyInterfaceTypes() {
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(Charset.class), context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: " + Map.class.getName());
+                .hasMessageContaining("type: " + Charset.class.getName());
     }
 
     @Test
@@ -67,18 +66,6 @@ class InterfaceSpecimenTest {
         assertThat(actual.toString()).isInstanceOf(String.class);
         assertThat(actual.getTestObject()).isInstanceOf(TestObject.class);
     }
-
-    @Test
-    void createAbstractClass() {
-        var sut = new InterfaceSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory);
-
-        var actual = sut.create();
-
-        assertThat(actual).isInstanceOf(TestAbstractClass.class);
-        assertThat(actual.getString()).isNotBlank();
-        assertThat(actual.abstractMethod()).isNotBlank();
-    }
-
 
     @Test
     void resultIsCached() {

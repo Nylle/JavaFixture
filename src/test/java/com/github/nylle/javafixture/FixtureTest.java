@@ -94,6 +94,17 @@ class FixtureTest {
         }
 
         @Test
+        void canCreateOptional() {
+            Fixture fixture = new Fixture(configuration);
+
+            var result = fixture.createOptional(TestPrimitive.class);
+
+            assertThat(result).isInstanceOf(Optional.class);
+            assertThat(result).isPresent();
+            assertThat(result.get()).isInstanceOf(TestPrimitive.class);
+        }
+
+        @Test
         void canCreateInstanceWithoutDefaultConstructor() {
             Fixture fixture = new Fixture(configuration);
 
@@ -197,6 +208,24 @@ class FixtureTest {
             TestPrimitive result = fixture.build(TestPrimitive.class).without("hello").create();
 
             assertThat(result.getHello()).isNull();
+        }
+
+        @Test
+        void canCustomizeOptional() {
+            Fixture fixture = new Fixture(configuration);
+
+            var result = fixture.build(TestPrimitive.class)
+                    .without("hello")
+                    .with("integer", 999)
+                    .with(x -> x.setPrimitive(888))
+                    .createOptional();
+
+            assertThat(result).isInstanceOf(Optional.class);
+            assertThat(result).isPresent();
+            assertThat(result.get()).isInstanceOf(TestPrimitive.class);
+            assertThat(result.get().getHello()).isNull();
+            assertThat(result.get().getInteger()).isEqualTo(999);
+            assertThat(result.get().getPrimitive()).isEqualTo(888);
         }
 
         @Test

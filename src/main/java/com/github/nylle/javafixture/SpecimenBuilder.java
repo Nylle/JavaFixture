@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -29,6 +30,14 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     @Override
     public T create() {
         return customize(new SpecimenFactory(new Context(configuration, predefinedInstances)).build(type).create(new CustomizationContext(ignoredFields, customFields)));
+    }
+
+    /**
+     * @return a new {@code Optional<T>} based on this {@code ISpecimenBuilder<T>}
+     */
+    @Override
+    public Optional<T> createOptional() {
+        return Optional.of(create());
     }
 
     /**

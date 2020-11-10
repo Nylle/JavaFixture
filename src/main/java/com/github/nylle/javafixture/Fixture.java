@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,6 +72,17 @@ public class Fixture {
      */
     public <T> T create(final Class<T> type) {
         return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).create();
+    }
+
+    /**
+     * Creates a new optional of the specified type, recursively populated with random values
+     *
+     * @param type the {@code Class<T>} based on which the object is created
+     * @param <T> the type of the object to be created
+     * @return a new {@code Optional} of the specified {@code Class<T>}
+     */
+    public <T> Optional<T> createOptional(final Class<T> type) {
+        return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createOptional();
     }
 
     /**

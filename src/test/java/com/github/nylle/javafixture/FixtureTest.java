@@ -55,7 +55,7 @@ class FixtureTest {
         assertThat(result.getMinCollectionSize()).isEqualTo(2);
         assertThat(result.getStreamSize()).isEqualTo(3);
         assertThat(result.usePositiveNumbersOnly()).isFalse();
-        assertThat(result.getClock().instant()).isBefore(Instant.now());
+        assertThat(result.getClock().instant()).isBeforeOrEqualTo(Instant.now());
         assertThat(result.getClock().getZone()).isEqualTo(ZoneOffset.UTC);
     }
 

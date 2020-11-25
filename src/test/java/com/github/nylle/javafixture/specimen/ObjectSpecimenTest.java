@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -111,6 +112,18 @@ class ObjectSpecimenTest {
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
                 .withMessage("Cannot set field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
+                .withNoCause();
+    }
+
+    @Test
+    void cannotCustomizeFieldInBaseClass() {
+        var sut = new ObjectSpecimen<TestObjectWithBaseClass>(SpecimenType.fromClass(TestObjectWithBaseClass.class), context, specimenFactory);
+
+        var customizationContext = new CustomizationContext(List.of(), Map.of("value", "foo"));
+
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> sut.create(customizationContext))
+                .withMessage("Cannot set field 'value': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass'.")
                 .withNoCause();
     }
 }

@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -113,4 +114,15 @@ class GenericSpecimenTest {
                 .withNoCause();
     }
 
+    @Test
+    void cannotCustomizeFieldInBaseClass() {
+        var sut = new ObjectSpecimen<>(new SpecimenType<TestObjectGenericWithBaseClass<String, Integer>>() {}, context, specimenFactory);
+
+        var customizationContext = new CustomizationContext(List.of(), Map.of("primitiveInt", 1));
+
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> sut.create(customizationContext))
+                .withMessage("Cannot set field 'primitiveInt': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass'.")
+                .withNoCause();
+    }
 }

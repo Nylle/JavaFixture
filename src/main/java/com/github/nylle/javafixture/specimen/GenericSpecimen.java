@@ -5,15 +5,19 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.ReflectionHelper;
+import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class GenericSpecimen<T> implements ISpecimen<T> {
@@ -24,7 +28,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     private final InstanceFactory instanceFactory;
     private final Map<String, ISpecimen<?>> specimens;
 
-    public GenericSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) throws IllegalArgumentException {
+    public GenericSpecimen(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -64,7 +68,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(final CustomizationContext customizationContext) {
+    public T create(CustomizationContext customizationContext) {
         if (type.asClass().equals(Class.class)) {
             return (T) specimens.entrySet().stream().findFirst().get().getValue().create().getClass();
         }
@@ -83,6 +87,8 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
 
         var result = context.cached(type, instanceFactory.instantiate(type));
 
+        validateCustomization(type.asClass(), customizationContext);
+
         stream(type.asClass().getDeclaredFields())
                 .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))
                 .filter(field -> !ReflectionHelper.isStatic(field))
@@ -96,6 +102,19 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             ReflectionHelper.setField(field, result, customizationContext.getCustomFields().get(field.getName()));
         } else {
             ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());
+        }
+    }
+
+    private void validateCustomization(Class<T> type, CustomizationContext customizationContext) {
+        var declaredFields = Stream.of(type.getDeclaredFields()).map(field -> field.getName()).collect(toList());
+
+        var missingDeclaredField = customizationContext.getCustomFields().entrySet().stream()
+                .filter(entry -> !declaredFields.contains(entry.getKey()))
+                .findFirst()
+                .map(x -> x.getKey());
+
+        if(missingDeclaredField.isPresent()) {
+            throw new SpecimenException(format("Cannot set field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
     }
 }

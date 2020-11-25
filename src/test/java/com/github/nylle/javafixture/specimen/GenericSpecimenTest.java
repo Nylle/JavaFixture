@@ -2,6 +2,7 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
@@ -9,10 +10,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GenericSpecimenTest {
@@ -97,4 +100,17 @@ class GenericSpecimenTest {
         assertThat(result.getT().get()).isInstanceOf(String.class);
         assertThat(result.getU().get()).isInstanceOf(Integer.class);
     }
+
+    @Test
+    void cannotCustomizeNonExistingField() {
+        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
+
+        var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> sut.create(customizationContext))
+                .withMessage("Cannot set field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGeneric'.")
+                .withNoCause();
+    }
+
 }

@@ -4,13 +4,9 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.lang.String.format;
@@ -66,31 +62,30 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
     }
 
     private T populate(T specimen, CustomizationContext customizationContext) {
-        var aClass = (Class<T>) specimen.getClass();
+        validate(customizationContext);
 
-        validate(aClass, customizationContext);
-
-        Arrays.stream(aClass.getDeclaredFields())
+        type.getDeclaredFields().stream()
                 .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                .filter(field -> !ReflectionHelper.isStatic(field))
+                .filter(field -> !field.isStatic())
                 .forEach(field ->
-                        ReflectionHelper.setField(
-                                field,
+                        field.set(
                                 specimen,
-                                customizationContext.getCustomFields()
-                                        .getOrDefault(field.getName(), specimenFactory.build(SpecimenType.fromClass(field.getGenericType())).create())));
+                                customizationContext.getCustomFields().getOrDefault(
+                                        field.getName(),
+                                        specimenFactory.build(SpecimenType.fromClass(field.getGenericType())).create())));
+
         return specimen;
     }
 
-    private void validate(Class<T> type, CustomizationContext customizationContext) {
-        var declaredFields = Stream.of(type.getDeclaredFields()).map(field -> field.getName()).collect(toList());
+    private void validate(CustomizationContext customizationContext) {
+        var declaredFields = type.getDeclaredFields().stream().map(x -> x.getName()).collect(toList());
 
         var missingDeclaredField = customizationContext.getCustomFields().entrySet().stream()
                 .filter(entry -> !declaredFields.contains(entry.getKey()))
                 .findFirst()
                 .map(x -> x.getKey());
 
-        if(missingDeclaredField.isPresent()) {
+        if (missingDeclaredField.isPresent()) {
             throw new SpecimenException(format("Cannot set field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
     }

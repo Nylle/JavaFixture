@@ -4,19 +4,16 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
-import com.github.nylle.javafixture.ReflectionHelper;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenField;
 import com.github.nylle.javafixture.SpecimenType;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -87,26 +84,26 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
 
         var result = context.cached(type, instanceFactory.instantiate(type));
 
-        validateCustomization(type.asClass(), customizationContext);
+        validateCustomization(customizationContext);
 
-        stream(type.asClass().getDeclaredFields())
-                .filter(x -> !customizationContext.getIgnoredFields().contains(x.getName()))
-                .filter(field -> !ReflectionHelper.isStatic(field))
+        type.getDeclaredFields().stream()
+                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                .filter(field -> !field.isStatic())
                 .forEach(field -> customize(field, result, customizationContext));
 
         return result;
     }
 
-    private void customize(Field field, T result, CustomizationContext customizationContext) {
+    private void customize(SpecimenField field, T result, CustomizationContext customizationContext) {
         if (customizationContext.getCustomFields().containsKey(field.getName())) {
-            ReflectionHelper.setField(field, result, customizationContext.getCustomFields().get(field.getName()));
+            field.set(result, customizationContext.getCustomFields().get(field.getName()));
         } else {
-            ReflectionHelper.setField(field, result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());
+            field.set(result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());
         }
     }
 
-    private void validateCustomization(Class<T> type, CustomizationContext customizationContext) {
-        var declaredFields = Stream.of(type.getDeclaredFields()).map(field -> field.getName()).collect(toList());
+    private void validateCustomization(CustomizationContext customizationContext) {
+        var declaredFields = type.getDeclaredFields().stream().map(field -> field.getName()).collect(toList());
 
         var missingDeclaredField = customizationContext.getCustomFields().entrySet().stream()
                 .filter(entry -> !declaredFields.contains(entry.getKey()))

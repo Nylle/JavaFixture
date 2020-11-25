@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 public class SpecimenType<T> extends TypeCapture<T> {
@@ -83,7 +83,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public String[] getTypeParameterNames() {
         if (isParameterized()) {
-            return stream(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
+            return Stream.of(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
         }
 
         throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
@@ -184,11 +184,15 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public List<Constructor<T>> getDeclaredConstructors() {
-        return stream(this.asClass().getDeclaredConstructors()).map(x -> (Constructor<T>) x).collect(toList());
+        return Stream.of(this.asClass().getDeclaredConstructors()).map(x -> (Constructor<T>) x).collect(toList());
+    }
+
+    public List<SpecimenField> getDeclaredFields() {
+        return Stream.of(asClass().getDeclaredFields()).map(field -> new SpecimenField(field)).collect(toList());
     }
 
     public List<Method> getFactoryMethods() {
-        return stream(this.asClass().getDeclaredMethods())
+        return Stream.of(this.asClass().getDeclaredMethods())
                 .filter(x -> Modifier.isStatic(x.getModifiers()))
                 .filter(x -> x.getReturnType().equals(this.asClass()))
                 .collect(Collectors.toList());

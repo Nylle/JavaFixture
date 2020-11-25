@@ -440,4 +440,13 @@ class SpecimenTypeTest {
 
         assertThat(actual).hasSize(2);
     }
+
+    @Test
+    void getDeclaredFields() {
+        var sut = SpecimenType.fromClass(TestObject.class);
+
+        var actual = sut.getDeclaredFields();
+
+        assertThat(actual).extracting("field").containsAll(List.of(TestObject.class.getDeclaredFields()));
+    }
 }

@@ -110,19 +110,19 @@ class GenericSpecimenTest {
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot set field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGeneric'.")
+                .withMessage("Cannot set field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGeneric<java.lang.String, java.lang.Integer>'.")
                 .withNoCause();
     }
 
     @Test
     void cannotCustomizeFieldInBaseClass() {
-        var sut = new ObjectSpecimen<>(new SpecimenType<TestObjectGenericWithBaseClass<String, Integer>>() {}, context, specimenFactory);
+        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGenericWithBaseClass<String, Integer>>() {}, context, specimenFactory);
 
         var customizationContext = new CustomizationContext(List.of(), Map.of("primitiveInt", 1));
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot set field 'primitiveInt': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass'.")
+                .withMessage("Cannot set field 'primitiveInt': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass<java.lang.String, java.lang.Integer>'.")
                 .withNoCause();
     }
 }

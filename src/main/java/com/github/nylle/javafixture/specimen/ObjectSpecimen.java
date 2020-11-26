@@ -8,6 +8,8 @@ import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.util.stream.Stream;
+
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
@@ -80,13 +82,12 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
     private void validate(CustomizationContext customizationContext) {
         var declaredFields = type.getDeclaredFields().stream().map(x -> x.getName()).collect(toList());
 
-        var missingDeclaredField = customizationContext.getCustomFields().entrySet().stream()
-                .filter(entry -> !declaredFields.contains(entry.getKey()))
-                .findFirst()
-                .map(x -> x.getKey());
+        var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+                .filter(fieldName -> !declaredFields.contains(fieldName))
+                .findFirst();
 
         if (missingDeclaredField.isPresent()) {
-            throw new SpecimenException(format("Cannot set field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
+            throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
     }
 }

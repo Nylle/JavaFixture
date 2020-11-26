@@ -11,6 +11,7 @@ import com.github.nylle.javafixture.SpecimenType;
 
 import java.util.Map;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.lang.String.format;
@@ -105,13 +106,12 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     private void validateCustomization(CustomizationContext customizationContext) {
         var declaredFields = type.getDeclaredFields().stream().map(field -> field.getName()).collect(toList());
 
-        var missingDeclaredField = customizationContext.getCustomFields().entrySet().stream()
-                .filter(entry -> !declaredFields.contains(entry.getKey()))
-                .findFirst()
-                .map(x -> x.getKey());
+        var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+                .filter(entry -> !declaredFields.contains(entry))
+                .findFirst();
 
         if(missingDeclaredField.isPresent()) {
-            throw new SpecimenException(format("Cannot set field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
+            throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
     }
 }

@@ -104,26 +104,50 @@ class ObjectSpecimenTest {
     }
 
     @Test
-    void cannotCustomizeNonExistingField() {
+    void cannotSetNonExistingField() {
         var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
         var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot set field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
+                .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
                 .withNoCause();
     }
 
     @Test
-    void cannotCustomizeFieldInBaseClass() {
+    void cannotOmitNonExistingField() {
+        var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
+
+        var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of());
+
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> sut.create(customizationContext))
+                .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
+                .withNoCause();
+    }
+
+    @Test
+    void cannotSetFieldInBaseClass() {
         var sut = new ObjectSpecimen<TestObjectWithBaseClass>(SpecimenType.fromClass(TestObjectWithBaseClass.class), context, specimenFactory);
 
         var customizationContext = new CustomizationContext(List.of(), Map.of("value", "foo"));
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot set field 'value': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass'.")
+                .withMessage("Cannot customize field 'value': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass'.")
+                .withNoCause();
+    }
+
+    @Test
+    void cannotOmitFieldInBaseClass() {
+        var sut = new ObjectSpecimen<TestObjectWithBaseClass>(SpecimenType.fromClass(TestObjectWithBaseClass.class), context, specimenFactory);
+
+        var customizationContext = new CustomizationContext(List.of("value"), Map.of());
+
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> sut.create(customizationContext))
+                .withMessage("Cannot customize field 'value': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass'.")
                 .withNoCause();
     }
 }

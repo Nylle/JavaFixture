@@ -22,7 +22,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.4.0</version>
+    <version>2.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -207,6 +207,18 @@ Please note the empty curly braces (`{}`) after the call to the constructor of `
 Optional result = fixture.create(SpecimenType.fromClass(Optional.class));
 
 Optional result = fixture.create(Optional.class); // convenience method for above
+```
+
+## Optionals
+To quickly create an `Optional<T>` of your desired type `T` without the need to use `SpecimenType<Optional<T>>` as described [above](#generics), here is some syntactic sugar:
+```java
+Optional<String> result = fixture.createOptional(String.class);
+```
+Or with customisation:
+```java
+Optional<TestDto> result = fixture.build(TestDto.class)
+                                  .without("myPublicField")
+                                  .createOptional();
 ```
 
 ## Constructor

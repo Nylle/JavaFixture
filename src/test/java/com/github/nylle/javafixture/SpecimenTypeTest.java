@@ -8,10 +8,11 @@ import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
-import com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass;
-import com.github.nylle.javafixture.testobjects.TestObjectWithBaseClassWithBaseClass;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
+import com.github.nylle.javafixture.testobjects.inheritance.Base;
+import com.github.nylle.javafixture.testobjects.inheritance.Child;
+import com.github.nylle.javafixture.testobjects.inheritance.Parent;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
@@ -447,17 +448,17 @@ class SpecimenTypeTest {
 
     @Test
     void getDeclaredFields() {
-        var sut = SpecimenType.fromClass(TestObjectWithBaseClassWithBaseClass.class);
+        var sut = SpecimenType.fromClass(Child.class);
 
         var actual = sut.getDeclaredFields();
 
         var expected = Stream.concat(
-                Stream.of(TestObjectWithBaseClassWithBaseClass.class.getDeclaredFields()),
+                Stream.of(Child.class.getDeclaredFields()),
                 Stream.concat(
-                        Stream.of(TestObjectWithBaseClass.class.getDeclaredFields()),
-                        Stream.of(TestObject.class.getDeclaredFields())))
+                        Stream.of(Parent.class.getDeclaredFields()),
+                        Stream.of(Base.class.getDeclaredFields())))
                 .collect(toList());
 
-        assertThat(actual).extracting("field").containsExactlyInAnyOrderElementsOf(expected);
+        assertThat(actual).extracting("field").containsExactlyElementsOf(expected);
     }
 }

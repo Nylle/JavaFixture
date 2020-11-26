@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 public class ObjectSpecimen<T> implements ISpecimen<T> {
@@ -66,15 +67,25 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
     private T populate(T specimen, CustomizationContext customizationContext) {
         validate(customizationContext);
 
-        type.getDeclaredFields().stream()
-                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                .filter(field -> !field.isStatic())
-                .forEach(field ->
-                        field.set(
-                                specimen,
-                                customizationContext.getCustomFields().getOrDefault(
-                                        field.getName(),
-                                        specimenFactory.build(SpecimenType.fromClass(field.getGenericType())).create())));
+        type.getDeclaredFields()
+                .stream()
+                .collect(groupingBy(field -> field.getName()))
+                .values()
+                .forEach(values -> {
+                    values.stream()
+                            .findFirst()
+                            .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                            .ifPresent(field -> field.set(
+                                    specimen,
+                                    customizationContext.getCustomFields().getOrDefault(
+                                            field.getName(),
+                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType())).create())));
+                    values.stream()
+                            .skip(1)
+                            .forEach(field -> field.set(
+                                    specimen,
+                                    specimenFactory.build(SpecimenType.fromClass(field.getGenericType())).create()));
+                });
 
         return specimen;
     }

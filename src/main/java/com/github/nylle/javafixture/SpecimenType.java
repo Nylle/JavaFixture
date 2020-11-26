@@ -189,7 +189,10 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public List<SpecimenField> getDeclaredFields() {
-        return getDeclaredFields(asClass()).map(field -> new SpecimenField(field)).collect(toList());
+        return getDeclaredFields(asClass())
+                .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                .map(field -> new SpecimenField(field))
+                .collect(toList());
     }
 
     public List<Method> getFactoryMethods() {

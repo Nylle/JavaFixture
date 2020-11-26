@@ -1,7 +1,6 @@
 package com.github.nylle.javafixture;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 import static java.lang.String.format;
@@ -23,10 +22,6 @@ public class SpecimenField {
         } catch (IllegalAccessException e) {
             throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
         }
-    }
-
-    public boolean isStatic() {
-        return Modifier.isStatic(field.getModifiers());
     }
 
     public String getName() {

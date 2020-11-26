@@ -6,7 +6,6 @@ import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
-import com.github.nylle.javafixture.SpecimenField;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.util.Map;
@@ -15,6 +14,7 @@ import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -83,24 +83,37 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return context.cached(type, instanceFactory.construct(type));
         }
 
-        var result = context.cached(type, instanceFactory.instantiate(type));
-
-        validateCustomization(customizationContext);
-
-        type.getDeclaredFields().stream()
-                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                .filter(field -> !field.isStatic())
-                .forEach(field -> customize(field, result, customizationContext));
-
-        return result;
+        return populate(context.cached(type, instanceFactory.instantiate(type)), customizationContext);
     }
 
-    private void customize(SpecimenField field, T result, CustomizationContext customizationContext) {
-        if (customizationContext.getCustomFields().containsKey(field.getName())) {
-            field.set(result, customizationContext.getCustomFields().get(field.getName()));
-        } else {
-            field.set(result, specimens.getOrDefault(field.getGenericType().getTypeName(), specimenFactory.build(SpecimenType.fromClass(field.getType()))).create());
-        }
+    private T populate(T specimen, CustomizationContext customizationContext) {
+        validateCustomization(customizationContext);
+
+        type.getDeclaredFields()
+                .stream()
+                .collect(groupingBy(field -> field.getName()))
+                .values()
+                .forEach(values -> {
+                    values.stream()
+                            .findFirst()
+                            .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                            .ifPresent(field -> field.set(
+                                    specimen,
+                                    customizationContext.getCustomFields().getOrDefault(
+                                            field.getName(),
+                                            specimens.getOrDefault(
+                                                    field.getGenericType().getTypeName(),
+                                                    specimenFactory.build(SpecimenType.fromClass(field.getType()))).create())));
+                    values.stream()
+                            .skip(1)
+                            .forEach(field -> field.set(
+                                    specimen,
+                                    specimens.getOrDefault(
+                                            field.getGenericType().getTypeName(),
+                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create()));
+                });
+
+        return specimen;
     }
 
     private void validateCustomization(CustomizationContext customizationContext) {

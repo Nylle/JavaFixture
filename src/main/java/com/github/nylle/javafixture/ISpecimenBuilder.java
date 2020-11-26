@@ -1,10 +1,13 @@
 package com.github.nylle.javafixture;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public interface ISpecimenBuilder<T> {
     T create();
+
+    Optional<T> createOptional();
 
     Stream<T> createMany();
 

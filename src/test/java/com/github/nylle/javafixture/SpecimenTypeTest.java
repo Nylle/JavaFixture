@@ -8,6 +8,8 @@ import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
+import com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass;
+import com.github.nylle.javafixture.testobjects.TestObjectWithBaseClassWithBaseClass;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
 import org.junit.jupiter.api.Test;
@@ -51,7 +53,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -443,10 +447,17 @@ class SpecimenTypeTest {
 
     @Test
     void getDeclaredFields() {
-        var sut = SpecimenType.fromClass(TestObject.class);
+        var sut = SpecimenType.fromClass(TestObjectWithBaseClassWithBaseClass.class);
 
         var actual = sut.getDeclaredFields();
 
-        assertThat(actual).extracting("field").containsAll(List.of(TestObject.class.getDeclaredFields()));
+        var expected = Stream.concat(
+                Stream.of(TestObjectWithBaseClassWithBaseClass.class.getDeclaredFields()),
+                Stream.concat(
+                        Stream.of(TestObjectWithBaseClass.class.getDeclaredFields()),
+                        Stream.of(TestObject.class.getDeclaredFields())))
+                .collect(toList());
+
+        assertThat(actual).extracting("field").containsExactlyInAnyOrderElementsOf(expected);
     }
 }

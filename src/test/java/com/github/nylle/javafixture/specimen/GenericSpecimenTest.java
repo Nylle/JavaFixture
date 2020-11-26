@@ -6,7 +6,6 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
-import com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -123,30 +122,6 @@ class GenericSpecimenTest {
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGeneric<java.lang.String, java.lang.Integer>'.")
-                .withNoCause();
-    }
-
-    @Test
-    void cannotSetFieldInBaseClass() {
-        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGenericWithBaseClass<String, Integer>>() {}, context, specimenFactory);
-
-        var customizationContext = new CustomizationContext(List.of(), Map.of("primitiveInt", 1));
-
-        assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot customize field 'primitiveInt': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass<java.lang.String, java.lang.Integer>'.")
-                .withNoCause();
-    }
-
-    @Test
-    void cannotOmitFieldInBaseClass() {
-        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGenericWithBaseClass<String, Integer>>() {}, context, specimenFactory);
-
-        var customizationContext = new CustomizationContext(List.of("primitiveInt"), Map.of());
-
-        assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot customize field 'primitiveInt': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGenericWithBaseClass<java.lang.String, java.lang.Integer>'.")
                 .withNoCause();
     }
 }

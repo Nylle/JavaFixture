@@ -5,13 +5,14 @@ import java.util.Map;
 
 public class TestObjectWithBaseClass extends TestObject {
 
-    private String localField;
+    private String field;
 
     public TestObjectWithBaseClass(String value, List<Integer> integers, Map<Integer, String> strings) {
         super(value, integers, strings);
     }
 
-    public String getLocalField() {
-        return localField;
+    public String getField() {
+        return field;
     }
 }
+

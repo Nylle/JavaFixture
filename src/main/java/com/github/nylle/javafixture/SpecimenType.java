@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -188,7 +189,7 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public List<SpecimenField> getDeclaredFields() {
-        return Stream.of(asClass().getDeclaredFields()).map(field -> new SpecimenField(field)).collect(toList());
+        return getDeclaredFields(asClass()).map(field -> new SpecimenField(field)).collect(toList());
     }
 
     public List<Method> getFactoryMethods() {
@@ -222,5 +223,15 @@ public class SpecimenType<T> extends TypeCapture<T> {
     @Override
     public int hashCode() {
         return Objects.hash(type);
+    }
+
+    private Stream<Field> getDeclaredFields(Class<?> type) {
+        var localFields = Stream.of(type.getDeclaredFields());
+
+        if(type.getSuperclass() != null) {
+            return Stream.concat(localFields, getDeclaredFields(type.getSuperclass()));
+        }
+
+        return localFields;
     }
 }

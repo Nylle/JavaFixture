@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -229,12 +230,10 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     private Stream<Field> getDeclaredFields(Class<?> type) {
-        var localFields = Stream.of(type.getDeclaredFields());
-
-        if(type.getSuperclass() != null) {
-            return Stream.concat(localFields, getDeclaredFields(type.getSuperclass()));
-        }
-
-        return localFields;
+        return Stream.concat(
+                Stream.of(type.getDeclaredFields()),
+                Optional.ofNullable(type.getSuperclass())
+                        .map(superclass -> getDeclaredFields(superclass))
+                        .orElse(Stream.of()));
     }
 }

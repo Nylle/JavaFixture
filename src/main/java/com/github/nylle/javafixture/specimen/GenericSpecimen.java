@@ -68,7 +68,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         }
 
         if (context.isCached(type)) {
-            return (T) context.cached(type);
+            return context.cached(type);
         }
 
         if (type.isInterface()) {

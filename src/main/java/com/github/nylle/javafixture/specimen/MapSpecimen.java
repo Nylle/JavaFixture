@@ -63,7 +63,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     @Override
     public T create(final CustomizationContext customizationContext) {
         if (context.isCached(type)) {
-            return (T) context.cached(type);
+            return context.cached(type);
         }
 
         Map<K, V> map = context.cached(type, type.isInterface() ? createFromInterfaceType(type.asClass()) : createFromConcreteType(type));

@@ -49,7 +49,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
     @Override
     public T create(CustomizationContext customizationContext) {
         if (context.isCached(type)) {
-            return (T) context.cached(type);
+            return context.cached(type);
         }
 
         if (customizationContext.useRandomConstructor()) {

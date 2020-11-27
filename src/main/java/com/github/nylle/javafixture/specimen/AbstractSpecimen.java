@@ -47,13 +47,13 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
     @Override
     public T create(final CustomizationContext customizationContext) {
         if (context.isCached(type)) {
-            return (T) context.cached(type);
+            return context.cached(type);
         }
 
         try {
             return (T) context.cached(type, instanceFactory.proxy(type));
         } catch(SpecimenException ignored) {
-            return (T) context.cached(type, instanceFactory.manufacture(type));
+            return context.cached(type, instanceFactory.manufacture(type));
         }
     }
 }

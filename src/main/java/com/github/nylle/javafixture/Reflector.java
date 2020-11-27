@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class Reflector<T> {
@@ -28,8 +29,22 @@ public class Reflector<T> {
                 .filter(entry -> !declaredFields.contains(entry))
                 .findFirst();
 
-        if(missingDeclaredField.isPresent()) {
+        if (missingDeclaredField.isPresent()) {
             throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
+        }
+
+        var duplicateField = getDeclaredFields()
+                .collect(groupingBy(field -> field.getName()))
+                .entrySet()
+                .stream()
+                .filter(x -> x.getValue().size() > 1)
+                .filter(x -> Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream()).anyMatch(y -> y.equals(x.getKey())))
+                .findFirst();
+
+        if (duplicateField.isPresent()) {
+            throw new SpecimenException(format("Cannot customize field '%s'. Duplicate field names found: \n%s",
+                    duplicateField.get().getKey(),
+                    duplicateField.get().getValue().stream().map(x -> x.toString()).collect(joining("\n"))));
         }
 
         return this;
@@ -45,28 +60,13 @@ public class Reflector<T> {
 
     private T populate(CustomizationContext customizationContext, Function<Field, Type> getTypeFromField, Map<String, ISpecimen<?>> specimens) {
         getDeclaredFields()
-                .collect(groupingBy(field -> field.getName()))
-                .values()
-                .forEach(values -> {
-                    values.stream()
-                            .findFirst()
-                            .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                            .ifPresent(field -> setField(
-                                    field,
-                                    customizationContext.getCustomFields().getOrDefault(
-                                            field.getName(),
-                                            specimens.getOrDefault(
-                                                    field.getGenericType().getTypeName(),
-                                                    specimenFactory.build(SpecimenType.fromClass(getTypeFromField.apply(field)))).create())));
-                    values.stream()
-                            .skip(1)
-                            .forEach(field -> setField(
-                                    field,
-                                    specimens.getOrDefault(
-                                            field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(getTypeFromField.apply(field)))).create()));
-                });
-
+                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                .forEach(field -> setField(field,
+                        customizationContext.getCustomFields().getOrDefault(
+                                field.getName(),
+                                specimens.getOrDefault(
+                                        field.getGenericType().getTypeName(),
+                                        specimenFactory.build(SpecimenType.fromClass(getTypeFromField.apply(field)))).create())));
         return instance;
     }
 

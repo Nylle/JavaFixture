@@ -3,6 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
@@ -180,18 +181,8 @@ class GenericSpecimenTest {
                     "fieldIn3Classes", "foo",
                     "fieldIn2Classes", 100.0);
 
-            var actual = sut.create(new CustomizationContext(List.of(), customization));
-
-            assertThat(actual.getFieldIn3ClassesChild()).isEqualTo("foo");
-            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
-            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
-
-            assertThat(actual.getFieldIn2ClassesParent()).isEqualTo(100.0);
-            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
-
-            assertThat(actual.getChildField()).isNotNull();
-            assertThat(actual.getParentField()).isNotNull();
-            assertThat(actual.getBaseField()).isNotNull();
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization)));
         }
 
         @Test
@@ -203,18 +194,8 @@ class GenericSpecimenTest {
                     "fieldIn3Classes",
                     "fieldIn2Classes");
 
-            var actual = sut.create(new CustomizationContext(omitting, Map.of()));
-
-            assertThat(actual.getFieldIn3ClassesChild()).isNull();
-            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
-            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
-
-            assertThat(actual.getFieldIn2ClassesParent()).isNull();
-            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
-
-            assertThat(actual.getChildField()).isNotNull();
-            assertThat(actual.getParentField()).isNotNull();
-            assertThat(actual.getBaseField()).isNotNull();
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of())));
         }
     }
 }

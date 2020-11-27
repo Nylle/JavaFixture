@@ -70,53 +70,6 @@ class ReflectorTest {
             assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
         }
 
-        @Test
-        @DisplayName("containing multiple fields of the same name, the first is customised while the others are random")
-        void firstFieldPerNameIsCustomized() {
-
-            var sut = new Reflector<>(new Child(), specimenFactory);
-
-            Map<String, Object> customization = Map.of(
-                    "fieldIn3Classes", "foo",
-                    "fieldIn2Classes", 100.0);
-
-            var actual = sut.populate(new CustomizationContext(List.of(), customization));
-
-            assertThat(actual.getFieldIn3ClassesChild()).isEqualTo("foo");
-            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
-            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
-
-            assertThat(actual.getFieldIn2ClassesParent()).isEqualTo(100.0);
-            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
-
-            assertThat(actual.getChildField()).isNotNull();
-            assertThat(actual.getParentField()).isNotNull();
-            assertThat(actual.getBaseField()).isNotNull();
-        }
-
-        @Test
-        @DisplayName("containing multiple fields of the same name, the first is omitted while the others are random")
-        void firstFieldPerNameIsOmitted() {
-
-            var sut = new Reflector<>(new Child(), specimenFactory);
-
-            var omitting = List.of(
-                    "fieldIn3Classes",
-                    "fieldIn2Classes");
-
-            var actual = sut.populate(new CustomizationContext(omitting, Map.of()));
-
-            assertThat(actual.getFieldIn3ClassesChild()).isNull();
-            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
-            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
-
-            assertThat(actual.getFieldIn2ClassesParent()).isNull();
-            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
-
-            assertThat(actual.getChildField()).isNotNull();
-            assertThat(actual.getParentField()).isNotNull();
-            assertThat(actual.getBaseField()).isNotNull();
-        }
     }
 
     @Nested
@@ -167,58 +120,6 @@ class ReflectorTest {
             assertThat(actual.getFieldIn2ClassesParent()).isNotNull();
             assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
         }
-
-        @Test
-        @DisplayName("containing multiple fields of the same name, the first is customised while the others are random")
-        void firstFieldPerNameIsCustomized() {
-
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
-
-            Map<String, ISpecimen<?>> specimen = Map.of("T", new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class), context));
-
-            Map<String, Object> customization = Map.of(
-                    "fieldIn3Classes", "foo",
-                    "fieldIn2Classes", 100.0);
-
-            var actual = sut.populate(new CustomizationContext(List.of(), customization), specimen);
-
-            assertThat(actual.getFieldIn3ClassesChild()).isEqualTo("foo");
-            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
-            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
-
-            assertThat(actual.getFieldIn2ClassesParent()).isEqualTo(100.0);
-            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
-
-            assertThat(actual.getChildField()).isNotNull();
-            assertThat(actual.getParentField()).isNotNull();
-            assertThat(actual.getBaseField()).isNotNull();
-        }
-
-        @Test
-        @DisplayName("containing multiple fields of the same name, the first is omitted while the others are random")
-        void firstFieldPerNameIsOmitted() {
-
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
-
-            Map<String, ISpecimen<?>> specimen = Map.of("T", new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class), context));
-
-            var omitting = List.of(
-                    "fieldIn3Classes",
-                    "fieldIn2Classes");
-
-            var actual = sut.populate(new CustomizationContext(omitting, Map.of()), specimen);
-
-            assertThat(actual.getFieldIn3ClassesChild()).isNull();
-            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
-            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
-
-            assertThat(actual.getFieldIn2ClassesParent()).isNull();
-            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
-
-            assertThat(actual.getChildField()).isNotNull();
-            assertThat(actual.getParentField()).isNotNull();
-            assertThat(actual.getBaseField()).isNotNull();
-        }
     }
 
     @Nested
@@ -243,11 +144,51 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            var validCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+            var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(validCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
                     .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.inheritance.GenericChild<java.lang.String>'.")
+                    .withNoCause();
+        }
+
+        @Test
+        @DisplayName("to set duplicate fields, an exception is thrown")
+        void customizingDuplicateFields() {
+
+            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+
+            Map<String, Object> customization = Map.of(
+                    "fieldIn3Classes", "foo",
+                    "fieldIn2Classes", 100.0);
+
+            var invalidCustomisation = new CustomizationContext(List.of(), customization);
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
+                    .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
+                    .withMessageContaining("private java.lang.Integer com.github.nylle.javafixture.testobjects.inheritance.GenericBase.fieldIn2Classes")
+                    .withNoCause();
+        }
+
+        @Test
+        @DisplayName("to omit duplicate fields, an exception is thrown")
+        void omittingDuplicateFields() {
+
+            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+
+            var omitting = List.of(
+                    "fieldIn3Classes",
+                    "fieldIn2Classes");
+
+            var invalidCustomisation = new CustomizationContext(omitting, Map.of());
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
+                    .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
+                    .withMessageContaining("private java.lang.Integer com.github.nylle.javafixture.testobjects.inheritance.GenericBase.fieldIn2Classes")
                     .withNoCause();
         }
     }

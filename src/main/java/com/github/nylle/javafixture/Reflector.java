@@ -43,7 +43,7 @@ public class Reflector<T> {
         return populate(customizationContext, field -> field.getType(), specimens);
     }
 
-    private T populate(CustomizationContext customizationContext, Function<SpecimenField, Type> getTypeFromField, Map<String, ISpecimen<?>> specimens) {
+    private T populate(CustomizationContext customizationContext, Function<Field, Type> getTypeFromField, Map<String, ISpecimen<?>> specimens) {
         getDeclaredFields()
                 .collect(groupingBy(field -> field.getName()))
                 .values()
@@ -51,8 +51,8 @@ public class Reflector<T> {
                     values.stream()
                             .findFirst()
                             .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                            .ifPresent(field -> field.set(
-                                    instance,
+                            .ifPresent(field -> setField(
+                                    field,
                                     customizationContext.getCustomFields().getOrDefault(
                                             field.getName(),
                                             specimens.getOrDefault(
@@ -60,8 +60,8 @@ public class Reflector<T> {
                                                     specimenFactory.build(SpecimenType.fromClass(getTypeFromField.apply(field)))).create())));
                     values.stream()
                             .skip(1)
-                            .forEach(field -> field.set(
-                                    instance,
+                            .forEach(field -> setField(
+                                    field,
                                     specimens.getOrDefault(
                                             field.getGenericType().getTypeName(),
                                             specimenFactory.build(SpecimenType.fromClass(getTypeFromField.apply(field)))).create()));
@@ -70,10 +70,9 @@ public class Reflector<T> {
         return instance;
     }
 
-    private Stream<SpecimenField> getDeclaredFields() {
+    private Stream<Field> getDeclaredFields() {
         return getDeclaredFields(instance.getClass())
-                .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .map(field -> new SpecimenField(field));
+                .filter(field -> !Modifier.isStatic(field.getModifiers()));
     }
 
     private Stream<Field> getDeclaredFields(Class<?> type) {
@@ -82,5 +81,16 @@ public class Reflector<T> {
                 Optional.ofNullable(type.getSuperclass())
                         .map(superclass -> getDeclaredFields(superclass))
                         .orElse(Stream.of()));
+    }
+
+    private void setField(Field field, Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(instance, value);
+        } catch (SecurityException e) {
+            throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
+        } catch (IllegalAccessException e) {
+            throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
+        }
     }
 }

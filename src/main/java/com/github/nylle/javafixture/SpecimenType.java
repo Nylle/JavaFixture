@@ -1,7 +1,6 @@
 package com.github.nylle.javafixture;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -16,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -189,13 +187,6 @@ public class SpecimenType<T> extends TypeCapture<T> {
         return Stream.of(this.asClass().getDeclaredConstructors()).map(x -> (Constructor<T>) x).collect(toList());
     }
 
-    public List<SpecimenField> getDeclaredFields() {
-        return getDeclaredFields(asClass())
-                .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .map(field -> new SpecimenField(field))
-                .collect(toList());
-    }
-
     public List<Method> getFactoryMethods() {
         return Stream.of(this.asClass().getDeclaredMethods())
                 .filter(x -> Modifier.isStatic(x.getModifiers()))
@@ -227,13 +218,5 @@ public class SpecimenType<T> extends TypeCapture<T> {
     @Override
     public int hashCode() {
         return Objects.hash(type);
-    }
-
-    private Stream<Field> getDeclaredFields(Class<?> type) {
-        return Stream.concat(
-                Stream.of(type.getDeclaredFields()),
-                Optional.ofNullable(type.getSuperclass())
-                        .map(superclass -> getDeclaredFields(superclass))
-                        .orElse(Stream.of()));
     }
 }

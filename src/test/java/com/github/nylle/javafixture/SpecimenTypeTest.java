@@ -10,9 +10,6 @@ import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
-import com.github.nylle.javafixture.testobjects.inheritance.Base;
-import com.github.nylle.javafixture.testobjects.inheritance.Child;
-import com.github.nylle.javafixture.testobjects.inheritance.Parent;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
@@ -54,9 +51,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -444,21 +439,5 @@ class SpecimenTypeTest {
         var actual = sut.getFactoryMethods();
 
         assertThat(actual).hasSize(2);
-    }
-
-    @Test
-    void getDeclaredFields() {
-        var sut = SpecimenType.fromClass(Child.class);
-
-        var actual = sut.getDeclaredFields();
-
-        var expected = Stream.concat(
-                Stream.of(Child.class.getDeclaredFields()),
-                Stream.concat(
-                        Stream.of(Parent.class.getDeclaredFields()),
-                        Stream.of(Base.class.getDeclaredFields())))
-                .collect(toList());
-
-        assertThat(actual).extracting("field").containsExactlyElementsOf(expected);
     }
 }

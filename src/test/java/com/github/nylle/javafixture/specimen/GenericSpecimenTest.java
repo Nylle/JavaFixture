@@ -173,7 +173,7 @@ class GenericSpecimenTest {
         }
 
         @Test
-        @DisplayName("containing multiple fields of the same name, the first is customised while the others are random")
+        @DisplayName("containing multiple fields of the same name, they cannot be customised")
         void firstFieldPerNameIsCustomized() {
             var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
@@ -186,7 +186,7 @@ class GenericSpecimenTest {
         }
 
         @Test
-        @DisplayName("containing multiple fields of the same name, the first is omitted while the others are random")
+        @DisplayName("containing multiple fields of the same name, they cannot be omitted")
         void firstFieldPerNameIsOmitted() {
             var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 

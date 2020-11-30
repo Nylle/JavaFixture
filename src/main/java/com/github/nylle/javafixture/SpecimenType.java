@@ -43,7 +43,11 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public static Class<?> castToClass(Type type) {
         if (type instanceof WildcardType) {
-            return Object.class;
+            return (Class<?>) Stream.of(((WildcardType) type).getUpperBounds())
+                    .findFirst()
+                    .orElse(Stream.of(((WildcardType) type).getLowerBounds())
+                            .findFirst()
+                            .orElse(Object.class));
         }
 
         if (isParameterized(type)) {

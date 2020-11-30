@@ -10,6 +10,7 @@ import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
+import com.github.nylle.javafixture.testobjects.TestWildCardType;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.ParameterizedType;
@@ -439,5 +440,39 @@ class SpecimenTypeTest {
         var actual = sut.getFactoryMethods();
 
         assertThat(actual).hasSize(2);
+    }
+
+    @Test
+    void getDeclaredFields() {
+        var sut = SpecimenType.fromClass(TestObject.class);
+
+        var actual = sut.getDeclaredFields();
+
+        assertThat(actual).extracting("field").containsAll(List.of(TestObject.class.getDeclaredFields()));
+    }
+
+    @Test
+    void castToClass_CanHandleWildcardTypesWithUpperBounds() {
+        var upperBounds = new Type[] { Integer.class};
+
+        var wildcardType = new TestWildCardType(upperBounds, new Type[0]);
+
+        assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Integer.class);
+    }
+
+    @Test
+    void castToClass_CanHandleWildcardTypesWithLowerBounds() {
+        var lowerBounds = new Type[] { Integer.class};
+
+        var wildcardType = new TestWildCardType(new Type[0], lowerBounds);
+
+        assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Integer.class);
+    }
+
+    @Test
+    void castToClass_CanHandleWildcardTypesWithoutBounds() {
+        var wildcardType = new TestWildCardType(new Type[0], new Type[0]);
+
+        assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Object.class);
     }
 }

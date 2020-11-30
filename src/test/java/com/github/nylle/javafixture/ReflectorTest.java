@@ -158,9 +158,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            Map<String, Object> customization = Map.of(
-                    "fieldIn3Classes", "foo",
-                    "fieldIn2Classes", 100.0);
+            Map<String, Object> customization = Map.of("fieldIn2Classes", 100.0);
 
             var invalidCustomisation = new CustomizationContext(List.of(), customization);
 
@@ -178,9 +176,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            var omitting = List.of(
-                    "fieldIn3Classes",
-                    "fieldIn2Classes");
+            var omitting = List.of("fieldIn2Classes");
 
             var invalidCustomisation = new CustomizationContext(omitting, Map.of());
 

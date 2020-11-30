@@ -31,20 +31,20 @@ public class Context {
         return configuration;
     }
 
-    public boolean isCached(SpecimenType type) {
+    public boolean isCached(SpecimenType<?> type) {
         return cache.containsKey(type.hashCode());
     }
 
-    public <T> T cached(SpecimenType type, T instance) {
+    public <T> T cached(SpecimenType<?> type, T instance) {
         cache.putIfAbsent(type.hashCode(), instance);
         return (T) cache.get(type.hashCode());
     }
 
-    public <T> T cached(SpecimenType type) {
+    public <T> T cached(SpecimenType<T> type) {
         return (T) cache.get(type.hashCode());
     }
 
-    public <T> T preDefined(SpecimenType type, T instance) {
+    public <T> T preDefined(SpecimenType<T> type, T instance) {
         return cache.containsKey(type.hashCode()) ? (T) cache.get(type.hashCode()) : instance;
     }
 

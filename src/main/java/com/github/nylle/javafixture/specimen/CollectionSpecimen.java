@@ -71,7 +71,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     @Override
     public T create(final CustomizationContext customizationContext) {
         if (context.isCached(type)) {
-            return (T) context.cached(type);
+            return context.cached(type);
         }
 
         if (type.asClass().equals(EnumSet.class)) {

@@ -187,10 +187,6 @@ public class SpecimenType<T> extends TypeCapture<T> {
         return Stream.of(this.asClass().getDeclaredConstructors()).map(x -> (Constructor<T>) x).collect(toList());
     }
 
-    public List<SpecimenField> getDeclaredFields() {
-        return Stream.of(asClass().getDeclaredFields()).map(field -> new SpecimenField(field)).collect(toList());
-    }
-
     public List<Method> getFactoryMethods() {
         return Stream.of(this.asClass().getDeclaredMethods())
                 .filter(x -> Modifier.isStatic(x.getModifiers()))

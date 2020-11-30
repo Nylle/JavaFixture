@@ -3,11 +3,14 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestObject;
-import com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass;
+import com.github.nylle.javafixture.testobjects.inheritance.Child;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -127,28 +130,74 @@ class ObjectSpecimenTest {
                 .withNoCause();
     }
 
-    @Test
-    void cannotSetFieldInBaseClass() {
-        var sut = new ObjectSpecimen<TestObjectWithBaseClass>(SpecimenType.fromClass(TestObjectWithBaseClass.class), context, specimenFactory);
+    @Nested
+    @DisplayName("when specimen has superclass")
+    class WhenInheritance {
 
-        var customizationContext = new CustomizationContext(List.of(), Map.of("value", "foo"));
+        @Test
+        @DisplayName("all fields are random")
+        void allFieldsArePopulated() {
+            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-        assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot customize field 'value': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass'.")
-                .withNoCause();
-    }
+            var actual = sut.create();
 
-    @Test
-    void cannotOmitFieldInBaseClass() {
-        var sut = new ObjectSpecimen<TestObjectWithBaseClass>(SpecimenType.fromClass(TestObjectWithBaseClass.class), context, specimenFactory);
+            assertThat(actual.getChildField()).isNotNull();
+            assertThat(actual.getParentField()).isNotNull();
+            assertThat(actual.getBaseField()).isNotNull();
+            assertThat(actual.getFieldIn3ClassesChild()).isNotNull();
+            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
+            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
+            assertThat(actual.getFieldIn2ClassesParent()).isNotNull();
+            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
+        }
 
-        var customizationContext = new CustomizationContext(List.of("value"), Map.of());
+        @Test
+        @DisplayName("fields across all superclasses can be customised")
+        void subClassFieldsAreCustomizable() {
+            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-        assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
-                .withMessage("Cannot customize field 'value': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectWithBaseClass'.")
-                .withNoCause();
+            Map<String, Object> customization = Map.of(
+                    "childField", "foo",
+                    "parentField", "bar",
+                    "baseField", "baz");
+
+            var actual = sut.create(new CustomizationContext(List.of(), customization));
+
+            assertThat(actual.getChildField()).isEqualTo("foo");
+            assertThat(actual.getParentField()).isEqualTo("bar");
+            assertThat(actual.getBaseField()).isEqualTo("baz");
+            assertThat(actual.getFieldIn3ClassesChild()).isNotNull();
+            assertThat(actual.getFieldIn3ClassesParent()).isNotNull();
+            assertThat(actual.getFieldIn3ClassesBase()).isNotNull();
+            assertThat(actual.getFieldIn2ClassesParent()).isNotNull();
+            assertThat(actual.getFieldIn2ClassesBase()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("fields with duplicate names cannot be customized")
+        void firstFieldPerNameIsCustomized() {
+            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
+
+            Map<String, Object> customization = Map.of(
+                    "fieldIn3Classes", "foo",
+                    "fieldIn2Classes", 100.0);
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization)));
+        }
+
+        @Test
+        @DisplayName("fields with duplicate names cannot be customized")
+        void firstFieldPerNameIsOmitted() {
+            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
+
+            var omitting = List.of(
+                    "fieldIn3Classes",
+                    "fieldIn2Classes");
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of())));
+        }
     }
 }
 

@@ -443,15 +443,6 @@ class SpecimenTypeTest {
     }
 
     @Test
-    void getDeclaredFields() {
-        var sut = SpecimenType.fromClass(TestObject.class);
-
-        var actual = sut.getDeclaredFields();
-
-        assertThat(actual).extracting("field").containsAll(List.of(TestObject.class.getDeclaredFields()));
-    }
-
-    @Test
     void castToClass_CanHandleWildcardTypesWithUpperBounds() {
         var upperBounds = new Type[] { Integer.class};
 

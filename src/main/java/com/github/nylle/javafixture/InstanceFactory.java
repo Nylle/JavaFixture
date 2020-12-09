@@ -7,12 +7,31 @@ import org.objenesis.instantiator.ObjectInstantiator;
 import javassist.util.proxy.ProxyFactory;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -80,6 +99,10 @@ public class InstanceFactory {
         return createProxyForAbstract(type, specimens);
     }
 
+    public <G, T extends Collection<G>> T createCollection(final SpecimenType<T> type) {
+        return type.isInterface() ? createCollectionFromInterfaceType(type.asClass()) : createCollectionFromConcreteType(type);
+    }
+
     private <T> T construct(final SpecimenType<T> type, final Constructor<?> constructor) {
         try {
             constructor.setAccessible(true);
@@ -110,6 +133,59 @@ public class InstanceFactory {
                     .toArray());
         } catch (Exception ex) {
             return null;
+        }
+    }
+
+    private <G, T extends Collection<G>> T createCollectionFromInterfaceType(final Class<T> type) {
+
+        if (List.class.isAssignableFrom(type)) {
+            return (T) new ArrayList<G>();
+        }
+
+        if (NavigableSet.class.isAssignableFrom(type)) {
+            return (T) new TreeSet<G>();
+        }
+
+        if (SortedSet.class.isAssignableFrom(type)) {
+            return (T) new TreeSet<G>();
+        }
+
+        if (Set.class.isAssignableFrom(type)) {
+            return (T) new HashSet<G>();
+        }
+
+        if (BlockingDeque.class.isAssignableFrom(type)) {
+            return (T) new LinkedBlockingDeque<G>();
+        }
+
+        if (Deque.class.isAssignableFrom(type)) {
+            return (T) new ArrayDeque<G>();
+        }
+
+        if (TransferQueue.class.isAssignableFrom(type)) {
+            return (T) new LinkedTransferQueue<G>();
+        }
+
+        if (BlockingQueue.class.isAssignableFrom(type)) {
+            return (T) new LinkedBlockingQueue<G>();
+        }
+
+        if (Queue.class.isAssignableFrom(type)) {
+            return (T) new LinkedList<G>();
+        }
+
+        if (Collection.class.isAssignableFrom(type)) {
+            return (T) new ArrayList<G>();
+        }
+
+        throw new SpecimenException("Unsupported type: " + type);
+    }
+
+    private <G, T extends Collection<G>> T createCollectionFromConcreteType(final SpecimenType<T> type) {
+        try {
+            return type.asClass().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new SpecimenException("Unable to create collection of type " + type.getName(), e);
         }
     }
 }

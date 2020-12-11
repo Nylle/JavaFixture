@@ -63,7 +63,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
             return context.cached(type, createEnumSet());
         }
 
-        Collection<G> collection = context.cached(type, instanceFactory.createCollection((SpecimenType<Collection<G>>) type));
+        var collection = context.cached(type, instanceFactory.createCollection((SpecimenType<Collection<G>>) type));
 
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()

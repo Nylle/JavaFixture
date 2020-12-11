@@ -18,6 +18,7 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,10 +35,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.github.nylle.javafixture.Fixture.fixture;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 
 class FixtureTest {
@@ -574,6 +577,22 @@ class FixtureTest {
             assertThat(result.getInteger()).isPresent();
             assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
+        }
+
+        @Test
+        @Disabled("This is a known problem")
+        void createExceptionWithLimitedTree() {
+
+            var sut = new Fixture(configuration);
+
+            var result = sut.create(Throwable.class);
+
+            assertThatCode(() -> flattenRecursively(result).collect(toList()))
+                    .doesNotThrowAnyException();
+        }
+
+        private Stream<Throwable> flattenRecursively(Throwable throwable) {
+            return Stream.of(throwable.getSuppressed()).flatMap(x -> flattenRecursively(x));
         }
     }
 }

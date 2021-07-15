@@ -13,6 +13,8 @@ import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
 import com.github.nylle.javafixture.testobjects.TestWildCardType;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -72,10 +74,10 @@ class SpecimenTypeTest {
     @Test
     void isParameterizedStatic() throws NoSuchFieldException {
 
-        var type = TestObject.class.getDeclaredField("value").getGenericType();
-        var listType = TestObject.class.getDeclaredField("integers").getGenericType();
-        var classType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
-        var genericType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
+        Type type = TestObject.class.getDeclaredField("value").getGenericType();
+        Type listType = TestObject.class.getDeclaredField("integers").getGenericType();
+        Type classType = TestObjectWithGenerics.class.getDeclaredField("aClass").getGenericType();
+        Type genericType = TestObjectWithGenerics.class.getDeclaredField("generic").getGenericType();
 
         assertThat(SpecimenType.isParameterized(null)).isFalse();
         assertThat(SpecimenType.isParameterized(type)).isFalse();
@@ -255,7 +257,7 @@ class SpecimenTypeTest {
 
     @Test
     void getGenericTypeArgument() {
-        var sut = new SpecimenType<Map<String, Optional<Integer>>>(){};
+        SpecimenType<Map<String, Optional<Integer>>> sut = new SpecimenType<Map<String, Optional<Integer>>>(){};
 
         assertThat(sut.getGenericTypeArgument(0)).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArgument(1)).isInstanceOf(ParameterizedType.class);
@@ -270,7 +272,7 @@ class SpecimenTypeTest {
 
     @Test
     void getGenericTypeArguments() {
-        var sut = new SpecimenType<Map<String, Optional<Integer>>>(){};
+        SpecimenType<Map<String, Optional<Integer>>> sut = new SpecimenType<Map<String, Optional<Integer>>>(){};
 
         assertThat(sut.getGenericTypeArguments()).hasSize(2);
         assertThat(sut.getGenericTypeArguments()[0]).isEqualTo(String.class);
@@ -286,7 +288,7 @@ class SpecimenTypeTest {
 
     @Test
     void getTypeParameterName() {
-        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>(){};
+        SpecimenType<TestObjectGeneric<String, Optional<Integer>>> sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>(){};
 
         assertThat(sut.getTypeParameterName(0)).isEqualTo("T");
         assertThat(sut.getTypeParameterName(1)).isEqualTo("U");
@@ -299,7 +301,7 @@ class SpecimenTypeTest {
 
     @Test
     void getTypeParameterNames() {
-        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>(){};
+        SpecimenType<TestObjectGeneric<String, Optional<Integer>>> sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>(){};
 
         assertThat(sut.getTypeParameterNames()).hasSize(2);
         assertThat(sut.getTypeParameterNames()[0]).isEqualTo("T");
@@ -372,7 +374,7 @@ class SpecimenTypeTest {
     void fromType() {
         Type type = new SpecimenType<Optional<String>>() {}.asParameterizedType();
 
-        var sut = SpecimenType.fromClass(type);
+        SpecimenType<Object> sut = SpecimenType.fromClass(type);
 
         assertThat(sut.isParameterized()).isTrue();
         assertThat(sut.asClass()).isEqualTo(Optional.class);
@@ -381,7 +383,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForObjectClass() {
-        var sut = new SpecimenType<String>() {};
+        SpecimenType<String> sut = new SpecimenType<String>() {};
 
         assertThat(sut.asClass()).isEqualTo(String.class);
         assertThat(sut.isParameterized()).isFalse();
@@ -392,7 +394,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForGenericClass() {
-        var sut = new SpecimenType<Optional<String>>() {};
+        SpecimenType<Optional<String>> sut = new SpecimenType<Optional<String>>() {};
 
         assertThat(sut.asClass()).isEqualTo(Optional.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -403,7 +405,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForListInterface() {
-        var sut = new SpecimenType<List<String>>() {};
+        SpecimenType<List<String>> sut = new SpecimenType<List<String>>() {};
 
         assertThat(sut.asClass()).isEqualTo(List.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -414,7 +416,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForMapInterface() {
-        var sut = new SpecimenType<Map<String, Integer>>() {};
+        SpecimenType<Map<String, Integer>> sut = new SpecimenType<Map<String, Integer>>() {};
 
         assertThat(sut.asClass()).isEqualTo(Map.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -426,43 +428,43 @@ class SpecimenTypeTest {
 
     @Test
     void getDeclaredConstructors() {
-        var sut = new SpecimenType<TestObjectWithAllConstructors>() {};
+        SpecimenType<TestObjectWithAllConstructors> sut = new SpecimenType<TestObjectWithAllConstructors>() {};
 
-        var actual = sut.getDeclaredConstructors();
+        List<Constructor<TestObjectWithAllConstructors>> actual = sut.getDeclaredConstructors();
 
         assertThat(actual).hasSize(3);
     }
 
     @Test
     void getFactoryMethods() {
-        var sut = new SpecimenType<TestObjectWithStaticMethods>() {};
+        SpecimenType<TestObjectWithStaticMethods> sut = new SpecimenType<TestObjectWithStaticMethods>() {};
 
-        var actual = sut.getFactoryMethods();
+        List<Method> actual = sut.getFactoryMethods();
 
         assertThat(actual).hasSize(2);
     }
 
     @Test
     void castToClass_CanHandleWildcardTypesWithUpperBounds() {
-        var upperBounds = new Type[] { Integer.class};
+        Type[] upperBounds = new Type[] { Integer.class};
 
-        var wildcardType = new TestWildCardType(upperBounds, new Type[0]);
+        TestWildCardType wildcardType = new TestWildCardType(upperBounds, new Type[0]);
 
         assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Integer.class);
     }
 
     @Test
     void castToClass_CanHandleWildcardTypesWithLowerBounds() {
-        var lowerBounds = new Type[] { Integer.class};
+        Type[] lowerBounds = new Type[] { Integer.class};
 
-        var wildcardType = new TestWildCardType(new Type[0], lowerBounds);
+        TestWildCardType wildcardType = new TestWildCardType(new Type[0], lowerBounds);
 
         assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Integer.class);
     }
 
     @Test
     void castToClass_CanHandleWildcardTypesWithoutBounds() {
-        var wildcardType = new TestWildCardType(new Type[0], new Type[0]);
+        TestWildCardType wildcardType = new TestWildCardType(new Type[0], new Type[0]);
 
         assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Object.class);
     }

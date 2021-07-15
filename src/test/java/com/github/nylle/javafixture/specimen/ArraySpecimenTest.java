@@ -54,9 +54,9 @@ class ArraySpecimenTest {
 
     @Test
     void createPrimitiveArray() {
-        var sut = new ArraySpecimen<int[]>(SpecimenType.fromClass(int[].class), context, specimenFactory);
+        ArraySpecimen<int[]> sut = new ArraySpecimen<int[]>(SpecimenType.fromClass(int[].class), context, specimenFactory);
 
-        var actual = sut.create();
+        int[] actual = sut.create();
 
         assertThat(actual).isInstanceOf(int[].class);
         assertThat(actual.length).isEqualTo(2);
@@ -64,9 +64,9 @@ class ArraySpecimenTest {
 
     @Test
     void createObjectArray() {
-        var sut = new ArraySpecimen<Object[]>(SpecimenType.fromClass(Object[].class), context, specimenFactory);
+        ArraySpecimen<Object[]> sut = new ArraySpecimen<Object[]>(SpecimenType.fromClass(Object[].class), context, specimenFactory);
 
-        var actual = sut.create();
+        Object[] actual = sut.create();
 
         assertThat(actual).isInstanceOf(Object[].class);
         assertThat(actual.length).isEqualTo(2);
@@ -74,9 +74,9 @@ class ArraySpecimenTest {
 
     @Test
     void canHandleCircularReferences() {
-        var sut = new ArraySpecimen<AccountManager[]>(SpecimenType.fromClass(AccountManager[].class), context, specimenFactory);
+        ArraySpecimen<AccountManager[]> sut = new ArraySpecimen<AccountManager[]>(SpecimenType.fromClass(AccountManager[].class), context, specimenFactory);
 
-        var actual = sut.create();
+        AccountManager[] actual = sut.create();
 
         assertThat(actual).isInstanceOf(AccountManager[].class);
         assertThat(actual.length).isEqualTo(2);

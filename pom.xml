@@ -17,7 +17,7 @@
     </description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
@@ -84,7 +84,7 @@
                 <version>2.22.0</version>
                 <configuration>
                     <argLine>
-                        --illegal-access=permit
+
                     </argLine>
                 </configuration>
             </plugin>

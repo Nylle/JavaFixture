@@ -10,6 +10,7 @@ import org.junit.jupiter.params.support.AnnotationConsumer;
 
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 
 public class JavaFixtureProvider implements ArgumentsProvider, AnnotationConsumer<TestWithFixture> {
@@ -31,6 +32,6 @@ public class JavaFixtureProvider implements ArgumentsProvider, AnnotationConsume
                 .collectionSizeRange(annotation.minCollectionSize(), annotation.maxCollectionSize())
                 .usePositiveNumbersOnly(annotation.positiveNumbersOnly());
 
-        return Stream.of(Arguments.of(context.getTestMethod().stream().flatMap(m -> stream(m.getGenericParameterTypes()).map(t -> new Fixture(configuration).create(SpecimenType.fromClass(t)))).toArray()));
+        return Stream.of(Arguments.of(context.getTestMethod().map(x -> asList(x)).orElse(asList()).stream().flatMap(m -> stream(m.getGenericParameterTypes()).map(t -> new Fixture(configuration).create(SpecimenType.fromClass(t)))).toArray()));
     }
 }

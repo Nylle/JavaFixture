@@ -8,14 +8,14 @@ class SpecimenExceptionTest {
 
     @Test
     void withMessage() {
-        var sut = new SpecimenException("message");
+        SpecimenException sut = new SpecimenException("message");
 
         assertThat(sut.getMessage()).isEqualTo("message");
     }
 
     @Test
     void withMessageAndCause() {
-        var sut = new SpecimenException("message", new NullPointerException("null"));
+        SpecimenException sut = new SpecimenException("message", new NullPointerException("null"));
 
         assertThat(sut.getMessage()).isEqualTo("message");
         assertThat(sut.getCause()).isInstanceOf(NullPointerException.class);

@@ -35,7 +35,7 @@ class AbstractSpecimenTest {
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>((SpecimenType) null, context, specimenFactory))
+        assertThatThrownBy(() -> new AbstractSpecimen<>(null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
@@ -56,9 +56,9 @@ class AbstractSpecimenTest {
 
     @Test
     void createAbstractClass() {
-        var sut = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory);
+        AbstractSpecimen<TestAbstractClass> sut = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory);
 
-        var actual = sut.create();
+        TestAbstractClass actual = sut.create();
 
         assertThat(actual).isInstanceOf(TestAbstractClass.class);
         assertThat(actual.getString()).isNotBlank();
@@ -67,9 +67,9 @@ class AbstractSpecimenTest {
 
     @Test
     void createAbstractClassWithoutConstructor() {
-        var sut = new AbstractSpecimen<Charset>(SpecimenType.fromClass(Charset.class), context, specimenFactory);
+        AbstractSpecimen<Charset> sut = new AbstractSpecimen<Charset>(SpecimenType.fromClass(Charset.class), context, specimenFactory);
 
-        var actual = sut.create();
+        Charset actual = sut.create();
 
         assertThat(actual).isInstanceOf(Charset.class);
     }
@@ -77,8 +77,8 @@ class AbstractSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create();
-        var cached = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create();
+        TestAbstractClass original = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create();
+        TestAbstractClass cached = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(TestAbstractClass.class);
         assertThat(original).isSameAs(cached);

@@ -53,8 +53,8 @@ class TestCaseTest {
         @TestCase(float1 = 1.5f, double2 = 1.5d)
         @TestCase(float1 = 3.25f, double2 = 3.25d)
         void testFloatingPointTypes(Float first, Double second) {
-            final var firstDecimal = new BigDecimal(first, new MathContext(2, RoundingMode.HALF_UP));
-            final var secondDecimal = new BigDecimal(second, new MathContext(2, RoundingMode.HALF_UP));
+            BigDecimal firstDecimal = new BigDecimal(first, new MathContext(2, RoundingMode.HALF_UP));
+            BigDecimal secondDecimal = new BigDecimal(second, new MathContext(2, RoundingMode.HALF_UP));
             assertThat(firstDecimal).isEqualTo(secondDecimal);
         }
 

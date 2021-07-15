@@ -34,7 +34,7 @@ class InterfaceSpecimenTest {
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>((SpecimenType) null, context, specimenFactory))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(null, context, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
@@ -55,9 +55,9 @@ class InterfaceSpecimenTest {
 
     @Test
     void createInterface() {
-        var sut = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory);
+        InterfaceSpecimen<TestInterface> sut = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory);
 
-        var actual = sut.create();
+        TestInterface actual = sut.create();
 
         assertThat(actual).isInstanceOf(TestInterface.class);
         assertThat(actual.publicField).isInstanceOf(Integer.class);
@@ -70,8 +70,8 @@ class InterfaceSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
-        var cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
+        TestInterface original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
+        TestInterface cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(TestInterface.class);
         assertThat(original).isSameAs(cached);

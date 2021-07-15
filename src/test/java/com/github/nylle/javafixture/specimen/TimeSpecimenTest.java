@@ -32,6 +32,7 @@ import java.time.chrono.JapaneseEra;
 import java.time.chrono.MinguoDate;
 import java.time.chrono.ThaiBuddhistDate;
 import java.time.temporal.TemporalAmount;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.Fixture.fixture;
@@ -70,9 +71,9 @@ class TimeSpecimenTest {
     @TestCase(class1 = ZoneId.class)
     @TestCase(class1 = ZoneOffset.class)
     void createDuration(Class type) {
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
+        TimeSpecimen sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 
-        var actual = sut.create();
+        Object actual = sut.create();
 
         assertThat(actual).isInstanceOf(type);
         assertThat(actual.toString()).isNotEmpty();
@@ -110,7 +111,7 @@ class TimeSpecimenTest {
     @TestCase(class1 = java.util.Date.class)
     @DisplayName("create should return a valid object")
     void create(Class type) {
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create();
+        Object sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create();
         // if the object is not valid, the toString method will fail, it cannot print it
         assertThat(sut.toString()).isNotEmpty();
     }
@@ -119,11 +120,11 @@ class TimeSpecimenTest {
     void createWithClock() {
         Clock mockClock = Mockito.mock(Clock.class);
         when(mockClock.instant()).thenReturn(Instant.MIN);
-        var context = new Context(Configuration.configure().clock(mockClock));
+        Context context = new Context(Configuration.configure().clock(mockClock));
 
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), context);
+        TimeSpecimen<Instant> sut = new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), context);
 
-        var actual = sut.create();
+        Instant actual = sut.create();
 
         assertThat(actual).isEqualTo(Instant.MIN);
     }
@@ -151,13 +152,16 @@ class TimeSpecimenTest {
     @TestCase(class1 = ZoneId.class)
     @TestCase(class1 = ZoneOffset.class)
     void canBePredefined(Class type) {
-        var expected = fixture().create(type);
+        Object expected = fixture().create(type);
 
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type).hashCode(), expected));
+        HashMap<Integer, Object> map = new HashMap<>();
+        map.put(SpecimenType.fromClass(type).hashCode(), expected);
 
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
+        Context context = new Context(Configuration.configure(), map);
 
-        var actual = sut.create();
+        TimeSpecimen sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
+
+        Object actual = sut.create();
 
         assertThat(actual).isSameAs(expected);
     }

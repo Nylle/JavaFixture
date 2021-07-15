@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -63,9 +64,9 @@ class ObjectSpecimenTest {
 
     @Test
     void create() {
-        var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
+        ObjectSpecimen<TestObject> sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
-        var actual = sut.create();
+        TestObject actual = sut.create();
 
         assertThat(actual).isInstanceOf(TestObject.class);
         assertThat(actual.getValue()).isInstanceOf(String.class);
@@ -77,11 +78,11 @@ class ObjectSpecimenTest {
         assertThat(actual.getStrings()).isInstanceOf(HashMap.class);
         assertThat(actual.getStrings().size()).isEqualTo(2);
 
-        var first = (Map.Entry) actual.getStrings().entrySet().iterator().next();
+        Map.Entry first = (Map.Entry) actual.getStrings().entrySet().iterator().next();
         assertThat(first.getKey()).isExactlyInstanceOf(Integer.class);
         assertThat(first.getValue()).isExactlyInstanceOf(String.class);
 
-        var second = (Map.Entry) actual.getStrings().entrySet().iterator().next();
+        Map.Entry second = (Map.Entry) actual.getStrings().entrySet().iterator().next();
         assertThat(second.getKey()).isExactlyInstanceOf(Integer.class);
         assertThat(second.getValue()).isExactlyInstanceOf(String.class);
     }
@@ -89,8 +90,8 @@ class ObjectSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
-        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
+        TestObject original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
+        TestObject cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(TestObject.class);
         assertThat(original).isSameAs(cached);
@@ -101,16 +102,20 @@ class ObjectSpecimenTest {
     @Test
     void ignoresStaticFields() {
 
-        var actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
+        TestObject actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
 
         assertThat(actual.STATIC_FIELD).isEqualTo("unchanged");
     }
 
     @Test
     void cannotSetNonExistingField() {
-        var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
+        ObjectSpecimen<TestObject> sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+        Map<String, Object> customization = new HashMap<>();
+        customization.put("nonExistingField", "foo");
+
+
+        CustomizationContext customizationContext = new CustomizationContext(asList(), customization);
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
@@ -120,9 +125,9 @@ class ObjectSpecimenTest {
 
     @Test
     void cannotOmitNonExistingField() {
-        var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
+        ObjectSpecimen<TestObject> sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of());
+        CustomizationContext customizationContext = new CustomizationContext(asList("nonExistingField"), new HashMap<>());
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
@@ -137,9 +142,9 @@ class ObjectSpecimenTest {
         @Test
         @DisplayName("all fields are random")
         void allFieldsArePopulated() {
-            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
+            ObjectSpecimen<Child> sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-            var actual = sut.create();
+            Child actual = sut.create();
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();
@@ -154,14 +159,14 @@ class ObjectSpecimenTest {
         @Test
         @DisplayName("fields across all superclasses can be customised")
         void subClassFieldsAreCustomizable() {
-            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
+            ObjectSpecimen<Child> sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-            Map<String, Object> customization = Map.of(
-                    "childField", "foo",
-                    "parentField", "bar",
-                    "baseField", "baz");
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("childField", "foo");
+            customization.put("parentField", "bar");
+            customization.put("baseField", "baz");
 
-            var actual = sut.create(new CustomizationContext(List.of(), customization));
+            Child actual = sut.create(new CustomizationContext(asList(), customization));
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -176,27 +181,27 @@ class ObjectSpecimenTest {
         @Test
         @DisplayName("fields with duplicate names cannot be customized")
         void firstFieldPerNameIsCustomized() {
-            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
+            ObjectSpecimen<Child> sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-            Map<String, Object> customization = Map.of(
-                    "fieldIn3Classes", "foo",
-                    "fieldIn2Classes", 100.0);
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("fieldIn3Classes", "foo");
+            customization.put("fieldIn2Classes", 100.0);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization)));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(asList(), customization)));
         }
 
         @Test
         @DisplayName("fields with duplicate names cannot be customized")
         void firstFieldPerNameIsOmitted() {
-            var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
+            ObjectSpecimen<Child> sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-            var omitting = List.of(
+            List<String> omitting = asList(
                     "fieldIn3Classes",
                     "fieldIn2Classes");
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of())));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, new HashMap<>())));
         }
     }
 }

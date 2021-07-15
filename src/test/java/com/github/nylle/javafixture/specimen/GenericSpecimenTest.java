@@ -14,10 +14,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -77,9 +79,9 @@ class GenericSpecimenTest {
 
     @Test
     void createClass() {
-        var sut = new GenericSpecimen<>(new SpecimenType<Class<String>>(){}, context, specimenFactory);
+        GenericSpecimen<Class<String>> sut = new GenericSpecimen<>(new SpecimenType<Class<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        Class<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(Class.class);
         assertThat(actual).isEqualTo(String.class);
@@ -87,9 +89,9 @@ class GenericSpecimenTest {
 
     @Test
     void createGeneric() {
-        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>(){}, context, specimenFactory);
+        GenericSpecimen<TestObjectGeneric<String, Integer>> sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        TestObjectGeneric<String, Integer> actual = sut.create();
 
         assertThat(actual).isInstanceOf(TestObjectGeneric.class);
         assertThat(actual.getT()).isInstanceOf(String.class);
@@ -99,7 +101,7 @@ class GenericSpecimenTest {
 
     @Test
     void subSpecimenAreProperlyCached() {
-        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create();
+        TestObjectGeneric<Optional<String>, Optional<Integer>> result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create();
 
         assertThat(result.getT().get()).isInstanceOf(String.class);
         assertThat(result.getU().get()).isInstanceOf(Integer.class);
@@ -107,9 +109,12 @@ class GenericSpecimenTest {
 
     @Test
     void cannotSetNonExistingField() {
-        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
+        GenericSpecimen<TestObjectGeneric<String, Integer>> sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("nonExistingField", "foo");
+
+        CustomizationContext customizationContext = new CustomizationContext(asList(), map);
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
@@ -119,9 +124,9 @@ class GenericSpecimenTest {
 
     @Test
     void cannotOmitNonExistingField() {
-        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
+        GenericSpecimen<TestObjectGeneric<String, Integer>> sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of());
+        CustomizationContext customizationContext = new CustomizationContext(asList("nonExistingField"), new HashMap<>());
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext))
@@ -136,9 +141,9 @@ class GenericSpecimenTest {
         @Test
         @DisplayName("all fields are random")
         void allFieldsArePopulated() {
-            var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
+            GenericSpecimen<GenericChild<String>> sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
-            var actual = sut.create();
+            GenericChild<String> actual = sut.create();
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();
@@ -153,14 +158,14 @@ class GenericSpecimenTest {
         @Test
         @DisplayName("fields across all superclasses can be customised")
         void subClassFieldsAreCustomizable() {
-            var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
+            GenericSpecimen<GenericChild<String>> sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
-            Map<String, Object> customization = Map.of(
-                    "childField", "foo",
-                    "parentField", "bar",
-                    "baseField", "baz");
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("childField", "foo");
+            customization.put("parentField", "bar");
+            customization.put("baseField", "baz");
 
-            var actual = sut.create(new CustomizationContext(List.of(), customization));
+            GenericChild<String> actual = sut.create(new CustomizationContext(asList(), customization));
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -175,27 +180,27 @@ class GenericSpecimenTest {
         @Test
         @DisplayName("containing multiple fields of the same name, they cannot be customised")
         void firstFieldPerNameIsCustomized() {
-            var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
+            GenericSpecimen<GenericChild<String>> sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
-            Map<String, Object> customization = Map.of(
-                    "fieldIn3Classes", "foo",
-                    "fieldIn2Classes", 100.0);
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("fieldIn3Classes", "foo");
+            customization.put("fieldIn2Classes", 100.0);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization)));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(asList(), customization)));
         }
 
         @Test
         @DisplayName("containing multiple fields of the same name, they cannot be omitted")
         void firstFieldPerNameIsOmitted() {
-            var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
+            GenericSpecimen<GenericChild<String>> sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
-            var omitting = List.of(
+            List<String> omitting = asList(
                     "fieldIn3Classes",
                     "fieldIn2Classes");
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of())));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, new HashMap<>())));
         }
     }
 }

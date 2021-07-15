@@ -12,20 +12,21 @@ import static java.util.Arrays.stream;
 
 public class ReflectedTestCase {
 
-    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = Map.of(
-            Boolean.class, Boolean.TYPE,
-            Character.class, Character.TYPE,
-            Byte.class, Byte.TYPE,
-            Short.class, Short.TYPE,
-            Integer.class, Integer.TYPE,
-            Long.class, Long.TYPE,
-            Float.class, Float.TYPE,
-            Double.class, Double.TYPE
-    );
+    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<>();
 
     private Map<Class<?>, List<?>> matrix = new HashMap<>();
 
     public ReflectedTestCase(TestCase testCase) {
+
+        primitiveWrapperMap.put(Boolean.class, Boolean.TYPE);
+        primitiveWrapperMap.put(Character.class, Character.TYPE);
+        primitiveWrapperMap.put(Byte.class, Byte.TYPE);
+        primitiveWrapperMap.put(Short.class, Short.TYPE);
+        primitiveWrapperMap.put(Integer.class, Integer.TYPE);
+        primitiveWrapperMap.put(Long.class, Long.TYPE);
+        primitiveWrapperMap.put(Float.class, Float.TYPE);
+        primitiveWrapperMap.put(Double.class, Double.TYPE);
+
         stream(TestCase.class.getDeclaredMethods())
                 .sorted(Comparator.comparing(Method::getName))
                 .forEachOrdered(m -> matrix.compute(m.getReturnType(), (k, v) -> addTo(v, invoke(m, testCase))));

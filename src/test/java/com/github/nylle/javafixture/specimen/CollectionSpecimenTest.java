@@ -74,9 +74,9 @@ class CollectionSpecimenTest {
 
     @Test
     void nonParameterizedCollectionIsEmpty() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Collection>(){}, context, specimenFactory);
+        CollectionSpecimen<Collection, Object> sut = new CollectionSpecimen<Collection, Object>(new SpecimenType<Collection>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        Collection actual = sut.create();
 
         assertThat(actual).isInstanceOf(ArrayList.class);
         assertThat(actual.size()).isEqualTo(0);
@@ -84,9 +84,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayListFromCollectionInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Collection<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<Collection<String>, Object> sut = new CollectionSpecimen<Collection<String>, Object>(new SpecimenType<Collection<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        Collection<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(ArrayList.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -95,9 +95,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayListFromListInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<List<String>, Object> sut = new CollectionSpecimen<List<String>, Object>(new SpecimenType<List<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        List<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(ArrayList.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -106,9 +106,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSetFromNavigableSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<NavigableSet<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<NavigableSet<String>, Object> sut = new CollectionSpecimen<NavigableSet<String>, Object>(new SpecimenType<NavigableSet<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        NavigableSet<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(TreeSet.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -117,9 +117,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSetFromSortedSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<SortedSet<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<SortedSet<String>, Object> sut = new CollectionSpecimen<SortedSet<String>, Object>(new SpecimenType<SortedSet<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        SortedSet<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(TreeSet.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -128,9 +128,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSetFromSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Set<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<Set<String>, Object> sut = new CollectionSpecimen<Set<String>, Object>(new SpecimenType<Set<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        Set<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(HashSet.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -139,9 +139,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingDequeFromBlockingDequeInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<BlockingDeque<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<BlockingDeque<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<BlockingDeque<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        BlockingDeque<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedBlockingDeque.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -150,9 +150,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayDequeFromDequeInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Deque<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<Deque<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<Deque<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        Deque<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(ArrayDeque.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -161,9 +161,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedTransferQueueFromTransferQueueInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<TransferQueue<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<TransferQueue<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<TransferQueue<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        TransferQueue<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedTransferQueue.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -172,9 +172,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingQueueFromBlockingQueueInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<BlockingQueue<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<BlockingQueue<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<BlockingQueue<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        BlockingQueue<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedBlockingQueue.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -183,9 +183,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedListFromQueueInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Queue<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<Queue<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<Queue<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        Queue<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedList.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -194,9 +194,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayList() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<ArrayList<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<ArrayList<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<ArrayList<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        ArrayList<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(ArrayList.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -205,9 +205,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSet() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<TreeSet<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<TreeSet<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<TreeSet<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        TreeSet<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(TreeSet.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -216,9 +216,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSet() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<HashSet<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<HashSet<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<HashSet<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        HashSet<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(HashSet.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -227,9 +227,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createEnumSet() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<EnumSet<TestEnum>>(){}, context, specimenFactory);
+        CollectionSpecimen<EnumSet<TestEnum>, Object> sut = new CollectionSpecimen<>(new SpecimenType<EnumSet<TestEnum>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        EnumSet<TestEnum> actual = sut.create();
 
         assertThat(actual).isNotEmpty();
         assertThat(actual.iterator().next()).isInstanceOf(TestEnum.class);
@@ -237,9 +237,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingDeque() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingDeque<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<LinkedBlockingDeque<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingDeque<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        LinkedBlockingDeque<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedBlockingDeque.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -248,9 +248,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayDeque() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<ArrayDeque<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<ArrayDeque<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<ArrayDeque<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        ArrayDeque<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(ArrayDeque.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -259,9 +259,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedTransferQueue() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedTransferQueue<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<LinkedTransferQueue<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<LinkedTransferQueue<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        LinkedTransferQueue<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedTransferQueue.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -270,9 +270,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingQueue() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingQueue<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<LinkedBlockingQueue<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingQueue<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        LinkedBlockingQueue<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedBlockingQueue.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -281,9 +281,9 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedList() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedList<String>>(){}, context, specimenFactory);
+        CollectionSpecimen<LinkedList<String>, Object> sut = new CollectionSpecimen<>(new SpecimenType<LinkedList<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        LinkedList<String> actual = sut.create();
 
         assertThat(actual).isInstanceOf(LinkedList.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
@@ -293,8 +293,8 @@ class CollectionSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory).create();
-        var cached = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory).create();
+        List<String> original = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory).create();
+        List<String> cached = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory).create();
 
         assertThat(original).isInstanceOf(List.class);
         assertThat(original.size()).isEqualTo(2);
@@ -305,9 +305,9 @@ class CollectionSpecimenTest {
 
     @Test
     void nestedLists() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<List<List<String>>>(){}, context, specimenFactory);
+        CollectionSpecimen<List<List<String>>, Object> sut = new CollectionSpecimen<List<List<String>>, Object>(new SpecimenType<List<List<String>>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        List<List<String>> actual = sut.create();
 
         assertThat(actual).isExactlyInstanceOf(ArrayList.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -321,9 +321,9 @@ class CollectionSpecimenTest {
     @Test
     void nonPrimitiveElementsAreSameInstance() {
 
-        var sut = new CollectionSpecimen<>(new SpecimenType<List<TestObject>>(){}, context, specimenFactory);
+        CollectionSpecimen<List<TestObject>, Object> sut = new CollectionSpecimen<List<TestObject>, Object>(new SpecimenType<List<TestObject>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        List<TestObject> actual = sut.create();
 
         assertThat(actual).isExactlyInstanceOf(ArrayList.class);
         assertThat(actual.size()).isEqualTo(2);

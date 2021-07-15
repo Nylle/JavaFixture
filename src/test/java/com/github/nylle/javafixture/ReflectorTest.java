@@ -8,9 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -33,9 +35,9 @@ class ReflectorTest {
         @DisplayName("all fields are random")
         void allFieldsArePopulated() {
 
-            var sut = new Reflector<>(new Child(), specimenFactory);
+            Reflector<Child> sut = new Reflector<>(new Child(), specimenFactory);
 
-            var actual = sut.populate(new CustomizationContext(List.of(), Map.of()));
+            Child actual = sut.populate(new CustomizationContext(asList(), new HashMap<>()));
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();
@@ -51,14 +53,14 @@ class ReflectorTest {
         @DisplayName("fields across all superclasses can be customised")
         void subClassFieldsAreCustomizable() {
 
-            var sut = new Reflector<>(new Child(), specimenFactory);
+            Reflector<Child> sut = new Reflector<>(new Child(), specimenFactory);
 
-            Map<String, Object> customization = Map.of(
-                    "childField", "foo",
-                    "parentField", "bar",
-                    "baseField", "baz");
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("childField", "foo");
+            customization.put("parentField", "bar");
+            customization.put("baseField", "baz");
 
-            var actual = sut.populate(new CustomizationContext(List.of(), customization));
+            Child actual = sut.populate(new CustomizationContext(asList(), customization));
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -80,11 +82,12 @@ class ReflectorTest {
         @DisplayName("all fields are random")
         void allFieldsArePopulated() {
 
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+            Reflector<GenericChild<String>> sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            Map<String, ISpecimen<?>> specimen = Map.of("T", new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class), context));
+            Map<String, ISpecimen<?>> specimen = new HashMap<>();
+            specimen.put("T", new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class), context));
 
-            var actual = sut.populate(new CustomizationContext(List.of(), Map.of()), specimen);
+            GenericChild<String> actual = sut.populate(new CustomizationContext(asList(), new HashMap<>()), specimen);
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();
@@ -100,16 +103,17 @@ class ReflectorTest {
         @DisplayName("fields across all superclasses can be customised")
         void subClassFieldsAreCustomizable() {
 
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+            Reflector<GenericChild<String>> sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            Map<String, ISpecimen<?>> specimen = Map.of("T", new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class), context));
+            Map<String, ISpecimen<?>> specimen = new HashMap<>();
+            specimen.put("T", new PrimitiveSpecimen<String>(SpecimenType.fromClass(String.class), context));
 
-            Map<String, Object> customization = Map.of(
-                    "childField", "foo",
-                    "parentField", "bar",
-                    "baseField", "baz");
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("childField", "foo");
+            customization.put("parentField", "bar");
+            customization.put("baseField", "baz");
 
-            var actual = sut.populate(new CustomizationContext(List.of(), customization), specimen);
+            GenericChild<String> actual = sut.populate(new CustomizationContext(asList(), customization), specimen);
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -130,11 +134,14 @@ class ReflectorTest {
         @DisplayName("with existing fields, nothing happens")
         void validCustomization() {
 
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+            Reflector<GenericChild<String>> sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            var validCustomisation = new CustomizationContext(List.of(), Map.of("baseField", "foo"));
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("baseField", "foo");
 
-            assertThatCode(() -> sut.validateCustomization(validCustomisation, new SpecimenType<>() {}))
+            CustomizationContext validCustomisation = new CustomizationContext(asList(), customization);
+
+            assertThatCode(() -> sut.validateCustomization(validCustomisation, new SpecimenType<GenericChild<String>>() {}))
                     .doesNotThrowAnyException();
         }
 
@@ -142,12 +149,15 @@ class ReflectorTest {
         @DisplayName("with any missing fields, an exception is thrown")
         void invalidCustomization() {
 
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+            Reflector<GenericChild<String>> sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("nonExistingField", "foo");
+
+            CustomizationContext invalidCustomisation = new CustomizationContext(asList(), customization);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<GenericChild<String>>() {}))
                     .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.inheritance.GenericChild<java.lang.String>'.")
                     .withNoCause();
         }
@@ -156,14 +166,15 @@ class ReflectorTest {
         @DisplayName("to set duplicate fields, an exception is thrown")
         void customizingDuplicateFields() {
 
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+            Reflector<GenericChild<String>> sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            Map<String, Object> customization = Map.of("fieldIn2Classes", 100.0);
+            Map<String, Object> customization = new HashMap<>();
+            customization.put("fieldIn2Classes", 100.0);
 
-            var invalidCustomisation = new CustomizationContext(List.of(), customization);
+            CustomizationContext invalidCustomisation = new CustomizationContext(asList(), customization);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<GenericChild<String>>() {}))
                     .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
                     .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
                     .withMessageContaining("private java.lang.Integer com.github.nylle.javafixture.testobjects.inheritance.GenericBase.fieldIn2Classes")
@@ -174,14 +185,14 @@ class ReflectorTest {
         @DisplayName("to omit duplicate fields, an exception is thrown")
         void omittingDuplicateFields() {
 
-            var sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
+            Reflector<GenericChild<String>> sut = new Reflector<>(new GenericChild<String>(), specimenFactory);
 
-            var omitting = List.of("fieldIn2Classes");
+            List<String> omitting = asList("fieldIn2Classes");
 
-            var invalidCustomisation = new CustomizationContext(omitting, Map.of());
+            CustomizationContext invalidCustomisation = new CustomizationContext(omitting, new HashMap<>());
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<GenericChild<String>>() {}))
                     .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
                     .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
                     .withMessageContaining("private java.lang.Integer com.github.nylle.javafixture.testobjects.inheritance.GenericBase.fieldIn2Classes")

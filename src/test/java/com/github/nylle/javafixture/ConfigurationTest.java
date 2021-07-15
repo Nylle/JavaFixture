@@ -11,7 +11,7 @@ class ConfigurationTest {
     @Test
     void canCreateAFixtureWithGivenConfiguration() {
 
-        var result = new Configuration()
+        List<Integer> result = new Configuration()
                 .collectionSizeRange(1, 1)
                 .fixture()
                 .create(new SpecimenType<List<Integer>>() {});

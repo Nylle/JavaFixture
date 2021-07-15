@@ -7,7 +7,7 @@ import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import static com.github.nylle.javafixture.Configuration.configure;
 import static com.github.nylle.javafixture.Fixture.fixture;
@@ -40,9 +40,9 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createString() {
-        var sut = new PrimitiveSpecimen<String>(fromClass(String.class), new Context(configure()));
+        PrimitiveSpecimen<String> sut = new PrimitiveSpecimen<String>(fromClass(String.class), new Context(configure()));
 
-        var actual = sut.create();
+        String actual = sut.create();
 
         assertThat(actual).isInstanceOf(String.class);
         assertThat(actual.length()).isGreaterThan(0);
@@ -50,9 +50,9 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createBoolean() {
-        var sut = new PrimitiveSpecimen<>(fromClass(boolean.class), new Context(configure()));
+        PrimitiveSpecimen<Boolean> sut = new PrimitiveSpecimen<>(fromClass(boolean.class), new Context(configure()));
 
-        var actual = sut.create();
+        Boolean actual = sut.create();
 
         assertThat(actual).isInstanceOf(Boolean.class);
         assertThat(actual).isIn(true, false);
@@ -60,9 +60,9 @@ class PrimitiveSpecimenTest {
 
     @Test
     void createByte() {
-        var sut = new PrimitiveSpecimen<>(fromClass(byte.class), new Context(configure()));
+        PrimitiveSpecimen<Byte> sut = new PrimitiveSpecimen<>(fromClass(byte.class), new Context(configure()));
 
-        var actual = sut.create();
+        Byte actual = sut.create();
 
         assertThat(actual).isInstanceOf(Byte.class);
         assertThat(actual.toString().length()).isGreaterThan(0);
@@ -72,9 +72,9 @@ class PrimitiveSpecimenTest {
     @TestCase(bool1 = false, short2 = Short.MIN_VALUE, short3 = Short.MAX_VALUE)
     @TestCase(bool1 = true, short2 = 0, short3 = Short.MAX_VALUE)
     void createShort(boolean positiveOnly, short min, short max) {
-        var sut = new PrimitiveSpecimen<Short>(fromClass(short.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
+        PrimitiveSpecimen<Short> sut = new PrimitiveSpecimen<Short>(fromClass(short.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        Short actual = sut.create();
 
         assertThat(actual).isInstanceOf(Short.class);
         assertThat(actual).isBetween(min, max);
@@ -84,9 +84,9 @@ class PrimitiveSpecimenTest {
     @TestCase(bool1 = false, int2 = Integer.MIN_VALUE, int3 = Integer.MAX_VALUE)
     @TestCase(bool1 = true, int2 = 0, int3 = Integer.MAX_VALUE)
     void createInteger(boolean positiveOnly, int min, int max) {
-        var sut = new PrimitiveSpecimen<Integer>(fromClass(int.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
+        PrimitiveSpecimen<Integer> sut = new PrimitiveSpecimen<Integer>(fromClass(int.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        Integer actual = sut.create();
 
         assertThat(actual).isInstanceOf(Integer.class);
         assertThat(actual).isBetween(min, max);
@@ -96,9 +96,9 @@ class PrimitiveSpecimenTest {
     @TestCase(bool1 = false, long2 = Long.MIN_VALUE, long3 = Long.MAX_VALUE)
     @TestCase(bool1 = true, long2 = 0, long3 = Long.MAX_VALUE)
     void createLong(boolean positiveOnly, long min, long max) {
-        var sut = new PrimitiveSpecimen<Long>(fromClass(long.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
+        PrimitiveSpecimen<Long> sut = new PrimitiveSpecimen<Long>(fromClass(long.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        Long actual = sut.create();
 
         assertThat(actual).isInstanceOf(Long.class);
         assertThat(actual).isBetween(min, max);
@@ -108,9 +108,9 @@ class PrimitiveSpecimenTest {
     @TestCase(bool1 = false, float2 = Float.MIN_VALUE, float3 = Float.MAX_VALUE)
     @TestCase(bool1 = true, float2 = 0, float3 = Float.MAX_VALUE)
     void createFloat(boolean positiveOnly, float min, float max) {
-        var sut = new PrimitiveSpecimen<Float>(fromClass(float.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
+        PrimitiveSpecimen<Float> sut = new PrimitiveSpecimen<Float>(fromClass(float.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        Float actual = sut.create();
 
         assertThat(actual).isInstanceOf(Float.class);
         assertThat(actual).isBetween(min, max);
@@ -120,9 +120,9 @@ class PrimitiveSpecimenTest {
     @TestCase(bool1 = false, double2 = Double.MIN_VALUE, double3 = Double.MAX_VALUE)
     @TestCase(bool1 = true, double2 = 0, double3 = Double.MAX_VALUE)
     void createDouble(boolean positiveOnly, double min, double max) {
-        var sut = new PrimitiveSpecimen<Double>(fromClass(double.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
+        PrimitiveSpecimen<Double> sut = new PrimitiveSpecimen<Double>(fromClass(double.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        Double actual = sut.create();
 
         assertThat(actual).isInstanceOf(Double.class);
         assertThat(actual).isBetween(min, max);
@@ -139,13 +139,16 @@ class PrimitiveSpecimenTest {
     @TestCase(class1 = Float.class)
     @TestCase(class1 = Double.class)
     void canBePredefined(Class type) {
-        var expected = fixture().create(type);
+        Object expected = fixture().create(type);
 
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type).hashCode(), expected));
+        HashMap<Integer, Object> map = new HashMap<>();
+        map.put(SpecimenType.fromClass(type).hashCode(), expected);
 
-        var sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(type), context);
+        Context context = new Context(Configuration.configure(), map);
 
-        var actual = sut.create();
+        PrimitiveSpecimen sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(type), context);
+
+        Object actual = sut.create();
 
         assertThat(actual).isSameAs(expected);
     }

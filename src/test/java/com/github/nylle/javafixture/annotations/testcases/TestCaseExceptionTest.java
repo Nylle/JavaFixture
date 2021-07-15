@@ -8,7 +8,7 @@ class TestCaseExceptionTest {
 
     @Test
     void withMessageAndCause() {
-        var sut = new TestCaseException("message", new NullPointerException("null"));
+        TestCaseException sut = new TestCaseException("message", new NullPointerException("null"));
 
         assertThat(sut.getMessage()).isEqualTo("message");
         assertThat(sut.getCause()).isInstanceOf(NullPointerException.class);

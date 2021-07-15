@@ -55,7 +55,7 @@ class SpecimenFactoryTest {
 
     @Test
     void buildGeneric() {
-        var sut = new SpecimenFactory(new Context(new Configuration()));
+        SpecimenFactory sut = new SpecimenFactory(new Context(new Configuration()));
 
         assertThat(sut.build(new SpecimenType<List<String>>(){})).isExactlyInstanceOf(CollectionSpecimen.class);
         assertThat(sut.build(new SpecimenType<Map<String, Integer>>(){})).isExactlyInstanceOf(MapSpecimen.class);

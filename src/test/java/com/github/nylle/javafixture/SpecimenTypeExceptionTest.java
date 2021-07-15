@@ -8,7 +8,7 @@ class SpecimenTypeExceptionTest {
 
     @Test
     void withMessage() {
-        var sut = new SpecimenTypeException("message");
+        SpecimenTypeException sut = new SpecimenTypeException("message");
 
         assertThat(sut.getMessage()).isEqualTo("message");
     }

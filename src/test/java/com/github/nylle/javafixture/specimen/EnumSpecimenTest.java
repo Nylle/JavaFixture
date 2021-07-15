@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.Configuration.configure;
@@ -38,9 +39,9 @@ class EnumSpecimenTest {
 
     @Test
     void createEnum() {
-        var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), new Context(configure()));
+        EnumSpecimen<TestEnum> sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), new Context(configure()));
 
-        var actual = sut.create();
+        TestEnum actual = sut.create();
 
         assertThat(actual).isInstanceOf(TestEnum.class);
         assertThat(actual.toString()).isIn("VALUE1", "VALUE2", "VALUE3");
@@ -48,13 +49,16 @@ class EnumSpecimenTest {
 
     @Test
     void canBePredefined() {
-        var expected = fixture().create(TestEnum.class);
+        TestEnum expected = fixture().create(TestEnum.class);
 
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(TestEnum.class).hashCode(), expected));
+        Map<Integer, Object> map = new HashMap<Integer, Object>();
+        map.put(SpecimenType.fromClass(TestEnum.class).hashCode(), expected);
 
-        var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), context);
+        Context context = new Context(Configuration.configure(), map);
 
-        var actual = sut.create();
+        EnumSpecimen<TestEnum> sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), context);
+
+        TestEnum actual = sut.create();
 
         assertThat(actual).isSameAs(expected);
     }

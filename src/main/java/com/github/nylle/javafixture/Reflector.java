@@ -3,6 +3,8 @@ package com.github.nylle.javafixture;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -23,9 +25,9 @@ public class Reflector<T> {
     }
 
     public Reflector<T> validateCustomization(CustomizationContext customizationContext, SpecimenType<T> type) {
-        var declaredFields = getDeclaredFields().map(field -> field.getName()).collect(toList());
+        List<String> declaredFields = getDeclaredFields().map(field -> field.getName()).collect(toList());
 
-        var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+        Optional<String> missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
                 .filter(entry -> !declaredFields.contains(entry))
                 .findFirst();
 
@@ -33,7 +35,7 @@ public class Reflector<T> {
             throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
 
-        var duplicateField = getDeclaredFields()
+        Optional<Map.Entry<String, List<Field>>> duplicateField = getDeclaredFields()
                 .collect(groupingBy(field -> field.getName()))
                 .entrySet()
                 .stream()
@@ -51,7 +53,7 @@ public class Reflector<T> {
     }
 
     public T populate(CustomizationContext customizationContext) {
-        return populate(customizationContext, field -> field.getGenericType(), Map.of());
+        return populate(customizationContext, field -> field.getGenericType(), Collections.emptyMap());
     }
 
     public T populate(CustomizationContext customizationContext, Map<String, ISpecimen<?>> specimens) {

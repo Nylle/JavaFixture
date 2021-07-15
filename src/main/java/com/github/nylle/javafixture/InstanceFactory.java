@@ -48,7 +48,7 @@ public class InstanceFactory {
     }
 
     public <T> T construct(final SpecimenType<T> type) {
-        var constructors = type.getDeclaredConstructors()
+        List<Constructor<T>> constructors = type.getDeclaredConstructors()
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .collect(toList());
@@ -61,7 +61,7 @@ public class InstanceFactory {
     }
 
     public <T> T manufacture(final SpecimenType<T> type) {
-        var results = type.getFactoryMethods()
+        List<T> results = type.getFactoryMethods()
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .map(x -> manufactureOrNull(x))
@@ -117,7 +117,7 @@ public class InstanceFactory {
 
     private <T> T createProxyForAbstract(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
         try {
-            var factory = new ProxyFactory();
+            ProxyFactory factory = new ProxyFactory();
             factory.setSuperclass(type.asClass());
             return (T) factory.create(new Class<?>[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
         } catch (Exception e) {

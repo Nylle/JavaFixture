@@ -18,7 +18,6 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,6 @@ import java.util.stream.Stream;
 import static com.github.nylle.javafixture.Fixture.fixture;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 
 class FixtureTest {
@@ -50,7 +48,7 @@ class FixtureTest {
     @Test
     void canCreateDefaultConfiguration() {
 
-        var result = Fixture.configuration();
+        Configuration result = Fixture.configuration();
 
         assertThat(result.getMaxCollectionSize()).isEqualTo(10);
         assertThat(result.getMinCollectionSize()).isEqualTo(2);
@@ -98,7 +96,7 @@ class FixtureTest {
         void canCreateOptional() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.createOptional(TestPrimitive.class);
+            Optional<TestPrimitive> result = fixture.createOptional(TestPrimitive.class);
 
             assertThat(result).isInstanceOf(Optional.class);
             assertThat(result).isPresent();
@@ -215,7 +213,7 @@ class FixtureTest {
         void canCustomizeOptional() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.build(TestPrimitive.class)
+            Optional<TestPrimitive> result = fixture.build(TestPrimitive.class)
                     .without("hello")
                     .with("integer", 999)
                     .with(x -> x.setPrimitive(888))
@@ -240,12 +238,12 @@ class FixtureTest {
 
         @Test
         void canBeCustomizedWithType() {
-            var expected = Period.ofDays(42);
-            var result = fixture().build(Contract.class)
+            Period expected = Period.ofDays(42);
+            Contract result = fixture().build(Contract.class)
                     .with(Period.class, expected)
                     .create();
 
-            var actual = result.getBaseContractPosition().getRemainingPeriod();
+            Period actual = result.getBaseContractPosition().getRemainingPeriod();
 
             assertThat(actual).isSameAs(expected);
         }
@@ -298,33 +296,32 @@ class FixtureTest {
         void canCreateNestedParameterizedCollections() {
             Fixture fixture = new Fixture(configuration);
 
-            var classWithMapWithList = fixture.create(TestObjectWithNestedMapsAndLists.class);
+            TestObjectWithNestedMapsAndLists classWithMapWithList = fixture.create(TestObjectWithNestedMapsAndLists.class);
 
-            var nestedList = classWithMapWithList.getNestedList();
+            List<List<String>> nestedList = classWithMapWithList.getNestedList();
             assertThat(nestedList).isNotEmpty();
-            assertThat(nestedList).isNotEmpty();
-            var innerList = nestedList.get(0);
+            List<String> innerList = nestedList.get(0);
             assertThat(innerList).isNotEmpty();
             assertThat(innerList.get(0)).isNotEmpty();
 
-            var mapWithMap = classWithMapWithList.getMapWithMap();
+            Map<String, Map<String, String>> mapWithMap = classWithMapWithList.getMapWithMap();
             assertThat(mapWithMap).isNotEmpty();
             assertThat(mapWithMap.values()).isNotEmpty();
-            var firstValue = mapWithMap.values().iterator().next();
+            Map<String, String> firstValue = mapWithMap.values().iterator().next();
             assertThat(firstValue).isNotEmpty();
             assertThat(firstValue.values()).isNotEmpty();
 
-            var mapWithList = classWithMapWithList.getMapWithList();
+            Map<String, List<String>> mapWithList = classWithMapWithList.getMapWithList();
             assertThat(mapWithList).isNotEmpty();
             assertThat(mapWithList.values()).isNotEmpty();
-            var firstList = mapWithList.values().iterator().next();
+            List<String> firstList = mapWithList.values().iterator().next();
             assertThat(firstList).isNotEmpty();
 
-            var deeplyNestedList = classWithMapWithList.getDeeplyNestedList();
+            List<Map<String, List<String>>> deeplyNestedList = classWithMapWithList.getDeeplyNestedList();
             assertThat(deeplyNestedList).isNotEmpty();
-            var firstEntry = deeplyNestedList.get(0);
+            Map<String, List<String>> firstEntry = deeplyNestedList.get(0);
             assertThat(firstEntry).isNotEmpty();
-            var firstMapEntry = firstEntry.values().iterator().next();
+            List<String> firstMapEntry = firstEntry.values().iterator().next();
             assertThat(firstMapEntry).isNotEmpty();
             assertThat(firstMapEntry.get(0)).isNotEmpty();
         }
@@ -333,7 +330,7 @@ class FixtureTest {
         void canCreateParameterizedObject() {
             final Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
-            final var result = fixture.create(TestObjectWithGenerics.class);
+            final TestObjectWithGenerics result = fixture.create(TestObjectWithGenerics.class);
 
             assertThat(result).isInstanceOf(TestObjectWithGenerics.class);
 
@@ -358,7 +355,7 @@ class FixtureTest {
         void canCreateNestedParameterizedObject() {
             final Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
-            final var result = fixture.create(TestObjectWithNestedGenerics.class);
+            final TestObjectWithNestedGenerics result = fixture.create(TestObjectWithNestedGenerics.class);
 
             assertThat(result).isInstanceOf(TestObjectWithNestedGenerics.class);
 
@@ -377,7 +374,7 @@ class FixtureTest {
 
         @Test
         void canCreateNestedParameterizedInterfaces() {
-            final var result = fixture().create(TestObjectWithNestedGenericInterfaces.class);
+            final TestObjectWithNestedGenericInterfaces result = fixture().create(TestObjectWithNestedGenericInterfaces.class);
 
             assertThat(result).isInstanceOf(TestObjectWithNestedGenericInterfaces.class);
 
@@ -406,7 +403,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.construct(TestObjectWithGenericConstructor.class);
+            TestObjectWithGenericConstructor result = fixture.construct(TestObjectWithGenericConstructor.class);
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
@@ -424,7 +421,7 @@ class FixtureTest {
         void canCreateGenericObject() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.create(new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {});
+            TestObjectGeneric<String, Optional<Integer>> result = fixture.create(new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {});
 
             assertThat(result).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getT()).isInstanceOf(String.class);
@@ -437,7 +434,7 @@ class FixtureTest {
         void canCreateGenericInterface() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.create(new SpecimenType<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
+            ITestGeneric<String, ITestGenericInside<Integer>> result = fixture.create(new SpecimenType<ITestGeneric<String, ITestGenericInside<Integer>>>() {});
 
             assertThat(result).isInstanceOf(ITestGeneric.class);
             assertThat(result.publicField).isInstanceOf(Integer.class);
@@ -458,14 +455,14 @@ class FixtureTest {
         void canCreateMapsAndLists() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.create(new SpecimenType<Map<String, Map<String, List<Optional<String>>>>>() {});
+            Map<String, Map<String, List<Optional<String>>>> result = fixture.create(new SpecimenType<Map<String, Map<String, List<Optional<String>>>>>() {});
 
             assertThat(result).isInstanceOf(Map.class);
             assertThat(result.values()).isNotEmpty();
-            var subMap = result.values().iterator().next();
+            Map<String, List<Optional<String>>> subMap = result.values().iterator().next();
             assertThat(subMap).isInstanceOf(Map.class);
             assertThat(subMap.values()).isNotEmpty();
-            var innerList = subMap.values().iterator().next();
+            List<Optional<String>> innerList = subMap.values().iterator().next();
             assertThat(innerList).isNotEmpty();
             assertThat(innerList.get(0)).isInstanceOf(Optional.class);
             assertThat(innerList.get(0)).isPresent();
@@ -478,7 +475,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
-            var result = fixture.create(TestObjectWithEnumSet.class);
+            TestObjectWithEnumSet result = fixture.create(TestObjectWithEnumSet.class);
 
             assertThat(result.getId()).isNotBlank();
             assertThat(result.getEnums()).isNotEmpty();
@@ -490,7 +487,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(new Configuration().collectionSizeRange(2, 2));
 
-            var result = fixture.create(TestObjectWithEnumMap.class);
+            TestObjectWithEnumMap result = fixture.create(TestObjectWithEnumMap.class);
 
             assertThat(result.getId()).isNotBlank();
             assertThat(result.getEnums()).isNotEmpty();
@@ -501,7 +498,7 @@ class FixtureTest {
         void canCreateMany() {
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.createMany(new SpecimenType<Optional<Integer>>() {}).collect(toList());
+            List<Optional<Integer>> result = fixture.createMany(new SpecimenType<Optional<Integer>>() {}).collect(toList());
 
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
@@ -517,7 +514,7 @@ class FixtureTest {
             List<Optional<String>> result = new ArrayList<>();
             result.add(Optional.of("existing"));
 
-            fixture.addManyTo(result, new SpecimenType<>() {});
+            fixture.addManyTo(result, new SpecimenType<Optional<String>>() {});
 
             assertThat(result).isNotNull();
             assertThat(result.size()).isEqualTo(4);
@@ -534,7 +531,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.build(new SpecimenType<TestObjectGeneric<List<String>, String>>() {})
+            TestObjectGeneric<List<String>, String> result = fixture.build(new SpecimenType<TestObjectGeneric<List<String>, String>>() {})
                     .without("primitiveInt")
                     .without("string")
                     .with("u", "foo")
@@ -553,13 +550,13 @@ class FixtureTest {
         void canBeCustomizedWithType() {
             Fixture sut = new Fixture(configuration);
 
-            var expected = new TestObjectGeneric<String, Integer>();
+            TestObjectGeneric<String, Integer> expected = new TestObjectGeneric<String, Integer>();
 
-            var result = sut.build(TestObjectWithDeepNesting.class)
-                    .with(new SpecimenType<>() {}, expected)
+            TestObjectWithDeepNesting result = sut.build(TestObjectWithDeepNesting.class)
+                    .with(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, expected)
                     .create();
 
-            var actual = result.getNested().getGeneric();
+            TestObjectGeneric<String, Integer> actual = result.getNested().getGeneric();
 
             assertThat(actual).isSameAs(expected);
         }
@@ -569,7 +566,7 @@ class FixtureTest {
 
             Fixture fixture = new Fixture(configuration);
 
-            var result = fixture.construct(new SpecimenType<TestObjectWithGenericConstructor>() {});
+            TestObjectWithGenericConstructor result = fixture.construct(new SpecimenType<TestObjectWithGenericConstructor>() {});
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
@@ -577,18 +574,6 @@ class FixtureTest {
             assertThat(result.getInteger()).isPresent();
             assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
-        }
-
-        @Test
-        @Disabled("This is a known problem")
-        void createExceptionWithLimitedTree() {
-
-            var sut = new Fixture(configuration);
-
-            var result = sut.create(Throwable.class);
-
-            assertThatCode(() -> flattenRecursively(result).collect(toList()))
-                    .doesNotThrowAnyException();
         }
 
         private Stream<Throwable> flattenRecursively(Throwable throwable) {

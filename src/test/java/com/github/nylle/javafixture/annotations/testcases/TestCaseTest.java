@@ -53,8 +53,8 @@ class TestCaseTest {
         @TestCase(float1 = 1.5f, double2 = 1.5d)
         @TestCase(float1 = 3.25f, double2 = 3.25d)
         void testFloatingPointTypes(Float first, Double second) {
-            final var firstDecimal = new BigDecimal(first, new MathContext(2, RoundingMode.HALF_UP));
-            final var secondDecimal = new BigDecimal(second, new MathContext(2, RoundingMode.HALF_UP));
+            var firstDecimal = new BigDecimal(first, new MathContext(2, RoundingMode.HALF_UP));
+            var secondDecimal = new BigDecimal(second, new MathContext(2, RoundingMode.HALF_UP));
             assertThat(firstDecimal).isEqualTo(secondDecimal);
         }
 
@@ -71,5 +71,24 @@ class TestCaseTest {
         void testBooleanType(Boolean bool, String expectedBooleanValue) {
             assertThat(bool).isEqualTo(Boolean.parseBoolean(expectedBooleanValue));
         }
+    }
+
+    @TestWithCases
+    @TestCase(str1 = "foo", int2 = 1)
+    @TestCase(str1 = "bar", int2 = 2)
+    void additionalArgumentIsGeneratedWhenTheFixtureAnnotationIsPresent(String testCaseString, Integer testCaseInt, @Fixture LinkedList<Boolean> fixured) {
+        assertThat(testCaseString).hasSize(3);
+        assertThat(testCaseInt).isBetween(1, 2);
+        assertThat(fixured).isNotNull();
+        assertThat(fixured).isNotEmpty();
+    }
+
+    @TestWithCases
+    @TestCase(str1 = "foo", int2 = 1, bool3 = true)
+    @TestCase(str1 = "bar", int2 = 2)
+    void tooManyCaseArgumentsAreIgnored(String testCaseString, @Fixture LinkedList<Boolean> fixured) {
+        assertThat(testCaseString).hasSize(3);
+        assertThat(fixured).isNotNull();
+        assertThat(fixured).isNotEmpty();
     }
 }

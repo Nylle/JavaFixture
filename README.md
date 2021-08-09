@@ -22,7 +22,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.6.1</version>
+    <version>2.7.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -322,8 +322,7 @@ void testStringLength(String input, int expected) {
     assertThat(input.length()).isEqualTo(expected);
 }
 ```
-The test will be run for every `@TestCase`-annotation injecting the provided values into
-the test's arguments.
+The test will be run for every `@TestCase`-annotation injecting the provided values into the test's arguments.
 
 Due to Java's limited annotation design, the following rules apply:
 - Values can only be of type `String`, `Class` or primitive like `int`, `boolean`, `float`,
@@ -334,3 +333,17 @@ Due to Java's limited annotation design, the following rules apply:
   be of type `int` and so on.
 - The current implementation only supports up to 6 arguments per test method.
 
+### Parameterized Tests With Random Injected Values
+If you are using `@TestWithFixture` and want to make the test parameterized, you can do so by using the annotation `@Fixture` inline:
+```java
+@TestWithCases
+@TestCase(str1 = "foo")
+@TestCase(str1 = "bar")
+void testStringLength(String input, @Fixture TestDto fixture) {
+    assertThat(input).hasSize(3);
+    assertThat(fixture).isNotNull();
+}
+```
+The test will be run for every `@TestCase`-annotation injecting the provided and the randomly generated values into the test's arguments.
+
+**The random values will be identical for all test-cases!**

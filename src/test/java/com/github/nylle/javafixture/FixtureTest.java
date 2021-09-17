@@ -240,7 +240,7 @@ class FixtureTest {
         }
 
         @Test
-        void canBeCustomizedWithType() {
+        void objectCanBeCustomizedWithType() {
             var expected = Period.ofDays(42);
             var result = fixture().build(Contract.class)
                     .with(Period.class, expected)
@@ -249,6 +249,19 @@ class FixtureTest {
             var actual = result.getBaseContractPosition().getRemainingPeriod();
 
             assertThat(actual).isSameAs(expected);
+        }
+
+        @Test
+        void interfaceCanBeCustomizedWithType() {
+            Fixture sut = new Fixture(configuration);
+
+            var result = sut.build(TestInterface.class)
+                    .with(String.class, "expected")
+                    .create();
+
+            var actual = result.toString();
+
+            assertThat(actual).isSameAs("expected");
         }
 
         @Test
@@ -566,19 +579,6 @@ class FixtureTest {
         }
 
         @Test
-        void interfaceCanBeCustomizedWithType() {
-            Fixture sut = new Fixture(configuration);
-
-            var result = sut.build(TestInterface.class)
-                    .with(String.class, "expected")
-                    .create();
-
-            var actual = result.toString();
-
-            assertThat(actual).isSameAs("expected");
-        }
-
-        @Test
         void createThroughRandomConstructor() {
 
             Fixture fixture = new Fixture(configuration);
@@ -593,20 +593,21 @@ class FixtureTest {
             assertThat(result.getPrivateField()).isNull();
         }
 
-        @Test
-        @Disabled("This is a known problem")
-        void createExceptionWithLimitedTree() {
+    }
 
-            var sut = new Fixture(configuration);
+    @Test
+    @Disabled("This is a known problem")
+    void createExceptionWithLimitedTree() {
 
-            var result = sut.create(Throwable.class);
+        var sut = new Fixture(configuration);
 
-            assertThatCode(() -> flattenRecursively(result).collect(toList()))
-                    .doesNotThrowAnyException();
-        }
+        var result = sut.create(Throwable.class);
 
-        private Stream<Throwable> flattenRecursively(Throwable throwable) {
-            return Stream.of(throwable.getSuppressed()).flatMap(x -> flattenRecursively(x));
-        }
+        assertThatCode(() -> flattenRecursively(result).collect(toList()))
+                .doesNotThrowAnyException();
+    }
+
+    private Stream<Throwable> flattenRecursively(Throwable throwable) {
+        return Stream.of(throwable.getSuppressed()).flatMap(x -> flattenRecursively(x));
     }
 }

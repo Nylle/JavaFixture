@@ -3,6 +3,7 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestEnum;
+import com.github.nylle.javafixture.testobjects.TestInterface;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithDeepNesting;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumMap;
@@ -550,7 +551,7 @@ class FixtureTest {
         }
 
         @Test
-        void canBeCustomizedWithType() {
+        void objectCanBeCustomizedWithType() {
             Fixture sut = new Fixture(configuration);
 
             var expected = new TestObjectGeneric<String, Integer>();
@@ -562,6 +563,19 @@ class FixtureTest {
             var actual = result.getNested().getGeneric();
 
             assertThat(actual).isSameAs(expected);
+        }
+
+        @Test
+        void interfaceCanBeCustomizedWithType() {
+            Fixture sut = new Fixture(configuration);
+
+            var result = sut.build(TestInterface.class)
+                    .with(String.class, "expected")
+                    .create();
+
+            var actual = result.toString();
+
+            assertThat(actual).isSameAs("expected");
         }
 
         @Test

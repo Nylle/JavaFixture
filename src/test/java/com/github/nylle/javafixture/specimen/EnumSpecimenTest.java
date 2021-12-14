@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.Configuration.configure;
@@ -40,7 +41,7 @@ class EnumSpecimenTest {
     void createEnum() {
         var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), new Context(configure()));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestEnum.class);
         assertThat(actual.toString()).isIn("VALUE1", "VALUE2", "VALUE3");
@@ -54,7 +55,7 @@ class EnumSpecimenTest {
 
         var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), context);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isSameAs(expected);
     }

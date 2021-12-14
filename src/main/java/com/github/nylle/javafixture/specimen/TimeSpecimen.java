@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Clock;
@@ -46,12 +47,12 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(final CustomizationContext customizationContext) {
+    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (Temporal.class.isAssignableFrom(type.asClass())) {
             try {
                 Method now = type.asClass().getMethod("now", Clock.class);

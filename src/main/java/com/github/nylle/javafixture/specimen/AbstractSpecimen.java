@@ -8,6 +8,8 @@ import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.annotation.Annotation;
+
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
 public class AbstractSpecimen<T> implements ISpecimen<T> {
@@ -40,12 +42,12 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(final CustomizationContext customizationContext) {
+    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
         }

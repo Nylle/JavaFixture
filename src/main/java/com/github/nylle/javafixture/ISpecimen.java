@@ -1,10 +1,12 @@
 package com.github.nylle.javafixture;
 
+import java.lang.annotation.Annotation;
+
 public interface ISpecimen<T> {
 
-    T create();
+    T create(Annotation[] annotations);
 
-    T create(final CustomizationContext customizationContext);
+    T create(final CustomizationContext customizationContext, Annotation[] annotations);
 
 }
 

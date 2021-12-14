@@ -9,6 +9,7 @@ import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,7 @@ class MapSpecimenTest {
 
     @Test
     void nonParameterizedMapIsEmpty() {
-        var actual = new MapSpecimen<>(new SpecimenType<Map>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<Map>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(0);
@@ -72,7 +73,7 @@ class MapSpecimenTest {
 
     @Test
     void createHashMapFromMapInterface() {
-        var actual = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -83,7 +84,7 @@ class MapSpecimenTest {
 
     @Test
     void createConcurrentSkipListMapFromConcurrentNavigableMapInterface() {
-        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentNavigableMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentNavigableMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(ConcurrentSkipListMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -94,7 +95,7 @@ class MapSpecimenTest {
 
     @Test
     void createConcurrentHashMapFromConcurrentMapInterface() {
-        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(ConcurrentHashMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -105,7 +106,7 @@ class MapSpecimenTest {
 
     @Test
     void createTreeMapFromNavigableMapInterface() {
-        var actual = new MapSpecimen<>(new SpecimenType<NavigableMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<NavigableMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TreeMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -116,7 +117,7 @@ class MapSpecimenTest {
 
     @Test
     void createTreeMapFromSortedMapInterface() {
-        var actual = new MapSpecimen<>(new SpecimenType<SortedMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<SortedMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TreeMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -127,7 +128,7 @@ class MapSpecimenTest {
 
     @Test
     void createHashMap() {
-        var actual = new MapSpecimen<>(new SpecimenType<HashMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<HashMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -138,7 +139,7 @@ class MapSpecimenTest {
 
     @Test
     void createConcurrentSkipListMap() {
-        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentSkipListMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentSkipListMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(ConcurrentSkipListMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -149,7 +150,7 @@ class MapSpecimenTest {
 
     @Test
     void createConcurrentHashMap() {
-        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentHashMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<ConcurrentHashMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(ConcurrentHashMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -160,7 +161,7 @@ class MapSpecimenTest {
 
     @Test
     void createTreeMap() {
-        var actual = new MapSpecimen<>(new SpecimenType<TreeMap<String, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<TreeMap<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TreeMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -171,7 +172,7 @@ class MapSpecimenTest {
 
     @Test
     void createEnumMap() {
-        var actual = new MapSpecimen<>(new SpecimenType<EnumMap<TestEnum, Integer>>(){}, context, specimenFactory).create();
+        var actual = new MapSpecimen<>(new SpecimenType<EnumMap<TestEnum, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(EnumMap.class);
         assertThat(actual).isNotEmpty();
@@ -183,8 +184,8 @@ class MapSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>(){}, context, specimenFactory).create();
-        var cached = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>(){}, context, specimenFactory).create();
+        var original = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
+        var cached = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(original).isInstanceOf(Map.class);
         assertThat(original.size()).isEqualTo(2);
@@ -197,7 +198,7 @@ class MapSpecimenTest {
     void nestedMaps() {
         var sut = new MapSpecimen<>(new SpecimenType<Map<String, Map<String, Integer>>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isExactlyInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);
@@ -214,7 +215,7 @@ class MapSpecimenTest {
 
         var sut = new MapSpecimen<>(new SpecimenType<HashMap<String, TestObject>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isExactlyInstanceOf(HashMap.class);
         assertThat(actual.size()).isEqualTo(2);

@@ -7,6 +7,10 @@ import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.PseudoRandom;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
+
+import java.lang.annotation.Annotation;
+import javax.validation.constraints.Size;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 
@@ -38,14 +42,15 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(final CustomizationContext customizationContext) {
+    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(String.class)) {
-            return context.preDefined(type, (T) pseudoRandom.nextString());
+            StringConstraints constraints = getStringConstraints(annotations);
+            return context.preDefined(type, (T) pseudoRandom.nextString(constraints));
         }
 
         if (type.asClass().equals(Boolean.class) || type.asClass().equals(boolean.class)) {
@@ -81,6 +86,20 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         }
 
         throw new SpecimenException("Unsupported type: " + type);
+    }
+
+    private StringConstraints getStringConstraints(Annotation[] annotations) {
+        var constraints = new StringConstraints(0, Integer.MAX_VALUE);
+        for (var annotation : annotations) {
+            if(Size.class.isAssignableFrom(annotation.annotationType())) {
+                constraints = new StringConstraints(((Size)annotation).min(), ((Size)annotation).max());
+            }
+            if(jakarta.validation.constraints.Size.class.isAssignableFrom(annotation.annotationType())) {
+                var ann = (jakarta.validation.constraints.Size) annotation;
+                constraints = new StringConstraints(ann.min(), ann.max());
+            }
+        }
+        return constraints;
     }
 }
 

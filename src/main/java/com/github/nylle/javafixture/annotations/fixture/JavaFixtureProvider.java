@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.support.AnnotationConsumer;
 
+import java.lang.reflect.Parameter;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
@@ -31,6 +32,11 @@ public class JavaFixtureProvider implements ArgumentsProvider, AnnotationConsume
                 .collectionSizeRange(annotation.minCollectionSize(), annotation.maxCollectionSize())
                 .usePositiveNumbersOnly(annotation.positiveNumbersOnly());
 
-        return Stream.of(Arguments.of(context.getTestMethod().stream().flatMap(m -> stream(m.getGenericParameterTypes()).map(t -> new Fixture(configuration).create(SpecimenType.fromClass(t)))).toArray()));
+        return Stream.of(Arguments.of(context.getTestMethod().stream()
+                .flatMap(m -> stream(m.getParameters())
+                        .filter(p -> p.getAnnotations().length == 0)
+                        .map(Parameter::getParameterizedType)
+                        .map(t -> new Fixture(configuration).create(SpecimenType.fromClass(t))))
+                .toArray()));
     }
 }

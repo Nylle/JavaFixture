@@ -1,10 +1,14 @@
 package com.github.nylle.javafixture.annotations.fixture;
 
 import com.github.nylle.javafixture.testobjects.example.Contract;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,32 +16,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(JavaFixtureExtension.class)
 public class JavaFixtureClassExtensionTest {
 
-    private Contract contract;
-    private int intValue;
-    private Optional<String> optionalString;
+    @TempDir
+    Path tempPath;
 
-    @BeforeEach
-    void setup(Contract contract, int intValue, Optional<String> optionalString) {
-        this.contract = contract;
-        this.intValue = intValue;
-        this.optionalString = optionalString;
-    }
-
-    @Test
-    void injectParameterIntoSetup() {
-        assertThat(contract.getId()).isBetween(Long.MIN_VALUE, Long.MAX_VALUE);
-        assertThat(intValue).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
-        assertThat(optionalString).isInstanceOf(Optional.class);
-        assertThat(optionalString).isPresent();
-        assertThat(optionalString.get()).isInstanceOf(String.class);
-    }
-
-    @Test
+    @FixturedTest
     void injectParameterViaClassExtension(Contract contract, int intValue, Optional<String> optionalString) {
         assertThat(contract.getId()).isBetween(Long.MIN_VALUE, Long.MAX_VALUE);
         assertThat(intValue).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
         assertThat(optionalString).isInstanceOf(Optional.class);
         assertThat(optionalString).isPresent();
         assertThat(optionalString.get()).isInstanceOf(String.class);
+    }
+
+    @FixturedTest
+    void injectTempDirViaJunit(@TempDir Path injectedTempDir, Integer intValue) {
+        assertThat(injectedTempDir).isEqualTo(tempPath);
+        assertThat( intValue ).isNotNull();
+    }
+
+    @FixturedTest(positiveNumbersOnly = true, minCollectionSize = 2, maxCollectionSize = 3)
+    void useAnnotationProperties(Long positiveValue, List<Integer> collection) {
+        assertThat( positiveValue ).isPositive();
+        assertThat( collection.size()).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
+        collection.forEach( member -> assertThat(member).isPositive());
+    }
+
+    @FixturedTest
+    void withoutParametersItIsJustAnotherTest() {
+        assertThat(true).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1,2})
+    @DisplayName("you can mix @FixturedTest with other tests in the same class")
+    void ignoreExtensionwhenTestIsNotFixtureTest(int fromJunit) {
+        assertThat(fromJunit).isGreaterThanOrEqualTo(1).isLessThanOrEqualTo(2);
     }
 }

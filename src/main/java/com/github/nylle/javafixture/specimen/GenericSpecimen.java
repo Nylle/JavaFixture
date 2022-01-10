@@ -8,6 +8,7 @@ import com.github.nylle.javafixture.Reflector;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -57,14 +58,14 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(CustomizationContext customizationContext) {
+    public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(Class.class)) {
-            return (T) specimens.entrySet().stream().findFirst().get().getValue().create().getClass();
+            return (T) specimens.entrySet().stream().findFirst().get().getValue().create(new Annotation[0]).getClass();
         }
 
         if (context.isCached(type)) {
@@ -79,9 +80,22 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return context.cached(type, instanceFactory.construct(type));
         }
 
-        return new Reflector<>(context.cached(type, instanceFactory.instantiate(type)), specimenFactory)
-                .validateCustomization(customizationContext, type)
-                .populate(customizationContext, specimens);
+        return populate(customizationContext);
+    }
+
+    private T populate(CustomizationContext customizationContext) {
+        var result = context.cached(type, instanceFactory.instantiate(type));
+        var reflector = new Reflector<>(result)
+                .validateCustomization(customizationContext, type);
+        reflector.getDeclaredFields()
+                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                .forEach(field -> reflector.setField(field,
+                        customizationContext.getCustomFields().getOrDefault(
+                                field.getName(),
+                                specimens.getOrDefault(
+                                        field.getGenericType().getTypeName(),
+                                        specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new Annotation[0]))));
+        return result;
     }
 }
 

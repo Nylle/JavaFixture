@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.lang.annotation.Annotation;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -72,7 +73,7 @@ class TimeSpecimenTest {
     void createDuration(Class type) {
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(type);
         assertThat(actual.toString()).isNotEmpty();
@@ -80,7 +81,7 @@ class TimeSpecimenTest {
 
     @Test
     void throwsExceptionForUnknownType() {
-        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(TemporalAmount.class), context).create())
+        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(TemporalAmount.class), context).create(new Annotation[0]))
                 .isInstanceOf(SpecimenException.class)
                 .hasMessageContaining("Unsupported type:");
     }
@@ -110,7 +111,7 @@ class TimeSpecimenTest {
     @TestCase(class1 = java.util.Date.class)
     @DisplayName("create should return a valid object")
     void create(Class type) {
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create();
+        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create(new Annotation[0]);
         // if the object is not valid, the toString method will fail, it cannot print it
         assertThat(sut.toString()).isNotEmpty();
     }
@@ -123,7 +124,7 @@ class TimeSpecimenTest {
 
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), context);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isEqualTo(Instant.MIN);
     }
@@ -157,7 +158,7 @@ class TimeSpecimenTest {
 
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isSameAs(expected);
     }

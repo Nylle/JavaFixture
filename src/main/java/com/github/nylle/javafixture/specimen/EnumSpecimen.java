@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.annotation.Annotation;
 import java.util.Random;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
@@ -35,12 +36,12 @@ public class EnumSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(CustomizationContext customizationContext) {
+    public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         return context.preDefined(type, type.getEnumConstants()[random.nextInt(type.getEnumConstants().length)]);
     }
 }

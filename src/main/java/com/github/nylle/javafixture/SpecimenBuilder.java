@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
      */
     @Override
     public T create() {
-        return customize(new SpecimenFactory(new Context(configuration, predefinedInstances)).build(type).create(new CustomizationContext(ignoredFields, customFields)));
+        return customize(new SpecimenFactory(new Context(configuration, predefinedInstances)).build(type).create(new CustomizationContext(ignoredFields, customFields), new Annotation[0]));
     }
 
     /**
@@ -126,7 +127,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     }
 
     T construct() {
-        return new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(true));
+        return new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(true), new Annotation[0]);
     }
 
     private T customize(T instance) {

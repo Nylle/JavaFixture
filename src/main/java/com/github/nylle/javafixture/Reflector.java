@@ -2,10 +2,7 @@ package com.github.nylle.javafixture;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -15,15 +12,13 @@ import static java.util.stream.Collectors.toList;
 
 public class Reflector<T> {
     private final T instance;
-    private final SpecimenFactory specimenFactory;
 
-    public Reflector(T instance, SpecimenFactory specimenFactory) {
+    public Reflector(T instance) {
         this.instance = instance;
-        this.specimenFactory = specimenFactory;
     }
 
     public Reflector<T> validateCustomization(CustomizationContext customizationContext, SpecimenType<T> type) {
-        var declaredFields = getDeclaredFields().map(field -> field.getName()).collect(toList());
+        var declaredFields = getDeclaredFields(instance.getClass()).map(field -> field.getName()).collect(toList());
 
         var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
                 .filter(entry -> !declaredFields.contains(entry))
@@ -33,7 +28,7 @@ public class Reflector<T> {
             throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
 
-        var duplicateField = getDeclaredFields()
+        var duplicateField = getDeclaredFields(instance.getClass())
                 .collect(groupingBy(field -> field.getName()))
                 .entrySet()
                 .stream()
@@ -50,40 +45,19 @@ public class Reflector<T> {
         return this;
     }
 
-    public T populate(CustomizationContext customizationContext) {
-        return populate(customizationContext, field -> field.getGenericType(), Map.of());
-    }
-
-    public T populate(CustomizationContext customizationContext, Map<String, ISpecimen<?>> specimens) {
-        return populate(customizationContext, field -> field.getType(), specimens);
-    }
-
-    private T populate(CustomizationContext customizationContext, Function<Field, Type> getTypeFromField, Map<String, ISpecimen<?>> specimens) {
-        getDeclaredFields()
-                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                .forEach(field -> setField(field,
-                        customizationContext.getCustomFields().getOrDefault(
-                                field.getName(),
-                                specimens.getOrDefault(
-                                        field.getGenericType().getTypeName(),
-                                        specimenFactory.build(SpecimenType.fromClass(getTypeFromField.apply(field)))).create())));
-        return instance;
-    }
-
-    private Stream<Field> getDeclaredFields() {
-        return getDeclaredFields(instance.getClass())
-                .filter(field -> !Modifier.isStatic(field.getModifiers()));
+    public Stream<Field> getDeclaredFields() {
+        return getDeclaredFields(instance.getClass());
     }
 
     private Stream<Field> getDeclaredFields(Class<?> type) {
         return Stream.concat(
-                Stream.of(type.getDeclaredFields()),
+                Stream.of(type.getDeclaredFields()).filter(field -> !Modifier.isStatic(field.getModifiers())),
                 Optional.ofNullable(type.getSuperclass())
                         .map(superclass -> getDeclaredFields(superclass))
                         .orElse(Stream.of()));
     }
 
-    private void setField(Field field, Object value) {
+    public void setField(Field field, Object value) {
         try {
             field.setAccessible(true);
             field.set(instance, value);

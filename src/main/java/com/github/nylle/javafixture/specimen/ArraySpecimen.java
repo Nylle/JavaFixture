@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.stream.IntStream;
 
@@ -39,12 +40,12 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(final CustomizationContext customizationContext) {
+    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
         }
@@ -53,7 +54,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
 
         T result = (T) context.cached(type, Array.newInstance(type.getComponentType(), length));
 
-        IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create()));
+        IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create(new Annotation[0])));
 
         return result;
     }

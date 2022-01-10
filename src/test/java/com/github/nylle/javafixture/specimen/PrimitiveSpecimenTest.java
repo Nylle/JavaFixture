@@ -7,6 +7,7 @@ import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.Configuration.configure;
@@ -42,7 +43,7 @@ class PrimitiveSpecimenTest {
     void createString() {
         var sut = new PrimitiveSpecimen<String>(fromClass(String.class), new Context(configure()));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(String.class);
         assertThat(actual.length()).isGreaterThan(0);
@@ -52,7 +53,7 @@ class PrimitiveSpecimenTest {
     void createBoolean() {
         var sut = new PrimitiveSpecimen<>(fromClass(boolean.class), new Context(configure()));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Boolean.class);
         assertThat(actual).isIn(true, false);
@@ -62,7 +63,7 @@ class PrimitiveSpecimenTest {
     void createByte() {
         var sut = new PrimitiveSpecimen<>(fromClass(byte.class), new Context(configure()));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Byte.class);
         assertThat(actual.toString().length()).isGreaterThan(0);
@@ -74,7 +75,7 @@ class PrimitiveSpecimenTest {
     void createShort(boolean positiveOnly, short min, short max) {
         var sut = new PrimitiveSpecimen<Short>(fromClass(short.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Short.class);
         assertThat(actual).isBetween(min, max);
@@ -86,7 +87,7 @@ class PrimitiveSpecimenTest {
     void createInteger(boolean positiveOnly, int min, int max) {
         var sut = new PrimitiveSpecimen<Integer>(fromClass(int.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Integer.class);
         assertThat(actual).isBetween(min, max);
@@ -98,7 +99,7 @@ class PrimitiveSpecimenTest {
     void createLong(boolean positiveOnly, long min, long max) {
         var sut = new PrimitiveSpecimen<Long>(fromClass(long.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Long.class);
         assertThat(actual).isBetween(min, max);
@@ -110,7 +111,7 @@ class PrimitiveSpecimenTest {
     void createFloat(boolean positiveOnly, float min, float max) {
         var sut = new PrimitiveSpecimen<Float>(fromClass(float.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Float.class);
         assertThat(actual).isBetween(min, max);
@@ -122,7 +123,7 @@ class PrimitiveSpecimenTest {
     void createDouble(boolean positiveOnly, double min, double max) {
         var sut = new PrimitiveSpecimen<Double>(fromClass(double.class), new Context(configure().usePositiveNumbersOnly(positiveOnly)));
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Double.class);
         assertThat(actual).isBetween(min, max);
@@ -145,7 +146,7 @@ class PrimitiveSpecimenTest {
 
         var sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(type), context);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isSameAs(expected);
     }

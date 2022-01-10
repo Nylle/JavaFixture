@@ -2,9 +2,12 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PseudoRandomTest {
 
@@ -43,9 +46,27 @@ class PseudoRandomTest {
         assertThat(new PseudoRandom().nextDouble(onlyPositive)).isBetween(min, max);
     }
 
-    @Test
-    void nextString() {
-        assertThat(new PseudoRandom().nextString()).isNotBlank();
+    @TestWithCases
+    @TestCase(int1 = 0, int2 = Integer.MAX_VALUE, int3 = 128)
+    @TestCase(int1 = 37, int2 = 52, int3 = 52)
+    @TestCase(int1 = 0, int2 = 4, int3 = 4)
+    @TestCase(int1 = 1024, int2 = Integer.MAX_VALUE, int3 = 1024+128)
+    @TestCase(int1 = 1025, int2 = Integer.MAX_VALUE, int3 = 1025+128)
+    @DisplayName("nextString will return a random string with at least min and at most min+128 (or max, whichever is less) characters")
+    void nextString(int min, int max, int expectedMaxLen ) {
+        var sut = new PseudoRandom();
+        var constraints = new StringConstraints(min, max);
+        assertThat(sut.nextString(constraints)).isNotBlank();
+        assertThat(sut.nextString(constraints).length()).isBetween(min, expectedMaxLen);
+    }
+
+    @TestWithCases
+    @TestCase(int1 = -3, int2 = 2)
+    @TestCase(int1 = 2, int2 = 1)
+    @DisplayName("next string will throw exception when called with values that would produce negative length string")
+    void nextStringWithIllegalValues(int min, int max) {
+        assertThatThrownBy(() -> new PseudoRandom().nextString(new StringConstraints(min,max))).isInstanceOf(SpecimenException.class);
+        assertThatThrownBy(() -> new PseudoRandom().nextString(new StringConstraints(min, max))).isInstanceOf(SpecimenException.class);
     }
 
     @Test

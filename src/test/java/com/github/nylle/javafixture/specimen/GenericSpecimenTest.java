@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,7 @@ class GenericSpecimenTest {
     void createClass() {
         var sut = new GenericSpecimen<>(new SpecimenType<Class<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Class.class);
         assertThat(actual).isEqualTo(String.class);
@@ -89,7 +90,7 @@ class GenericSpecimenTest {
     void createGeneric() {
         var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>(){}, context, specimenFactory);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestObjectGeneric.class);
         assertThat(actual.getT()).isInstanceOf(String.class);
@@ -99,7 +100,7 @@ class GenericSpecimenTest {
 
     @Test
     void subSpecimenAreProperlyCached() {
-        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create();
+        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create(new Annotation[0]);
 
         assertThat(result.getT().get()).isInstanceOf(String.class);
         assertThat(result.getU().get()).isInstanceOf(Integer.class);
@@ -112,7 +113,7 @@ class GenericSpecimenTest {
         var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
 
         assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
+                .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGeneric<java.lang.String, java.lang.Integer>'.")
                 .withNoCause();
     }
@@ -124,7 +125,7 @@ class GenericSpecimenTest {
         var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of());
 
         assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
+                .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObjectGeneric<java.lang.String, java.lang.Integer>'.")
                 .withNoCause();
     }
@@ -138,7 +139,7 @@ class GenericSpecimenTest {
         void allFieldsArePopulated() {
             var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
-            var actual = sut.create();
+            var actual = sut.create(new Annotation[0]);
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();
@@ -160,7 +161,7 @@ class GenericSpecimenTest {
                     "parentField", "bar",
                     "baseField", "baz");
 
-            var actual = sut.create(new CustomizationContext(List.of(), customization));
+            var actual = sut.create(new CustomizationContext(List.of(), customization), new Annotation[0]);
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -182,7 +183,7 @@ class GenericSpecimenTest {
                     "fieldIn2Classes", 100.0);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization)));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization), new Annotation[0]));
         }
 
         @Test
@@ -195,7 +196,7 @@ class GenericSpecimenTest {
                     "fieldIn2Classes");
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of())));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of()), new Annotation[0]));
         }
     }
 }

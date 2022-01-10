@@ -6,6 +6,7 @@ import org.objenesis.instantiator.ObjectInstantiator;
 
 import javassist.util.proxy.ProxyFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -108,7 +109,7 @@ public class InstanceFactory {
             constructor.setAccessible(true);
             return (T) constructor.newInstance(stream(constructor.getGenericParameterTypes())
                     .map(t -> specimenFactory.build(SpecimenType.fromClass(t)))
-                    .map(s -> s.create())
+                    .map(s -> s.create(new Annotation[0]))
                     .toArray());
         } catch (Exception e) {
             throw new SpecimenException(format("Unable to construct class %s with constructor %s: %s", type.asClass(), constructor.toString(), e.getMessage()), e);
@@ -129,7 +130,7 @@ public class InstanceFactory {
         try {
             return (T) method.invoke(stream(method.getGenericParameterTypes())
                     .map(t -> specimenFactory.build(SpecimenType.fromClass(t)))
-                    .map(s -> s.create())
+                    .map(s -> s.create(new Annotation[0]))
                     .toArray());
         } catch (Exception ex) {
             return null;

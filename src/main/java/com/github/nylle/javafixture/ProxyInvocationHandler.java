@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import javassist.util.proxy.MethodHandler;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -30,7 +31,7 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
 
         return methodResults.computeIfAbsent(
                 method.toString(),
-                key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create());
+                key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create(new Annotation[0]));
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
 
         return methodResults.computeIfAbsent(
                 thisMethod.toString(),
-                key -> specimens.getOrDefault(thisMethod.getGenericReturnType().getTypeName(), resolveSpecimen(thisMethod)).create());
+                key -> specimens.getOrDefault(thisMethod.getGenericReturnType().getTypeName(), resolveSpecimen(thisMethod)).create(new Annotation[0]));
     }
 
     private ISpecimen<?> resolveSpecimen(final Method method) {
@@ -59,7 +60,7 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
 
     private Type resolveType(Type type) {
         if (specimens.containsKey(type.getTypeName())) {
-            return specimens.get(type.getTypeName()).create().getClass();
+            return specimens.get(type.getTypeName()).create(new Annotation[0]).getClass();
         }
 
         return type;

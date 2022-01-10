@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +66,7 @@ class ObjectSpecimenTest {
     void create() {
         var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
-        var actual = sut.create();
+        var actual = sut.create(new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestObject.class);
         assertThat(actual.getValue()).isInstanceOf(String.class);
@@ -89,8 +90,8 @@ class ObjectSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
-        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
+        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(new Annotation[0]);
+        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(new Annotation[0]);
 
         assertThat(original).isInstanceOf(TestObject.class);
         assertThat(original).isSameAs(cached);
@@ -101,7 +102,7 @@ class ObjectSpecimenTest {
     @Test
     void ignoresStaticFields() {
 
-        var actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create();
+        var actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(new Annotation[0]);
 
         assertThat(actual.STATIC_FIELD).isEqualTo("unchanged");
     }
@@ -113,7 +114,7 @@ class ObjectSpecimenTest {
         var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
 
         assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
+                .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
                 .withNoCause();
     }
@@ -125,7 +126,7 @@ class ObjectSpecimenTest {
         var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of());
 
         assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> sut.create(customizationContext))
+                .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
                 .withNoCause();
     }
@@ -139,7 +140,7 @@ class ObjectSpecimenTest {
         void allFieldsArePopulated() {
             var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-            var actual = sut.create();
+            var actual = sut.create(new Annotation[0]);
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();
@@ -161,7 +162,7 @@ class ObjectSpecimenTest {
                     "parentField", "bar",
                     "baseField", "baz");
 
-            var actual = sut.create(new CustomizationContext(List.of(), customization));
+            var actual = sut.create(new CustomizationContext(List.of(), customization), new Annotation[0]);
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -183,7 +184,7 @@ class ObjectSpecimenTest {
                     "fieldIn2Classes", 100.0);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization)));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization), new Annotation[0]));
         }
 
         @Test
@@ -196,7 +197,7 @@ class ObjectSpecimenTest {
                     "fieldIn2Classes");
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of())));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of()), new Annotation[0]));
         }
     }
 }

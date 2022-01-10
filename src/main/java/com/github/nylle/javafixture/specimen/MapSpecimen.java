@@ -7,6 +7,7 @@ import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -56,12 +57,12 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     }
 
     @Override
-    public T create() {
-        return create(noContext());
+    public T create(Annotation[] annotations) {
+        return create(noContext(), annotations);
     }
 
     @Override
-    public T create(final CustomizationContext customizationContext) {
+    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
         }
@@ -71,7 +72,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .filter(x -> keySpecimen != null && valueSpecimen != null)
-                .forEach(x -> map.put(keySpecimen.create(), valueSpecimen.create()));
+                .forEach(x -> map.put(keySpecimen.create(new Annotation[0]), valueSpecimen.create(new Annotation[0])));
 
         return (T) map;
     }

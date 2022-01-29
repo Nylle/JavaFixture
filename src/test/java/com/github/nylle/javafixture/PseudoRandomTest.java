@@ -56,7 +56,7 @@ class PseudoRandomTest {
     void nextString(int min, int max, int expectedMaxLen ) {
         var sut = new PseudoRandom();
         var constraints = new StringConstraints(min, max);
-        assertThat(sut.nextString(constraints)).isNotBlank();
+        assertThat(sut.nextString(constraints)).isNotNull();
         assertThat(sut.nextString(constraints).length()).isBetween(min, expectedMaxLen);
     }
 

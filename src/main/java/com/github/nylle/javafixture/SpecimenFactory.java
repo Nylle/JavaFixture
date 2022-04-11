@@ -9,6 +9,7 @@ import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
+import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
 public class SpecimenFactory {
@@ -55,6 +56,10 @@ public class SpecimenFactory {
 
         if (type.isAbstract()) {
             return new AbstractSpecimen<>(type, context, this);
+        }
+
+        if( type.isSpecialType()) {
+            return new SpecialSpecimen<>(type, context);
         }
 
         return new ObjectSpecimen<>(type, context, this);

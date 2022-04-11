@@ -161,6 +161,16 @@ public class SpecimenType<T> extends TypeCapture<T> {
         return false;
     }
 
+    public boolean isSpecialType() {
+        if (asClass().equals(java.io.File.class)) {
+            return true;
+        }
+        if (asClass().equals(java.net.URI.class)) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean isPrimitive() {
         return asClass().isPrimitive();
     }

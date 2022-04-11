@@ -10,12 +10,15 @@ import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
+import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.example.IContract;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.MonthDay;
@@ -48,6 +51,8 @@ class SpecimenFactoryTest {
     @TestCase(class1 = Instant.class, class2 = TimeSpecimen.class)
     @TestCase(class1 = java.util.Date.class, class2 = TimeSpecimen.class)
     @TestCase(class1 = java.sql.Date.class, class2 = TimeSpecimen.class)
+    @TestCase(class1 = File.class, class2 = SpecialSpecimen.class)
+    @TestCase(class1 = URI.class, class2 = SpecialSpecimen.class)
     @TestCase(class1 = Object.class, class2 = ObjectSpecimen.class)
     void build(Class<?> value, Class<?> expected) {
         assertThat(new SpecimenFactory(new Context(new Configuration())).build(SpecimenType.fromClass(value))).isExactlyInstanceOf(expected);

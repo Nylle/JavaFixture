@@ -22,6 +22,8 @@ ij_java_layout_static_imports_separately = true
 
 ij_java_blank_lines_after_package = 1
 ij_java_blank_lines_after_imports = 1
+ij_any_keep_simple_classes_in_one_line = true
+ij_any_keep_simple_lambdas_in_one_line = true
 
 [*.json]
 indent_size = 2

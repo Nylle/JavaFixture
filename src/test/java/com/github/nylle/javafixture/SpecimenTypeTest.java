@@ -62,16 +62,13 @@ class SpecimenTypeTest {
 
     @Test
     void asClass() {
-        assertThat(new SpecimenType<String>() {
-        }.asClass()).isEqualTo(String.class);
+        assertThat(new SpecimenType<String>() {}.asClass()).isEqualTo(String.class);
     }
 
     @Test
     void isParametrized() {
-        assertThat(new SpecimenType<String>() {
-        }.isParameterized()).isFalse();
-        assertThat(new SpecimenType<Optional<String>>() {
-        }.isParameterized()).isTrue();
+        assertThat(new SpecimenType<String>() {}.isParameterized()).isFalse();
+        assertThat(new SpecimenType<Optional<String>>() {}.isParameterized()).isTrue();
     }
 
     @Test
@@ -91,42 +88,24 @@ class SpecimenTypeTest {
 
     @Test
     void isCollection() {
-        assertThat(new SpecimenType<Collection<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<List<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<NavigableSet<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<SortedSet<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<Set<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<Deque<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<BlockingDeque<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<Queue<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<BlockingQueue<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<TransferQueue<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<ArrayList<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<HashSet<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<TreeSet<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<ArrayDeque<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<LinkedBlockingDeque<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<LinkedList<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<LinkedBlockingQueue<String>>() {
-        }.isCollection()).isTrue();
-        assertThat(new SpecimenType<LinkedTransferQueue<String>>() {
-        }.isCollection()).isTrue();
+        assertThat(new SpecimenType<Collection<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<List<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<NavigableSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<SortedSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Set<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Deque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<BlockingDeque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<Queue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<BlockingQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<TransferQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<ArrayList<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<HashSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<TreeSet<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<ArrayDeque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedBlockingDeque<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedList<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedBlockingQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<LinkedTransferQueue<String>>() {}.isCollection()).isTrue();
     }
 
     @TestWithCases
@@ -154,24 +133,15 @@ class SpecimenTypeTest {
 
     @Test
     void isMap() {
-        assertThat(new SpecimenType<Map>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<ConcurrentNavigableMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<ConcurrentMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<NavigableMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<SortedMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<TreeMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<ConcurrentSkipListMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<ConcurrentHashMap>() {
-        }.isMap()).isTrue();
-        assertThat(new SpecimenType<HashMap>() {
-        }.isMap()).isTrue();
+        assertThat(new SpecimenType<Map>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentNavigableMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<NavigableMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<SortedMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<TreeMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentSkipListMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<ConcurrentHashMap>() {}.isMap()).isTrue();
+        assertThat(new SpecimenType<HashMap>() {}.isMap()).isTrue();
     }
 
     @TestWithCases
@@ -190,24 +160,15 @@ class SpecimenTypeTest {
 
     @Test
     void isBoxed() {
-        assertThat(new SpecimenType<String>() {
-        }.isBoxed()).isFalse(); // false!
-        assertThat(new SpecimenType<Byte>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Short>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Integer>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Long>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Float>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Double>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Character>() {
-        }.isBoxed()).isTrue();
-        assertThat(new SpecimenType<Boolean>() {
-        }.isBoxed()).isTrue();
+        assertThat(new SpecimenType<String>() {}.isBoxed()).isFalse(); // false!
+        assertThat(new SpecimenType<Byte>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Short>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Integer>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Long>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Float>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Double>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Character>() {}.isBoxed()).isTrue();
+        assertThat(new SpecimenType<Boolean>() {}.isBoxed()).isTrue();
     }
 
     @TestWithCases
@@ -242,24 +203,21 @@ class SpecimenTypeTest {
     void isEnum() {
         assertThat(SpecimenType.fromClass(String.class).isEnum()).isFalse();
         assertThat(SpecimenType.fromClass(TestEnum.class).isEnum()).isTrue();
-        assertThat(new SpecimenType<TestEnum>() {
-        }.isEnum()).isTrue();
+        assertThat(new SpecimenType<TestEnum>() {}.isEnum()).isTrue();
     }
 
     @Test
     void isArray() {
         assertThat(SpecimenType.fromClass(List.class).isArray()).isFalse();
         assertThat(SpecimenType.fromClass(int[].class).isArray()).isTrue();
-        assertThat(new SpecimenType<Integer[]>() {
-        }.isArray()).isTrue();
+        assertThat(new SpecimenType<Integer[]>() {}.isArray()).isTrue();
     }
 
     @Test
     void isInterface() {
         assertThat(SpecimenType.fromClass(String.class).isInterface()).isFalse();
         assertThat(SpecimenType.fromClass(List.class).isInterface()).isTrue();
-        assertThat(new SpecimenType<ITestGeneric<String, List<Optional>>>() {
-        }.isInterface()).isTrue();
+        assertThat(new SpecimenType<ITestGeneric<String, List<Optional>>>() {}.isInterface()).isTrue();
     }
 
     @Test
@@ -270,14 +228,14 @@ class SpecimenTypeTest {
 
     @Test
     void isTimeType() {
-        assertThat(new SpecimenType<String>(){}.isTimeType()).isFalse(); // false
-        assertThat(new SpecimenType<Duration>(){}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<JapaneseEra>(){}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<MonthDay>(){}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<Period>(){}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<ZoneId>(){}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<ZoneOffset>(){}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<ZonedDateTime>(){}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<String>() {}.isTimeType()).isFalse(); // false
+        assertThat(new SpecimenType<Duration>() {}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<JapaneseEra>() {}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<MonthDay>() {}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<Period>() {}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<ZoneId>() {}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<ZoneOffset>() {}.isTimeType()).isTrue();
+        assertThat(new SpecimenType<ZonedDateTime>() {}.isTimeType()).isTrue();
     }
 
     @TestWithCases
@@ -299,9 +257,9 @@ class SpecimenTypeTest {
 
     @Test
     void isSpecialType() {
-        assertThat(new SpecimenType<String>(){}.isSpecialType()).isFalse(); // false
-        assertThat(new SpecimenType<URI>(){}.isSpecialType()).isTrue();
-        assertThat(new SpecimenType<File>(){}.isSpecialType()).isTrue();
+        assertThat(new SpecimenType<String>() {}.isSpecialType()).isFalse(); // false
+        assertThat(new SpecimenType<URI>() {}.isSpecialType()).isTrue();
+        assertThat(new SpecimenType<File>() {}.isSpecialType()).isTrue();
     }
 
     @TestWithCases
@@ -314,8 +272,7 @@ class SpecimenTypeTest {
 
     @Test
     void getGenericTypeArgument() {
-        var sut = new SpecimenType<Map<String, Optional<Integer>>>() {
-        };
+        var sut = new SpecimenType<Map<String, Optional<Integer>>>() {};
 
         assertThat(sut.getGenericTypeArgument(0)).isEqualTo(String.class);
         assertThat(sut.getGenericTypeArgument(1)).isInstanceOf(ParameterizedType.class);
@@ -330,8 +287,7 @@ class SpecimenTypeTest {
 
     @Test
     void getGenericTypeArguments() {
-        var sut = new SpecimenType<Map<String, Optional<Integer>>>() {
-        };
+        var sut = new SpecimenType<Map<String, Optional<Integer>>>() {};
 
         assertThat(sut.getGenericTypeArguments()).hasSize(2);
         assertThat(sut.getGenericTypeArguments()[0]).isEqualTo(String.class);
@@ -347,8 +303,7 @@ class SpecimenTypeTest {
 
     @Test
     void getTypeParameterName() {
-        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {
-        };
+        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {};
 
         assertThat(sut.getTypeParameterName(0)).isEqualTo("T");
         assertThat(sut.getTypeParameterName(1)).isEqualTo("U");
@@ -361,8 +316,7 @@ class SpecimenTypeTest {
 
     @Test
     void getTypeParameterNames() {
-        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {
-        };
+        var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {};
 
         assertThat(sut.getTypeParameterNames()).hasSize(2);
         assertThat(sut.getTypeParameterNames()[0]).isEqualTo("T");
@@ -376,10 +330,8 @@ class SpecimenTypeTest {
 
     @Test
     void getComponentType() {
-        assertThat(new SpecimenType<int[]>() {
-        }.getComponentType()).isEqualTo(int.class);
-        assertThat(new SpecimenType<Integer[]>() {
-        }.getComponentType()).isEqualTo(Integer.class);
+        assertThat(new SpecimenType<int[]>() {}.getComponentType()).isEqualTo(int.class);
+        assertThat(new SpecimenType<Integer[]>() {}.getComponentType()).isEqualTo(Integer.class);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getComponentType())
@@ -397,8 +349,7 @@ class SpecimenTypeTest {
     @Test
     void getEnumConstants() {
         assertThat(SpecimenType.fromClass(TestEnum.class).getEnumConstants().length).isEqualTo(3);
-        assertThat(new SpecimenType<TestEnum>() {
-        }.getEnumConstants().length).isEqualTo(3);
+        assertThat(new SpecimenType<TestEnum>() {}.getEnumConstants().length).isEqualTo(3);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getEnumConstants())
@@ -409,18 +360,14 @@ class SpecimenTypeTest {
     @Test
     void getName() {
         assertThat(SpecimenType.fromClass(Optional.class).getName()).isEqualTo("java.util.Optional");
-        assertThat(new SpecimenType<Optional<String>>() {
-        }.getName()).isEqualTo("java.util.Optional<java.lang.String>");
+        assertThat(new SpecimenType<Optional<String>>() {}.getName()).isEqualTo("java.util.Optional<java.lang.String>");
     }
 
     @Test
     void asParameterizedType() {
-        assertThat(new SpecimenType<Optional<String>>() {
-        }.asParameterizedType().getRawType()).isEqualTo(Optional.class);
-        assertThat(new SpecimenType<Optional<String>>() {
-        }.asParameterizedType().getActualTypeArguments().length).isEqualTo(1);
-        assertThat(new SpecimenType<Optional<String>>() {
-        }.asParameterizedType().getActualTypeArguments()[0].getTypeName()).isEqualTo(String.class.getName());
+        assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getRawType()).isEqualTo(Optional.class);
+        assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments().length).isEqualTo(1);
+        assertThat(new SpecimenType<Optional<String>>() {}.asParameterizedType().getActualTypeArguments()[0].getTypeName()).isEqualTo(String.class.getName());
     }
 
     @TestWithCases
@@ -440,8 +387,7 @@ class SpecimenTypeTest {
 
     @Test
     void fromType() {
-        Type type = new SpecimenType<Optional<String>>() {
-        }.asParameterizedType();
+        Type type = new SpecimenType<Optional<String>>() {}.asParameterizedType();
 
         var sut = SpecimenType.fromClass(type);
 
@@ -452,8 +398,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForObjectClass() {
-        var sut = new SpecimenType<String>() {
-        };
+        var sut = new SpecimenType<String>() {};
 
         assertThat(sut.asClass()).isEqualTo(String.class);
         assertThat(sut.isParameterized()).isFalse();
@@ -464,8 +409,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForGenericClass() {
-        var sut = new SpecimenType<Optional<String>>() {
-        };
+        var sut = new SpecimenType<Optional<String>>() {};
 
         assertThat(sut.asClass()).isEqualTo(Optional.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -476,8 +420,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForListInterface() {
-        var sut = new SpecimenType<List<String>>() {
-        };
+        var sut = new SpecimenType<List<String>>() {};
 
         assertThat(sut.asClass()).isEqualTo(List.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -488,8 +431,7 @@ class SpecimenTypeTest {
 
     @Test
     void createForMapInterface() {
-        var sut = new SpecimenType<Map<String, Integer>>() {
-        };
+        var sut = new SpecimenType<Map<String, Integer>>() {};
 
         assertThat(sut.asClass()).isEqualTo(Map.class);
         assertThat(sut.isParameterized()).isTrue();
@@ -501,8 +443,7 @@ class SpecimenTypeTest {
 
     @Test
     void getDeclaredConstructors() {
-        var sut = new SpecimenType<TestObjectWithAllConstructors>() {
-        };
+        var sut = new SpecimenType<TestObjectWithAllConstructors>() {};
 
         var actual = sut.getDeclaredConstructors();
 
@@ -511,8 +452,7 @@ class SpecimenTypeTest {
 
     @Test
     void getFactoryMethods() {
-        var sut = new SpecimenType<TestObjectWithStaticMethods>() {
-        };
+        var sut = new SpecimenType<TestObjectWithStaticMethods>() {};
 
         var actual = sut.getFactoryMethods();
 

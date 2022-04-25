@@ -20,6 +20,13 @@ class FixtureWithValidationTest {
         assertThat(sut.getWithColumnLengthAnnotation().length()).isBetween(0, 5);
     }
 
+    @Test
+    void lastOfMultipleAnnotationsWins() {
+        var sut = new Fixture().create(TestObjectWithJavaxValidationAnnotations.class);
+
+        assertThat(sut.getWithColumnLengthAnnotationAndMaxAnnotation().length()).isBetween(0, 5);
+    }
+
     @TestWithFixture
     void fixtureWillAlwaysCreateValidObject(TestObjectWithJavaxValidationAnnotations sut) {
         var factory = Validation.buildDefaultValidatorFactory();

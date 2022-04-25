@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture.testobjects;
 
+import jakarta.persistence.Column;
+
 import javax.validation.constraints.Size;
 
 public class TestObjectWithJavaxValidationAnnotations {
@@ -12,6 +14,9 @@ public class TestObjectWithJavaxValidationAnnotations {
     @Size(max = 100)
     private String withMaxAnnotation;
 
+    @Column(length = 5)
+    private String withColumnLengthAnnotation;
+
     public String getWithMinMaxAnnotation() {
         return withMinMaxAnnotation;
     }
@@ -22,5 +27,9 @@ public class TestObjectWithJavaxValidationAnnotations {
 
     public String getWithMaxAnnotation() {
         return withMaxAnnotation;
+    }
+
+    public String getWithColumnLengthAnnotation() {
+        return withColumnLengthAnnotation;
     }
 }

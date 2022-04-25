@@ -8,7 +8,7 @@ import javax.validation.Validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FixtureWithValidationTest {
+class FixtureWithValidationTest {
 
     @Test
     void javaxSizeAnnotationIsSupported() {
@@ -17,6 +17,7 @@ public class FixtureWithValidationTest {
         assertThat(sut.getWithMinAnnotation().length()).isGreaterThanOrEqualTo(5);
         assertThat(sut.getWithMaxAnnotation().length()).isLessThanOrEqualTo(100);
         assertThat(sut.getWithMinMaxAnnotation().length()).isBetween(3, 6);
+        assertThat(sut.getWithColumnLengthAnnotation().length()).isBetween(0, 5);
     }
 
     @TestWithFixture
@@ -24,10 +25,8 @@ public class FixtureWithValidationTest {
         var factory = Validation.buildDefaultValidatorFactory();
         var validator = factory.getValidator();
         var violations = validator.validate(sut);
-        assertThat( violations ).isEmpty();
 
-
-
+        assertThat(violations).isEmpty();
     }
 
 }

@@ -9,9 +9,8 @@ import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
 
-import jakarta.persistence.Column;
-
 import java.lang.annotation.Annotation;
+import javax.persistence.Column;
 import javax.validation.constraints.Size;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;

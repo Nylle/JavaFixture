@@ -1,7 +1,7 @@
 package com.github.nylle.javafixture.testobjects;
 
-import jakarta.persistence.Column;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Size;
 
 public class TestObjectWithJavaxValidationAnnotations {

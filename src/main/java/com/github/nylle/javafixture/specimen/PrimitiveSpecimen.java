@@ -9,6 +9,8 @@ import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
 
+import jakarta.persistence.Column;
+
 import java.lang.annotation.Annotation;
 import javax.validation.constraints.Size;
 
@@ -93,6 +95,8 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         for (var annotation : annotations) {
             if(Size.class.isAssignableFrom(annotation.annotationType())) {
                 constraints = new StringConstraints(((Size)annotation).min(), ((Size)annotation).max());
+            } else if(Column.class.isAssignableFrom(annotation.annotationType())) {
+                constraints = new StringConstraints(0, ((Column) annotation).length());
             }
         }
         return constraints;

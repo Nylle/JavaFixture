@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @ArgumentsSource(JavaFixtureProvider.class)
 @ParameterizedTest
 public @interface TestWithFixture {
-    int minCollectionSize() default 10;
+    int minCollectionSize() default 2;
 
     int maxCollectionSize() default 10;
 

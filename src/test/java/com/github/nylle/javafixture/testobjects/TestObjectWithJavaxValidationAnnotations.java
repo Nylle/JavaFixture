@@ -19,7 +19,7 @@ public class TestObjectWithJavaxValidationAnnotations {
 
     @Size(max = 100)
     @Column(length = 5)
-    private String withColumnLengthAnnotationAndMaxAnnotation;
+    private String withMaxAnnotationAndColumnLengthAnnotation;
 
     public String getWithMinMaxAnnotation() {
         return withMinMaxAnnotation;
@@ -38,6 +38,6 @@ public class TestObjectWithJavaxValidationAnnotations {
     }
 
     public String getWithColumnLengthAnnotationAndMaxAnnotation() {
-        return withColumnLengthAnnotationAndMaxAnnotation;
+        return withMaxAnnotationAndColumnLengthAnnotation;
     }
 }

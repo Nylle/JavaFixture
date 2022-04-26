@@ -46,11 +46,14 @@ String result = fixture.create(String.class);
 String: "c3932f6f-59ae-43df-8ee9-8788474a3f87"
 
 #### Note
-If a `String`-field is annotated with `@Size`, those limits will be respected:
+If a `String`-field is annotated with `@Size` or `@Column`, those limits will be respected:
 ```java
 public class TestObjectWithJavaxValidationAnnotations {
     @Size(min = 3, max = 6)
     private String withMinMaxAnnotation;
+
+    @Column(length = 6)
+    private String withColumnLengthAnnotation;
 }
 ```
 

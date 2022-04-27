@@ -1,8 +1,12 @@
 package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
-import com.github.nylle.javafixture.testobjects.TestObjectWithNonPublicFactoryMethods;
+import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
 import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
+import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithArgument;
+import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithGenericArgument;
+import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithoutArgument;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -76,14 +80,50 @@ class InstanceFactoryTest {
         assertThat(actual).isInstanceOf(Charset.class);
     }
 
-    @Test
-    void canOnlyUsePublicFactoryMethods() {
-        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+    @Nested
+    @DisplayName("when manufacturing using factory methods")
+    class FactoryMethods {
+        @Test
+        @DisplayName("only public methods will be used")
+        void canOnlyUsePublicFactoryMethods() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-        assertThatExceptionOfType(SpecimenException.class)
-                .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class)))
-                .withMessageContaining("Cannot manufacture class")
-                .withNoCause();
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class)))
+                    .withMessageContaining("Cannot manufacture class")
+                    .withNoCause();
+        }
+
+        @Test
+        @DisplayName("method arguments are used")
+        void factoryMethodWithArgument() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class));
+
+            assertThat(result.getValue()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("method without arguments is used")
+        void factoryMethodWithoutArgument() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class));
+
+            assertThat(result.getValue()).isEqualTo(42);
+        }
+
+        @Test
+        @DisplayName("method with generic arguments is used")
+        void factoryMethodWithGenericArgument() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            FactoryMethodWithGenericArgument result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {});
+
+            assertThat(result.getValue()).isNotNull();
+        }
+
     }
 
     @Nested
@@ -93,7 +133,7 @@ class InstanceFactoryTest {
         void arrayListFromCollectionInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<Collection<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<Collection<String>>() {});
 
             assertThat(actual).isInstanceOf(ArrayList.class);
             assertThat(actual).isEmpty();
@@ -103,7 +143,7 @@ class InstanceFactoryTest {
         void arrayListFromListInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<List<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<List<String>>() {});
 
             assertThat(actual).isInstanceOf(ArrayList.class);
             assertThat(actual).isEmpty();
@@ -113,7 +153,7 @@ class InstanceFactoryTest {
         void treeSetFromNavigableSetInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<NavigableSet<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<NavigableSet<String>>() {});
 
             assertThat(actual).isInstanceOf(TreeSet.class);
             assertThat(actual).isEmpty();
@@ -123,7 +163,7 @@ class InstanceFactoryTest {
         void treeSetFromSortedSetInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<SortedSet<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<SortedSet<String>>() {});
 
             assertThat(actual).isInstanceOf(TreeSet.class);
             assertThat(actual).isEmpty();
@@ -133,7 +173,7 @@ class InstanceFactoryTest {
         void hashSetFromSetInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<Set<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<Set<String>>() {});
 
             assertThat(actual).isInstanceOf(HashSet.class);
             assertThat(actual).isEmpty();
@@ -143,7 +183,7 @@ class InstanceFactoryTest {
         void linkedBlockingDequeFromBlockingDequeInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<BlockingDeque<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<BlockingDeque<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedBlockingDeque.class);
             assertThat(actual).isEmpty();
@@ -153,7 +193,7 @@ class InstanceFactoryTest {
         void arrayDequeFromDequeInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<Deque<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<Deque<String>>() {});
 
             assertThat(actual).isInstanceOf(ArrayDeque.class);
             assertThat(actual).isEmpty();
@@ -163,7 +203,7 @@ class InstanceFactoryTest {
         void linkedTransferQueueFromTransferQueueInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<TransferQueue<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<TransferQueue<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedTransferQueue.class);
             assertThat(actual).isEmpty();
@@ -173,7 +213,7 @@ class InstanceFactoryTest {
         void linkedBlockingQueueFromBlockingQueueInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<BlockingQueue<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<BlockingQueue<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedBlockingQueue.class);
             assertThat(actual).isEmpty();
@@ -183,7 +223,7 @@ class InstanceFactoryTest {
         void linkedListFromQueueInterface() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<Queue<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<Queue<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedList.class);
             assertThat(actual).isEmpty();
@@ -193,7 +233,7 @@ class InstanceFactoryTest {
         void arrayList() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<ArrayList<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<ArrayList<String>>() {});
 
             assertThat(actual).isInstanceOf(ArrayList.class);
             assertThat(actual).isEmpty();
@@ -203,7 +243,7 @@ class InstanceFactoryTest {
         void treeSet() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<TreeSet<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<TreeSet<String>>() {});
 
             assertThat(actual).isInstanceOf(TreeSet.class);
             assertThat(actual).isEmpty();
@@ -213,7 +253,7 @@ class InstanceFactoryTest {
         void hashSet() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<HashSet<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<HashSet<String>>() {});
 
             assertThat(actual).isInstanceOf(HashSet.class);
             assertThat(actual).isEmpty();
@@ -223,7 +263,7 @@ class InstanceFactoryTest {
         void linkedBlockingDeque() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<LinkedBlockingDeque<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<LinkedBlockingDeque<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedBlockingDeque.class);
             assertThat(actual).isEmpty();
@@ -233,7 +273,7 @@ class InstanceFactoryTest {
         void arrayDeque() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<ArrayDeque<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<ArrayDeque<String>>() {});
 
             assertThat(actual).isInstanceOf(ArrayDeque.class);
             assertThat(actual).isEmpty();
@@ -243,7 +283,7 @@ class InstanceFactoryTest {
         void linkedTransferQueue() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<LinkedTransferQueue<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<LinkedTransferQueue<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedTransferQueue.class);
             assertThat(actual).isEmpty();
@@ -253,7 +293,7 @@ class InstanceFactoryTest {
         void linkedBlockingQueue() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<LinkedBlockingQueue<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<LinkedBlockingQueue<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedBlockingQueue.class);
             assertThat(actual).isEmpty();
@@ -263,7 +303,7 @@ class InstanceFactoryTest {
         void linkedList() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.createCollection(new SpecimenType<LinkedList<String>>(){});
+            var actual = sut.createCollection(new SpecimenType<LinkedList<String>>() {});
 
             assertThat(actual).isInstanceOf(LinkedList.class);
             assertThat(actual).isEmpty();

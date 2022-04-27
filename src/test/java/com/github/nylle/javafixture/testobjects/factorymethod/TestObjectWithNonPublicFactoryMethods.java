@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.testobjects;
+package com.github.nylle.javafixture.testobjects.factorymethod;
 
 public class TestObjectWithNonPublicFactoryMethods {
     private String value;

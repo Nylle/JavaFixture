@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +66,7 @@ public class InstanceFactory {
         var results = type.getFactoryMethods()
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
-                .map(x -> manufactureOrNull(x))
+                .map(x -> manufactureOrNull(x, type))
                 .filter(x -> x != null)
                 .map(x -> (T) x)
                 .collect(toList());
@@ -93,7 +94,7 @@ public class InstanceFactory {
         if (type.isInterface()) {
             return Proxy.newProxyInstance(
                     type.asClass().getClassLoader(),
-                    new Class[] { type.asClass() },
+                    new Class[]{type.asClass()},
                     new ProxyInvocationHandler(specimenFactory, specimens));
         }
 
@@ -126,9 +127,15 @@ public class InstanceFactory {
         }
     }
 
-    private <T> T manufactureOrNull(final Method method) {
+    private <T> T manufactureOrNull(final Method method, SpecimenType<T> type) {
         try {
-            return (T) method.invoke(stream(method.getGenericParameterTypes())
+            Type[] parameterTypes;
+            if (type.isParameterized()) {
+                parameterTypes = type.getGenericTypeArguments();
+            } else {
+                parameterTypes = method.getGenericParameterTypes();
+            }
+            return (T) method.invoke(null, stream(parameterTypes)
                     .map(t -> specimenFactory.build(SpecimenType.fromClass(t)))
                     .map(s -> s.create(new Annotation[0]))
                     .toArray());
@@ -185,7 +192,8 @@ public class InstanceFactory {
     private <G, T extends Collection<G>> T createCollectionFromConcreteType(final SpecimenType<T> type) {
         try {
             return type.asClass().getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new SpecimenException("Unable to create collection of type " + type.getName(), e);
         }
     }

@@ -41,6 +41,21 @@ class ContextTest {
 
     }
 
+    @Test
+    void overwriteWillRemovePreviousValue() {
+        var sut = new Context(new Configuration());
+
+        var unexpected = new TestObject("Hello!");
+        sut.cached(SpecimenType.fromClass(Integer.class), unexpected);
+
+        var expected = new TestObject("World!");
+        var actual = sut.overwrite(SpecimenType.fromClass(Integer.class), expected);
+
+        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.getValue()).isEqualTo("World!");
+
+    }
+
     class TestObject {
         private final String value;
 

@@ -56,7 +56,7 @@ public class InstanceFactory {
                 .collect(toList());
 
         if (constructors.isEmpty()) {
-            throw new SpecimenException(format("Cannot construct %s: no public constructor found", type.asClass()));
+            return manufacture(type);
         }
 
         return construct(type, constructors.get(random.nextInt(constructors.size())));
@@ -113,7 +113,7 @@ public class InstanceFactory {
                     .map(s -> s.create(new Annotation[0]))
                     .toArray());
         } catch (Exception e) {
-            throw new SpecimenException(format("Unable to construct class %s with constructor %s: %s", type.asClass(), constructor.toString(), e.getMessage()), e);
+            return manufacture(type);
         }
     }
 

@@ -19,7 +19,6 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -293,19 +292,6 @@ class FixtureTest {
             assertThat(firstContractPosition.getStartDate()).isInstanceOf(LocalDate.class);
             assertThat(firstContractPosition.getRemainingPeriod()).isInstanceOf(Period.class);
             assertThat(firstContractPosition.getFile()).isInstanceOf(File.class);
-        }
-
-        @Test
-        void canCreateThrowable() {
-            Fixture fixture = new Fixture(configuration);
-
-            Throwable result = fixture.create(Throwable.class);
-            assertThat(result).isInstanceOf(Throwable.class);
-            assertThat(result.getMessage().length()).isGreaterThan(0);
-            assertThat(result.getLocalizedMessage().length()).isGreaterThan(0);
-            assertThat(result.getStackTrace().length).isGreaterThan(0);
-            assertThat(result.getStackTrace()[0]).isInstanceOf(StackTraceElement.class);
-            assertThat(result.getCause()).isNull(); //if cause == this, the getter returns null
         }
 
         @Test
@@ -596,7 +582,6 @@ class FixtureTest {
     }
 
     @Test
-    @Disabled("This is a known problem")
     void createExceptionWithLimitedTree() {
 
         var sut = new Fixture(configuration);

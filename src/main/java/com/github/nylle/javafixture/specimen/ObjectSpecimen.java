@@ -9,6 +9,7 @@ import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
@@ -66,14 +67,18 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         var result = context.cached(type, instanceFactory.instantiate(type));
         var reflector = new Reflector<>(result)
                 .validateCustomization(customizationContext, type);
-        reflector.getDeclaredFields()
-                .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
-                .forEach(field -> reflector.setField(field,
-                        customizationContext.getCustomFields().getOrDefault(
-                                field.getName(),
-                                Map.<String, ISpecimen<?>>of().getOrDefault(
-                                        field.getGenericType().getTypeName(),
-                                        specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(field.getAnnotations()))));
+        try {
+            reflector.getDeclaredFields()
+                    .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                    .forEach(field -> reflector.setField(field,
+                            customizationContext.getCustomFields().getOrDefault(
+                                    field.getName(),
+                                    Map.<String, ISpecimen<?>>of().getOrDefault(
+                                            field.getGenericType().getTypeName(),
+                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(field.getAnnotations()))));
+        } catch (InaccessibleObjectException ex ) {
+            return context.overwrite(type, instanceFactory.construct(type));
+        }
         return result;
     }
 }

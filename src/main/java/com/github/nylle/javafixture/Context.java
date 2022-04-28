@@ -35,6 +35,11 @@ public class Context {
         return cache.containsKey(type.hashCode());
     }
 
+    public <T> T overwrite(SpecimenType<?> type, T instance) {
+        cache.put(type.hashCode(), instance);
+        return (T) cache.get(type.hashCode());
+    }
+
     public <T> T cached(SpecimenType<?> type, T instance) {
         cache.putIfAbsent(type.hashCode(), instance);
         return (T) cache.get(type.hashCode());

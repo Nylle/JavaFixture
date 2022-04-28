@@ -86,7 +86,6 @@ class ObjectSpecimenTest {
         assertThat(second.getKey()).isExactlyInstanceOf(Integer.class);
         assertThat(second.getValue()).isExactlyInstanceOf(String.class);
     }
-
     @Test
     void resultIsCached() {
 
@@ -97,6 +96,13 @@ class ObjectSpecimenTest {
         assertThat(original).isSameAs(cached);
         assertThat(original.getValue()).isEqualTo(cached.getValue());
         assertThat(original.getIntegers()).isEqualTo(cached.getIntegers());
+    }
+    @Test
+    void revertToConstructorIfReflectionFails() {
+
+        var actual = new ObjectSpecimen<Throwable>(new SpecimenType<>(){}, context, specimenFactory).create(new Annotation[0]);
+
+        assertThat(actual).isInstanceOf(Throwable.class);
     }
 
     @Test

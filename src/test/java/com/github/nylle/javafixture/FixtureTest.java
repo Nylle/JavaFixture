@@ -19,6 +19,7 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -551,6 +552,7 @@ class FixtureTest {
     }
 
     @Test
+    @Disabled("This test will start working when it's run with JDK 17")
     void createExceptionWithLimitedTree() {
 
         var sut = new Fixture(configuration);

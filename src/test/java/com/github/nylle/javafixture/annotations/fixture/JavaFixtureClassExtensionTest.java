@@ -24,8 +24,6 @@ public class JavaFixtureClassExtensionTest {
         assertThat(contract.getId()).isBetween(Long.MIN_VALUE, Long.MAX_VALUE);
         assertThat(intValue).isBetween(Integer.MIN_VALUE, Integer.MAX_VALUE);
         assertThat(optionalString).isInstanceOf(Optional.class);
-        assertThat(optionalString).isPresent();
-        assertThat(optionalString.get()).isInstanceOf(String.class);
     }
 
     @FixturedTest

@@ -12,7 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -129,16 +128,16 @@ public class InstanceFactory {
 
     private <T> T manufactureOrNull(final Method method, SpecimenType<T> type) {
         try {
-            Type[] parameterTypes;
-            if (type.isParameterized()) {
-                parameterTypes = type.getGenericTypeArguments();
-            } else {
-                parameterTypes = method.getGenericParameterTypes();
+            List<Object> arguments = new ArrayList<>();
+            for (int i = 0; i < method.getParameterCount(); i++) {
+                var genericParameterType = method.getGenericParameterTypes()[i];
+                var specimen = specimenFactory.build(type.isParameterized()
+                        ? SpecimenType.fromClass(type.getGenericTypeArgument(i))
+                        : SpecimenType.fromClass(genericParameterType));
+                var o = specimen.create(new Annotation[0]);
+                arguments.add(o);
             }
-            return (T) method.invoke(null, stream(parameterTypes)
-                    .map(t -> specimenFactory.build(SpecimenType.fromClass(t)))
-                    .map(s -> s.create(new Annotation[0]))
-                    .toArray());
+            return (T) method.invoke(null, arguments.toArray());
         } catch (Exception ex) {
             return null;
         }

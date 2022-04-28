@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
+import com.github.nylle.javafixture.testobjects.factorymethod.ConstructorExceptionAndFactoryMethod;
 import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
 import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithArgument;
@@ -67,7 +68,7 @@ class InstanceFactoryTest {
 
         assertThatExceptionOfType(SpecimenException.class)
                 .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class)))
-                .withMessageContaining("no public constructor found")
+                .withMessageContaining("Cannot manufacture class")
                 .withNoCause();
     }
 
@@ -78,6 +79,24 @@ class InstanceFactoryTest {
         var actual = sut.manufacture(new SpecimenType<Charset>() {});
 
         assertThat(actual).isInstanceOf(Charset.class);
+    }
+
+    @Test
+    void useFactoryMethodWhenNoConstructorExists() {
+        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+        FactoryMethodWithoutArgument result = sut.construct(fromClass(FactoryMethodWithoutArgument.class));
+
+        assertThat(result.getValue()).isEqualTo(42);
+    }
+
+    @Test
+    void fallbackToFactoryMethodWhenConstructorThrowsException() {
+        var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+        ConstructorExceptionAndFactoryMethod result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {});
+
+        assertThat(result.getValue()).isNotNull();
     }
 
     @Nested

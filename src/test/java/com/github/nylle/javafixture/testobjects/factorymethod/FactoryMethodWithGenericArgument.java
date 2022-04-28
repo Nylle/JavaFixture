@@ -9,7 +9,7 @@ public class FactoryMethodWithGenericArgument<T> {
     }
 
     public static <T> FactoryMethodWithGenericArgument<T> factoryMethod(T value) {
-        return new FactoryMethodWithGenericArgument(value);
+        return new FactoryMethodWithGenericArgument(42);
     }
 
     public T getValue() {

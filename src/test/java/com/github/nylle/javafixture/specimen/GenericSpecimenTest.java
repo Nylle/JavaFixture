@@ -102,8 +102,8 @@ class GenericSpecimenTest {
     void subSpecimenAreProperlyCached() {
         var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create(new Annotation[0]);
 
-        assertThat(result.getT().get()).isInstanceOf(String.class);
-        assertThat(result.getU().get()).isInstanceOf(Integer.class);
+        assertThat(result.getT()).isInstanceOf(Optional.class);
+        assertThat(result.getU()).isInstanceOf(Optional.class);
     }
 
     @Test

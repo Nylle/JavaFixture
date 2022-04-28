@@ -350,8 +350,6 @@ class FixtureTest {
             assertThat(result.getAClass()).isEqualTo(Object.class);
 
             assertThat(result.getOptional()).isInstanceOf(Optional.class);
-            assertThat(result.getOptional().isPresent()).isTrue();
-            assertThat(result.getOptional().get()).isInstanceOf(Boolean.class);
         }
 
         @Test
@@ -363,16 +361,10 @@ class FixtureTest {
             assertThat(result).isInstanceOf(TestObjectWithNestedGenerics.class);
 
             assertThat(result.getOptionalGeneric()).isInstanceOf(Optional.class);
-            assertThat(result.getOptionalGeneric().isPresent()).isTrue();
-            assertThat(result.getOptionalGeneric().get()).isInstanceOf(TestObjectGeneric.class);
-            assertThat(result.getOptionalGeneric().get().getT()).isInstanceOf(String.class);
-            assertThat(result.getOptionalGeneric().get().getU()).isInstanceOf(Integer.class);
 
             assertThat(result.getGenericOptional()).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getGenericOptional().getT()).isInstanceOf(String.class);
             assertThat(result.getGenericOptional().getU()).isInstanceOf(Optional.class);
-            assertThat(result.getGenericOptional().getU()).isPresent();
-            assertThat(result.getGenericOptional().getU().get()).isInstanceOf(Integer.class);
         }
 
         @Test
@@ -388,12 +380,8 @@ class FixtureTest {
             assertThat(result.getTestGeneric().getU()).isInstanceOf(ITestGenericInside.class);
 
             assertThat(result.getTestGeneric().getU().getOptionalBoolean()).isInstanceOf(Optional.class);
-            assertThat(result.getTestGeneric().getU().getOptionalBoolean()).isPresent();
-            assertThat(result.getTestGeneric().getU().getOptionalBoolean().get()).isInstanceOf(Boolean.class);
 
             assertThat(result.getTestGeneric().getU().getOptionalT()).isInstanceOf(Optional.class);
-            assertThat(result.getTestGeneric().getU().getOptionalT()).isPresent();
-            assertThat(result.getTestGeneric().getU().getOptionalT().get()).isInstanceOf(Integer.class);
 
             assertThat(result.getTestGeneric().getU().getTestGeneric()).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getTestGeneric().getU().getTestGeneric().getT()).isInstanceOf(String.class);
@@ -411,8 +399,6 @@ class FixtureTest {
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
             assertThat(result.getInteger()).isInstanceOf(Optional.class);
-            assertThat(result.getInteger()).isPresent();
-            assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
             assertThat(result.getPrivateField()).isNull();
         }
     }
@@ -429,8 +415,6 @@ class FixtureTest {
             assertThat(result).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getT()).isInstanceOf(String.class);
             assertThat(result.getU()).isInstanceOf(Optional.class);
-            assertThat(result.getU()).isPresent();
-            assertThat(result.getU().get()).isInstanceOf(Integer.class);
         }
 
         @Test
@@ -444,11 +428,7 @@ class FixtureTest {
             assertThat(result.getT()).isInstanceOf(String.class);
             assertThat(result.getU()).isInstanceOf(ITestGenericInside.class);
             assertThat(result.getU().getOptionalBoolean()).isInstanceOf(Optional.class);
-            assertThat(result.getU().getOptionalBoolean()).isPresent();
-            assertThat(result.getU().getOptionalBoolean().get()).isInstanceOf(Boolean.class);
             assertThat(result.getU().getOptionalT()).isInstanceOf(Optional.class);
-            assertThat(result.getU().getOptionalT()).isPresent();
-            assertThat(result.getU().getOptionalT().get()).isInstanceOf(Integer.class);
             assertThat(result.getU().getTestGeneric()).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getU().getTestGeneric().getT()).isInstanceOf(String.class);
             assertThat(result.getU().getTestGeneric().getU()).isInstanceOf(Integer.class);
@@ -468,9 +448,6 @@ class FixtureTest {
             var innerList = subMap.values().iterator().next();
             assertThat(innerList).isNotEmpty();
             assertThat(innerList.get(0)).isInstanceOf(Optional.class);
-            assertThat(innerList.get(0)).isPresent();
-            assertThat(innerList.get(0).get()).isInstanceOf(String.class);
-            assertThat(innerList.get(0).get()).isNotEmpty();
         }
 
         @Test
@@ -506,8 +483,6 @@ class FixtureTest {
             assertThat(result).isNotNull();
             assertThat(result).isNotEmpty();
             assertThat(result.get(0)).isInstanceOf(Optional.class);
-            assertThat(result.get(0)).isPresent();
-            assertThat(result.get(0).get()).isInstanceOf(Integer.class);
         }
 
         @Test
@@ -524,9 +499,6 @@ class FixtureTest {
             assertThat(result.get(0)).isPresent();
             assertThat(result.get(0).get()).isEqualTo("existing");
             assertThat(result.get(1)).isInstanceOf(Optional.class);
-            assertThat(result.get(1)).isPresent();
-            assertThat(result.get(1).get()).isInstanceOf(String.class);
-            assertThat(result.get(1).get()).isNotEmpty();
         }
 
         @Test
@@ -574,9 +546,6 @@ class FixtureTest {
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
             assertThat(result.getInteger()).isInstanceOf(Optional.class);
-            assertThat(result.getInteger()).isPresent();
-            assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
-            assertThat(result.getPrivateField()).isNull();
         }
 
     }

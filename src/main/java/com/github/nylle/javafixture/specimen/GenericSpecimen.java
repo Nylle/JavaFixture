@@ -5,11 +5,11 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
 import com.github.nylle.javafixture.Reflector;
+import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InaccessibleObjectException;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -97,7 +97,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
                                     specimens.getOrDefault(
                                             field.getGenericType().getTypeName(),
                                             specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new Annotation[0]))));
-        } catch (InaccessibleObjectException ex ) {
+        } catch (SpecimenException ex ) {
             return context.overwrite(type, instanceFactory.construct(type));
         }
         return result;

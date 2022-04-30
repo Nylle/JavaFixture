@@ -4,12 +4,17 @@ import com.github.nylle.javafixture.testobjects.inheritance.GenericChild;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 class ReflectorTest {
 
@@ -79,4 +84,40 @@ class ReflectorTest {
                     .withNoCause();
         }
     }
+
+    @Nested
+    @DisplayName("when setting a field via reflection")
+    class SetField {
+        @DisplayName("an IllegalAccessException is turned to a SpecimenException")
+        @Test
+        void catchIllegalAccessException() throws Exception {
+            var mockedField = Mockito.mock(Field.class);
+            var sut = new Reflector<>("");
+            doThrow(new IllegalAccessException("expected")).when(mockedField).set(any(), any());
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.setField(mockedField, ""));
+        }
+
+        @DisplayName("an IllegalAccessException is turned to a SpecimenException")
+        @Test
+        void catchSecurityException() {
+            var mockedField = Mockito.mock(Field.class);
+            var sut = new Reflector<>("");
+            doThrow(new SecurityException("expected")).when(mockedField).setAccessible(true);
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.setField(mockedField, ""));
+        }
+
+        @DisplayName("an InaccessibleObjectException is turned to a SpecimenException")
+        @Test
+        void catchInaccessibleObjectException() {
+            var mockedField = Mockito.mock(Field.class);
+            var sut = new Reflector<>("");
+            doThrow(new InaccessibleObjectException("expected")).when(mockedField).setAccessible(true);
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.setField(mockedField, ""));
+        }
+    }
+
 }

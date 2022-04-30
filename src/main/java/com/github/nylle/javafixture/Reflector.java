@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -63,7 +64,7 @@ public class Reflector<T> {
             field.set(instance, value);
         } catch (SecurityException e) {
             throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | InaccessibleObjectException e) {
             throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
         }
     }

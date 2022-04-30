@@ -53,8 +53,6 @@ class InstanceFactoryTest {
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
             assertThat(result.getInteger()).isInstanceOf(Optional.class);
-            assertThat(result.getInteger()).isPresent();
-            assertThat(result.getInteger().get()).isInstanceOf(Integer.class);
         }
 
         @Test

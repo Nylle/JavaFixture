@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.testobjects;
+package com.github.nylle.javafixture.testobjects.withconstructor;
 
 public class TestObjectWithAllConstructors {
     private String value;

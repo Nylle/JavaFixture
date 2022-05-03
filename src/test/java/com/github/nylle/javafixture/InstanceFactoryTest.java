@@ -1,13 +1,14 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.testobjects.TestObjectWithGenericConstructor;
-import com.github.nylle.javafixture.testobjects.TestObjectWithPrivateConstructor;
 import com.github.nylle.javafixture.testobjects.factorymethod.ConstructorExceptionAndFactoryMethod;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithGenericArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.GenericClassWithFactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
+import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
+import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
+import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithPrivateConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,6 @@ class InstanceFactoryTest {
             assertThat(result.getValue()).isInstanceOf(String.class);
             assertThat(result.getInteger()).isInstanceOf(Optional.class);
         }
-
         @Test
         @DisplayName("fields not set by constructor are null")
         void fieldsNotSetByConstructorAreNull() {
@@ -65,6 +65,18 @@ class InstanceFactoryTest {
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getPrivateField()).isNull();
+        }
+        @Test
+        @DisplayName("using constructor is used for all instances")
+        void usingConstructorIsRecursive() {
+
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), new CustomizationContext(true));
+
+            assertThat(result).isInstanceOf(TestObjectWithConstructedField.class);
+            assertThat(result.getTestObjectWithGenericConstructor().getPrivateField()).isNull();
+            assertThat(result.getNotSetByConstructor()).isNull();
         }
 
         @Test

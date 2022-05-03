@@ -4,8 +4,6 @@ import java.lang.annotation.Annotation;
 
 public interface ISpecimen<T> {
 
-    T create(Annotation[] annotations);
-
     T create(final CustomizationContext customizationContext, Annotation[] annotations);
 
 }

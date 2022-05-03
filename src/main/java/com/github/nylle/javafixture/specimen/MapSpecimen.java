@@ -21,8 +21,6 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.IntStream;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     private final SpecimenType<T> type;
     private final Context context;
@@ -57,11 +55,6 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
-    }
-
-    @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
@@ -72,7 +65,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .filter(x -> keySpecimen != null && valueSpecimen != null)
-                .forEach(x -> map.put(keySpecimen.create(new Annotation[0]), valueSpecimen.create(new Annotation[0])));
+                .forEach(x -> map.put(keySpecimen.create(customizationContext, new Annotation[0]), valueSpecimen.create(customizationContext, new Annotation[0])));
 
         return (T) map;
     }

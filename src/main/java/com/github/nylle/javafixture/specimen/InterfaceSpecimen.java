@@ -9,8 +9,6 @@ import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
@@ -38,11 +36,6 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
         this.type = type;
         this.context = context;
         this.instanceFactory = new InstanceFactory(specimenFactory);
-    }
-
-    @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
     }
 
     @Override

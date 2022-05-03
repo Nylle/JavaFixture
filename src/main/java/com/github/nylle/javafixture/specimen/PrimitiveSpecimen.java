@@ -13,8 +13,6 @@ import java.lang.annotation.Annotation;
 import javax.persistence.Column;
 import javax.validation.constraints.Size;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
@@ -40,11 +38,6 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         this.pseudoRandom = new PseudoRandom();
         this.configuration = context.getConfiguration();
         this.context = context;
-    }
-
-    @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
     }
 
     @Override

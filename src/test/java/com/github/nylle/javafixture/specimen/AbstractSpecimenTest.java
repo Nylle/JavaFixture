@@ -13,6 +13,7 @@ import java.lang.annotation.Annotation;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -59,7 +60,7 @@ class AbstractSpecimenTest {
     void createAbstractClass() {
         var sut = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestAbstractClass.class);
         assertThat(actual.getString()).isNotBlank();
@@ -70,7 +71,7 @@ class AbstractSpecimenTest {
     void createAbstractClassWithoutConstructor() {
         var sut = new AbstractSpecimen<Charset>(SpecimenType.fromClass(Charset.class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Charset.class);
     }
@@ -78,8 +79,8 @@ class AbstractSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(new Annotation[0]);
-        var cached = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(new Annotation[0]);
+        var original = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var cached = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(TestAbstractClass.class);
         assertThat(original).isSameAs(cached);

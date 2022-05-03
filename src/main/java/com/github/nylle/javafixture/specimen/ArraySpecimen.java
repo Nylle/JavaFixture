@@ -10,8 +10,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.stream.IntStream;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class ArraySpecimen<T> implements ISpecimen<T> {
     private final SpecimenType<T> type;
     private final Context context;
@@ -40,11 +38,6 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
-    }
-
-    @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
@@ -54,7 +47,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
 
         T result = (T) context.cached(type, Array.newInstance(type.getComponentType(), length));
 
-        IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create(new Annotation[0])));
+        IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create(customizationContext, new Annotation[0])));
 
         return result;
     }

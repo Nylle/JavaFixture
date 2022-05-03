@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -80,7 +81,7 @@ class GenericSpecimenTest {
     void createClass() {
         var sut = new GenericSpecimen<>(new SpecimenType<Class<String>>(){}, context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Class.class);
         assertThat(actual).isEqualTo(String.class);
@@ -90,7 +91,7 @@ class GenericSpecimenTest {
     void createGeneric() {
         var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>(){}, context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestObjectGeneric.class);
         assertThat(actual.getT()).isInstanceOf(String.class);
@@ -100,7 +101,7 @@ class GenericSpecimenTest {
 
     @Test
     void subSpecimenAreProperlyCached() {
-        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create(new Annotation[0]);
+        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(result.getT()).isInstanceOf(Optional.class);
         assertThat(result.getU()).isInstanceOf(Optional.class);
@@ -139,7 +140,7 @@ class GenericSpecimenTest {
         void allFieldsArePopulated() {
             var sut = new GenericSpecimen<>(new SpecimenType<GenericChild<String>>() {}, context, specimenFactory);
 
-            var actual = sut.create(new Annotation[0]);
+            var actual = sut.create(noContext(), new Annotation[0]);
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();

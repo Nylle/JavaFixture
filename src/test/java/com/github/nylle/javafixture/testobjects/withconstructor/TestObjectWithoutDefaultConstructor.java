@@ -1,4 +1,4 @@
-package com.github.nylle.javafixture.testobjects;
+package com.github.nylle.javafixture.testobjects.withconstructor;
 
 import java.util.List;
 

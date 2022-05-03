@@ -7,10 +7,10 @@ import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
-import com.github.nylle.javafixture.testobjects.TestObjectWithAllConstructors;
 import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
 import com.github.nylle.javafixture.testobjects.TestWildCardType;
+import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithAllConstructors;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

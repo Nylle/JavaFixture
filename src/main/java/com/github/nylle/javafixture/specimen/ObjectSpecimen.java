@@ -12,8 +12,6 @@ import com.github.nylle.javafixture.SpecimenType;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class ObjectSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
@@ -46,11 +44,6 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
-    }
-
-    @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
@@ -75,7 +68,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                                     field.getName(),
                                     Map.<String, ISpecimen<?>>of().getOrDefault(
                                             field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(field.getAnnotations()))));
+                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(customizationContext, field.getAnnotations()))));
         } catch (SpecimenException ex ) {
             return context.overwrite(type, instanceFactory.construct(type));
         }

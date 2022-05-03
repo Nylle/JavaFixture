@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,7 +67,7 @@ class ObjectSpecimenTest {
     void create() {
         var sut = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestObject.class);
         assertThat(actual.getValue()).isInstanceOf(String.class);
@@ -89,8 +90,8 @@ class ObjectSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(new Annotation[0]);
-        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(new Annotation[0]);
+        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(TestObject.class);
         assertThat(original).isSameAs(cached);
@@ -100,7 +101,7 @@ class ObjectSpecimenTest {
     @Test
     void revertToConstructorIfReflectionFails() {
 
-        var actual = new ObjectSpecimen<Throwable>(new SpecimenType<>(){}, context, specimenFactory).create(new Annotation[0]);
+        var actual = new ObjectSpecimen<Throwable>(new SpecimenType<>(){}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Throwable.class);
     }
@@ -108,7 +109,7 @@ class ObjectSpecimenTest {
     @Test
     void ignoresStaticFields() {
 
-        var actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(new Annotation[0]);
+        var actual = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(actual.STATIC_FIELD).isEqualTo("unchanged");
     }
@@ -146,7 +147,7 @@ class ObjectSpecimenTest {
         void allFieldsArePopulated() {
             var sut = new ObjectSpecimen<Child>(SpecimenType.fromClass(Child.class), context, specimenFactory);
 
-            var actual = sut.create(new Annotation[0]);
+            var actual = sut.create(noContext(), new Annotation[0]);
 
             assertThat(actual.getChildField()).isNotNull();
             assertThat(actual.getParentField()).isNotNull();

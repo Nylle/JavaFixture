@@ -20,8 +20,6 @@ import java.time.chrono.JapaneseEra;
 import java.time.temporal.Temporal;
 import java.util.Random;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class TimeSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
@@ -44,11 +42,6 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         this.type = type;
         this.random = new Random();
         this.context = context;
-    }
-
-    @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
     }
 
     @Override

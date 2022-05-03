@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -57,7 +58,7 @@ class ArraySpecimenTest {
     void createPrimitiveArray() {
         var sut = new ArraySpecimen<int[]>(SpecimenType.fromClass(int[].class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(int[].class);
         assertThat(actual.length).isEqualTo(2);
@@ -67,7 +68,7 @@ class ArraySpecimenTest {
     void createObjectArray() {
         var sut = new ArraySpecimen<Object[]>(SpecimenType.fromClass(Object[].class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Object[].class);
         assertThat(actual.length).isEqualTo(2);
@@ -77,7 +78,7 @@ class ArraySpecimenTest {
     void canHandleCircularReferences() {
         var sut = new ArraySpecimen<AccountManager[]>(SpecimenType.fromClass(AccountManager[].class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(AccountManager[].class);
         assertThat(actual.length).isEqualTo(2);

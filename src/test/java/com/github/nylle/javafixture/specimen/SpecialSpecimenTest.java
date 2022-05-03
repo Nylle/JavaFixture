@@ -3,7 +3,6 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
-import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +14,7 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Map;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -58,8 +58,8 @@ public class SpecialSpecimenTest {
     @DisplayName("creating two files creates two different files")
     void createFile() {
         var sut = new SpecialSpecimen<>(SpecimenType.fromClass(File.class), context);
-        var first = (File)sut.create(CustomizationContext.noContext(), new Annotation[0]);
-        var second = (File)sut.create(CustomizationContext.noContext(), new Annotation[0]);
+        var first = (File)sut.create(noContext(), new Annotation[0]);
+        var second = (File)sut.create(noContext(), new Annotation[0]);
 
         assertThat(first.getAbsolutePath()).isNotEqualTo(second.getAbsolutePath());
     }
@@ -69,7 +69,7 @@ public class SpecialSpecimenTest {
     void createFileWithoutContext() {
         var sut = new SpecialSpecimen<>(SpecimenType.fromClass(File.class), context);
 
-        var actual = (File)sut.create(new Annotation[0]);
+        var actual = (File)sut.create(noContext(), new Annotation[0]);
 
         assertThat( actual ).isNotNull();
         assertThat( actual.getAbsolutePath() ).isNotEmpty();
@@ -80,7 +80,7 @@ public class SpecialSpecimenTest {
     @DisplayName("create URI creates URI with host, scheme and random path")
     void craeteURI() {
         var sut = new SpecialSpecimen<>(SpecimenType.fromClass(URI.class), context);
-        var actual = sut.create(CustomizationContext.noContext(), new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(URI.class);
         assertThat( ((URI)actual).getScheme() ).isEqualTo("https");

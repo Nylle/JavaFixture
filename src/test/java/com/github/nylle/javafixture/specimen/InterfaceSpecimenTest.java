@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.annotation.Annotation;
 import java.nio.charset.Charset;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -58,7 +59,7 @@ class InterfaceSpecimenTest {
     void createInterface() {
         var sut = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestInterface.class);
         assertThat(actual.publicField).isInstanceOf(Integer.class);
@@ -71,8 +72,8 @@ class InterfaceSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create(new Annotation[0]);
-        var cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create(new Annotation[0]);
+        var original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(TestInterface.class);
         assertThat(original).isSameAs(cached);

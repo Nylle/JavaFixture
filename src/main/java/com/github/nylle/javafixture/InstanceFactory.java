@@ -49,23 +49,26 @@ public class InstanceFactory {
     }
 
     public <T> T construct(final SpecimenType<T> type) {
+        return construct(type, new CustomizationContext(true));
+    }
+    public <T> T construct(final SpecimenType<T> type, CustomizationContext customizationContext) {
         var constructors = type.getDeclaredConstructors()
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .collect(toList());
 
         if (constructors.isEmpty()) {
-            return manufacture(type);
+            return manufacture(type, customizationContext);
         }
 
-        return construct(type, constructors.get(random.nextInt(constructors.size())));
+        return construct(type, constructors.get(random.nextInt(constructors.size())), customizationContext);
     }
 
-    public <T> T manufacture(final SpecimenType<T> type) {
+    public <T> T manufacture(final SpecimenType<T> type, CustomizationContext customizationContext) {
         var results = type.getFactoryMethods()
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
-                .map(x -> manufactureOrNull(x, type))
+                .map(x -> manufactureOrNull(x, type, customizationContext))
                 .filter(x -> x != null)
                 .map(x -> (T) x)
                 .collect(toList());
@@ -104,15 +107,15 @@ public class InstanceFactory {
         return type.isInterface() ? createCollectionFromInterfaceType(type.asClass()) : createCollectionFromConcreteType(type);
     }
 
-    private <T> T construct(final SpecimenType<T> type, final Constructor<?> constructor) {
+    private <T> T construct(final SpecimenType<T> type, final Constructor<?> constructor, CustomizationContext customizationContext) {
         try {
             constructor.setAccessible(true);
             return (T) constructor.newInstance(stream(constructor.getGenericParameterTypes())
                     .map(t -> specimenFactory.build(SpecimenType.fromClass(t)))
-                    .map(s -> s.create(new Annotation[0]))
+                    .map(s -> s.create(customizationContext, new Annotation[0]))
                     .toArray());
         } catch (Exception e) {
-            return manufacture(type);
+            return manufacture(type, customizationContext);
         }
     }
 
@@ -126,7 +129,7 @@ public class InstanceFactory {
         }
     }
 
-    private <T> T manufactureOrNull(final Method method, SpecimenType<T> type) {
+    private <T> T manufactureOrNull(final Method method, SpecimenType<T> type, CustomizationContext customizationContext) {
         try {
             List<Object> arguments = new ArrayList<>();
             for (int i = 0; i < method.getParameterCount(); i++) {
@@ -134,7 +137,7 @@ public class InstanceFactory {
                 var specimen = specimenFactory.build(type.isParameterized()
                         ? SpecimenType.fromClass(type.getGenericTypeArgument(i))
                         : SpecimenType.fromClass(genericParameterType));
-                var o = specimen.create(new Annotation[0]);
+                var o = specimen.create(customizationContext, new Annotation[0]);
                 arguments.add(o);
             }
             return (T) method.invoke(null, arguments.toArray());

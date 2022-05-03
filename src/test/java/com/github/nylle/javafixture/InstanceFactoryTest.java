@@ -48,7 +48,7 @@ class InstanceFactoryTest {
         void canCreateInstanceFromConstructor() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class));
+            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class), new CustomizationContext(false));
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
@@ -61,7 +61,7 @@ class InstanceFactoryTest {
 
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class));
+            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class), new CustomizationContext(false));
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getPrivateField()).isNull();
@@ -73,7 +73,7 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class)))
+                    .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class), new CustomizationContext(false)))
                     .withMessageContaining("Cannot manufacture class")
                     .withNoCause();
         }
@@ -83,7 +83,7 @@ class InstanceFactoryTest {
         void useFactoryMethodWhenNoConstructorExists() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithoutArgument result = sut.construct(fromClass(FactoryMethodWithoutArgument.class));
+            FactoryMethodWithoutArgument result = sut.construct(fromClass(FactoryMethodWithoutArgument.class), new CustomizationContext(false));
 
             assertThat(result.getValue()).isEqualTo(42);
         }
@@ -93,7 +93,7 @@ class InstanceFactoryTest {
         void fallbackToFactoryMethodWhenConstructorThrowsException() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {});
+            var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {}, new CustomizationContext(false));
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -108,7 +108,7 @@ class InstanceFactoryTest {
         void canCreateInstanceFromAbstractClassUsingFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.manufacture(new SpecimenType<Charset>() {});
+            var actual = sut.manufacture(new SpecimenType<Charset>() {}, CustomizationContext.noContext());
 
             assertThat(actual).isInstanceOf(Charset.class);
         }
@@ -119,25 +119,27 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class)))
+                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), CustomizationContext.noContext()))
                     .withMessageContaining("Cannot manufacture class")
                     .withNoCause();
         }
+
         @Test
         @DisplayName("method arguments are used")
         void factoryMethodWithArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class));
+            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class), CustomizationContext.noContext());
 
             assertThat(result.getValue()).isNotNull();
         }
+
         @Test
         @DisplayName("optional can be created (and may be empty)")
         void createOptional() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<Optional<String>>(){});
+            var result = sut.manufacture(new SpecimenType<Optional<String>>() {}, CustomizationContext.noContext());
 
             assertThat(result).isInstanceOf(Optional.class);
             assertThat(result.orElse("optional may be empty")).isInstanceOf(String.class);
@@ -148,16 +150,17 @@ class InstanceFactoryTest {
         void factoryMethodWithoutArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class));
+            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class), CustomizationContext.noContext());
 
             assertThat(result.getValue()).isEqualTo(42);
         }
+
         @Test
         @DisplayName("method with generic arguments is used")
         void factoryMethodWithGenericArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {});
+            var result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {}, CustomizationContext.noContext());
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -167,7 +170,7 @@ class InstanceFactoryTest {
         void genericNoArgumentFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {});
+            var result = sut.manufacture(new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {}, CustomizationContext.noContext());
 
             assertThat(result).isNotNull();
             assertThat(result.getValue()).isEqualTo(42);

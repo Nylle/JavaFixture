@@ -35,6 +35,7 @@ import java.time.chrono.ThaiBuddhistDate;
 import java.time.temporal.TemporalAmount;
 import java.util.Map;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.Fixture.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -73,7 +74,7 @@ class TimeSpecimenTest {
     void createDuration(Class type) {
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(type);
         assertThat(actual.toString()).isNotEmpty();
@@ -81,7 +82,7 @@ class TimeSpecimenTest {
 
     @Test
     void throwsExceptionForUnknownType() {
-        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(TemporalAmount.class), context).create(new Annotation[0]))
+        assertThatThrownBy(() -> new TimeSpecimen<>(SpecimenType.fromClass(TemporalAmount.class), context).create(noContext(), new Annotation[0]))
                 .isInstanceOf(SpecimenException.class)
                 .hasMessageContaining("Unsupported type:");
     }
@@ -111,7 +112,7 @@ class TimeSpecimenTest {
     @TestCase(class1 = java.util.Date.class)
     @DisplayName("create should return a valid object")
     void create(Class type) {
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create(new Annotation[0]);
+        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context).create(noContext(), new Annotation[0]);
         // if the object is not valid, the toString method will fail, it cannot print it
         assertThat(sut.toString()).isNotEmpty();
     }
@@ -124,7 +125,7 @@ class TimeSpecimenTest {
 
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(Instant.class), context);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isEqualTo(Instant.MIN);
     }
@@ -158,7 +159,7 @@ class TimeSpecimenTest {
 
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isSameAs(expected);
     }

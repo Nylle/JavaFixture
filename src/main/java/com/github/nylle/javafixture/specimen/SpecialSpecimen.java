@@ -34,11 +34,6 @@ public class SpecialSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(Annotation[] annotations) {
-        return create(CustomizationContext.noContext(), annotations);
-    }
-
-    @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(File.class)) {
             return (T) new File(UUID.randomUUID().toString());

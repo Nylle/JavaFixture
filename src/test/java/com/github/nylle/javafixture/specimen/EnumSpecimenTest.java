@@ -10,6 +10,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.Configuration.configure;
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.Fixture.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,7 +42,7 @@ class EnumSpecimenTest {
     void createEnum() {
         var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), new Context(configure()));
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(TestEnum.class);
         assertThat(actual.toString()).isIn("VALUE1", "VALUE2", "VALUE3");
@@ -55,7 +56,7 @@ class EnumSpecimenTest {
 
         var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), context);
 
-        var actual = sut.create(new Annotation[0]);
+        var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isSameAs(expected);
     }

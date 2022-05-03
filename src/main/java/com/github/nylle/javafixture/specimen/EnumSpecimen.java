@@ -8,8 +8,6 @@ import com.github.nylle.javafixture.SpecimenType;
 import java.lang.annotation.Annotation;
 import java.util.Random;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
-
 public class EnumSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
@@ -33,11 +31,6 @@ public class EnumSpecimen<T> implements ISpecimen<T> {
         this.type = type;
         this.random = new Random();
         this.context = context;
-    }
-
-    @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
     }
 
     @Override

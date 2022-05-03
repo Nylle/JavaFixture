@@ -13,7 +13,6 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.util.stream.Collectors.toMap;
 
 public class GenericSpecimen<T> implements ISpecimen<T> {
@@ -59,14 +58,9 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
-    }
-
-    @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(Class.class)) {
-            return (T) specimens.entrySet().stream().findFirst().get().getValue().create(new Annotation[0]).getClass();
+            return (T) specimens.entrySet().stream().findFirst().get().getValue().create(customizationContext,  new Annotation[0]).getClass();
         }
 
         if (context.isCached(type)) {
@@ -96,7 +90,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
                                     field.getName(),
                                     specimens.getOrDefault(
                                             field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new Annotation[0]))));
+                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(customizationContext, new Annotation[0]))));
         } catch (SpecimenException ex ) {
             return context.overwrite(type, instanceFactory.construct(type));
         }

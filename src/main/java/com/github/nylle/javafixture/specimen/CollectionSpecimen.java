@@ -13,7 +13,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static java.util.stream.Collectors.toList;
 
 public class CollectionSpecimen<T, G> implements ISpecimen<T> {
@@ -50,18 +49,13 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     }
 
     @Override
-    public T create(Annotation[] annotations) {
-        return create(noContext(), annotations);
-    }
-
-    @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
         }
 
         if (type.asClass().equals(EnumSet.class)) {
-            return context.cached(type, createEnumSet());
+            return context.cached(type, createEnumSet(customizationContext));
         }
 
         var collection = context.cached(type, instanceFactory.createCollection((SpecimenType<Collection<G>>) type));
@@ -69,16 +63,16 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .filter(x -> specimen != null)
-                .forEach(x -> collection.add(specimen.create(new Annotation[0])));
+                .forEach(x -> collection.add(specimen.create(customizationContext, new Annotation[0])));
 
         return (T) collection;
     }
 
-    private <G extends Enum> T createEnumSet() {
+    private <G extends Enum> T createEnumSet(CustomizationContext customizationContext) {
         final List<G> elements = IntStream.range(0, context.getConfiguration().getRandomCollectionSize())
                 .boxed()
                 .filter(x -> specimen != null)
-                .map(x -> (G) specimen.create(new Annotation[0]))
+                .map(x -> (G) specimen.create(customizationContext, new Annotation[0]))
                 .collect(toList());
 
         return (T) EnumSet.of(elements.get(0), (G[]) elements.stream().skip(1).toArray(size -> new Enum[size]));

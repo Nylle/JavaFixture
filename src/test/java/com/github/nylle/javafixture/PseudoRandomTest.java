@@ -50,6 +50,7 @@ class PseudoRandomTest {
     @TestCase(int1 = 0, int2 = Integer.MAX_VALUE, int3 = 128)
     @TestCase(int1 = 37, int2 = 52, int3 = 52)
     @TestCase(int1 = 0, int2 = 4, int3 = 4)
+    @TestCase(int1 = 4, int2 = 4, int3 = 4)
     @TestCase(int1 = 1024, int2 = Integer.MAX_VALUE, int3 = 1024+128)
     @TestCase(int1 = 1025, int2 = Integer.MAX_VALUE, int3 = 1025+128)
     @DisplayName("nextString will return a random string with at least min and at most min+128 (or max, whichever is less) characters")

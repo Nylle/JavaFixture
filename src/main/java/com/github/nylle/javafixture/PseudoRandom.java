@@ -46,8 +46,15 @@ public class PseudoRandom {
     public String nextString(StringConstraints constraints) {
         validate(constraints.getMin(), constraints.getMax());
         return Stream.generate(() -> "" + letters[random.nextInt(letters.length)])
-                .limit(constraints.getMin() + Math.min(128, random.nextInt(constraints.getMax() - constraints.getMin())))
+                .limit(constraints.getMin() + computeMaxBound(constraints))
                 .collect(Collectors.joining());
+    }
+
+    private int computeMaxBound(StringConstraints constraints) {
+        if (constraints.getMin() == constraints.getMax()) {
+            return 0;
+        }
+        return Math.min(128, random.nextInt(constraints.getMax() - constraints.getMin()));
     }
 
     private void validate(int min, int max) {

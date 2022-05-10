@@ -138,6 +138,18 @@ class ObjectSpecimenTest {
                 .withNoCause();
     }
 
+    @Test
+    void customFieldIsOnlyUsedInTopLevelObject() {
+        var sut = new ObjectSpecimen<WithTestObject>(SpecimenType.fromClass(WithTestObject.class), context, specimenFactory);
+        var customizationContext = new CustomizationContext(List.of(), Map.of("topLevelValue", 42));
+        var actual = sut.create(customizationContext, new Annotation[0]);
+        assertThat(actual.getTopLevelValue()).isEqualTo(42);
+        assertThat( actual.getTestObject() ).isNotNull();
+        assertThat( actual.getTestObject().getValue() ).isNotNull();
+        assertThat( actual.getTestObject().getStrings() ).isNotEmpty();
+        assertThat( actual.getTestObject().getIntegers() ).isNotEmpty();
+    }
+
     @Nested
     @DisplayName("when specimen has superclass")
     class WhenInheritance {
@@ -205,6 +217,19 @@ class ObjectSpecimenTest {
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of()), new Annotation[0]));
+        }
+    }
+
+    public static class WithTestObject {
+        private int topLevelValue;
+        private TestObject testObject;
+
+        public int getTopLevelValue() {
+            return topLevelValue;
+        }
+
+        public TestObject getTestObject() {
+            return testObject;
         }
     }
 }

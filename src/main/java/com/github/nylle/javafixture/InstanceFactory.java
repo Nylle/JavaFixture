@@ -15,6 +15,7 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,19 +66,16 @@ public class InstanceFactory {
     }
 
     public <T> T manufacture(final SpecimenType<T> type, CustomizationContext customizationContext) {
-        var results = type.getFactoryMethods()
+        var factoryMethods = type.getFactoryMethods();
+        Collections.shuffle(factoryMethods);
+        var results = factoryMethods
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .map(x -> manufactureOrNull(x, type, customizationContext))
                 .filter(x -> x != null)
-                .map(x -> (T) x)
-                .collect(toList());
+                .findFirst();
 
-        if (results.isEmpty()) {
-            throw new SpecimenException(format("Cannot manufacture %s", type.asClass()));
-        }
-
-        return results.get(random.nextInt(results.size()));
+        return results.orElseThrow(() -> new SpecimenException(format("Cannot manufacture %s", type.asClass())));
     }
 
     public <T> T instantiate(final SpecimenType<T> type) {

@@ -3,6 +3,8 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.testobjects.factorymethod.ConstructorExceptionAndFactoryMethod;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithGenericArgument;
+import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithItselfAsArgument;
+import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithOnlyItselfAsArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.GenericClassWithFactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
@@ -55,6 +57,7 @@ class InstanceFactoryTest {
             assertThat(result.getValue()).isInstanceOf(String.class);
             assertThat(result.getInteger()).isInstanceOf(Optional.class);
         }
+
         @Test
         @DisplayName("fields not set by constructor are null")
         void fieldsNotSetByConstructorAreNull() {
@@ -66,6 +69,7 @@ class InstanceFactoryTest {
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getPrivateField()).isNull();
         }
+
         @Test
         @DisplayName("using constructor is used for all instances")
         void usingConstructorIsRecursive() {
@@ -144,6 +148,26 @@ class InstanceFactoryTest {
             FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class), CustomizationContext.noContext());
 
             assertThat(result.getValue()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("methods with class itself as argument should be filtered out")
+        void shouldFilter() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            FactoryMethodWithItselfAsArgument result = sut.manufacture(fromClass(FactoryMethodWithItselfAsArgument.class), CustomizationContext.noContext());
+
+            assertThat(result.getValue()).isNull();
+        }
+
+        @Test
+        @DisplayName("if only methods with class itself are available, we should fail")
+        void shouldFailWithoutValidFactoryMethod() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.manufacture(fromClass(FactoryMethodWithOnlyItselfAsArgument.class), CustomizationContext.noContext()));
+
         }
 
         @Test

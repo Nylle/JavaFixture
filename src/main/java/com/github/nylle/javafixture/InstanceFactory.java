@@ -52,6 +52,7 @@ public class InstanceFactory {
     public <T> T construct(final SpecimenType<T> type) {
         return construct(type, new CustomizationContext(true));
     }
+
     public <T> T construct(final SpecimenType<T> type, CustomizationContext customizationContext) {
         var constructors = type.getDeclaredConstructors()
                 .stream()
@@ -70,12 +71,18 @@ public class InstanceFactory {
         Collections.shuffle(factoryMethods);
         var results = factoryMethods
                 .stream()
-                .filter(x -> Modifier.isPublic(x.getModifiers()))
+                .filter(method -> Modifier.isPublic(method.getModifiers()))
+                .filter(method -> !hasSpecimenTypeAsParameter(method, type))
                 .map(x -> manufactureOrNull(x, type, customizationContext))
                 .filter(x -> x != null)
                 .findFirst();
 
         return results.orElseThrow(() -> new SpecimenException(format("Cannot manufacture %s", type.asClass())));
+    }
+
+    private <T> boolean hasSpecimenTypeAsParameter(Method m, SpecimenType<T> type) {
+        return stream(m.getGenericParameterTypes())
+                .anyMatch(t -> t.getTypeName().equals(type.asClass().getName()));
     }
 
     public <T> T instantiate(final SpecimenType<T> type) {

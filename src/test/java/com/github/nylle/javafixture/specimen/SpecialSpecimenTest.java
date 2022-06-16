@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.Map;
 
@@ -54,12 +55,13 @@ public class SpecialSpecimenTest {
         }
 
     }
+
     @Test
     @DisplayName("creating two files creates two different files")
     void createFile() {
         var sut = new SpecialSpecimen<>(SpecimenType.fromClass(File.class), context);
-        var first = (File)sut.create(noContext(), new Annotation[0]);
-        var second = (File)sut.create(noContext(), new Annotation[0]);
+        var first = (File) sut.create(noContext(), new Annotation[0]);
+        var second = (File) sut.create(noContext(), new Annotation[0]);
 
         assertThat(first.getAbsolutePath()).isNotEqualTo(second.getAbsolutePath());
     }
@@ -69,10 +71,10 @@ public class SpecialSpecimenTest {
     void createFileWithoutContext() {
         var sut = new SpecialSpecimen<>(SpecimenType.fromClass(File.class), context);
 
-        var actual = (File)sut.create(noContext(), new Annotation[0]);
+        var actual = (File) sut.create(noContext(), new Annotation[0]);
 
-        assertThat( actual ).isNotNull();
-        assertThat( actual.getAbsolutePath() ).isNotEmpty();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getAbsolutePath()).isNotEmpty();
     }
 
 
@@ -83,9 +85,30 @@ public class SpecialSpecimenTest {
         var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(URI.class);
-        assertThat( ((URI)actual).getScheme() ).isEqualTo("https");
-        assertThat( ((URI)actual).getHost() ).isNotNull();
-        assertThat( ((URI)actual).getPath() ).isNotEmpty();
+        assertThat(((URI) actual).getScheme()).isEqualTo("https");
+        assertThat(((URI) actual).getHost()).isNotNull();
+        assertThat(((URI) actual).getPath()).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("create BigInteger creates random number with a maximum bit length of 1024")
+    void createBigInteger() {
+
+        var sut = new SpecialSpecimen<>(new SpecimenType<BigInteger>() {}, context);
+        var actual = sut.create(noContext(), new Annotation[0]);
+
+        assertThat(actual).isInstanceOf(BigInteger.class);
+        assertThat(actual.bitLength()).isLessThanOrEqualTo(1024);
+    }
+
+    @Test
+    @DisplayName("create BigInteger creates non-negative random number when context demands it")
+    void createNonNegativeBigInteger() {
+        var context = new Context(Configuration.configure().usePositiveNumbersOnly(true));
+        var sut = new SpecialSpecimen<>(new SpecimenType<BigInteger>() {}, context);
+        var actual = sut.create(noContext(), new Annotation[0]);
+
+        assertThat(actual).isNotNegative();
     }
 
 }

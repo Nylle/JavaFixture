@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -258,14 +259,16 @@ class SpecimenTypeTest {
     @Test
     void isSpecialType() {
         assertThat(new SpecimenType<String>() {}.isSpecialType()).isFalse(); // false
-        assertThat(new SpecimenType<URI>() {}.isSpecialType()).isTrue();
         assertThat(new SpecimenType<File>() {}.isSpecialType()).isTrue();
+        assertThat(new SpecimenType<URI>() {}.isSpecialType()).isTrue();
+        assertThat(new SpecimenType<BigInteger>() {}.isSpecialType()).isTrue();
     }
 
     @TestWithCases
     @TestCase(class1 = String.class, bool2 = false)
     @TestCase(class1 = File.class, bool2 = true)
     @TestCase(class1 = URI.class, bool2 = true)
+    @TestCase(class1 = BigInteger.class, bool2 = true)
     void isSpecialTypeFromClass(Class<?> value, boolean expected) {
         assertThat(SpecimenType.fromClass(value).isSpecialType()).isEqualTo(expected);
     }

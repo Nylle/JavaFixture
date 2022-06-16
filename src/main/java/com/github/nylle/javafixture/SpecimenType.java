@@ -162,6 +162,9 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public boolean isSpecialType() {
+        if (asClass().equals(java.math.BigInteger.class)) {
+            return true;
+        }
         if (asClass().equals(java.io.File.class)) {
             return true;
         }

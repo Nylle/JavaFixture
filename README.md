@@ -112,18 +112,19 @@ ArrayList:
 - String: "9452541b-c6f9-4316-b254-28d00b327d0d"
 - String: "4ed0f3c4-5ea3-4dbb-b31c-f92c036af463"
 
-### Set Public Field
+### Customize Property With Lambda
 ```java
 TestDto result = fixture.build(TestDto.class)
                         .with(x -> x.myPublicField = 123)
+                        .with(x -> x.setMyPrivateField("HELLO!"))
                         .create();
 ```
 #### Sample Result
 TestDto:
-- myPrivateField: String: "349a1f87-9d00-4623-89cb-3031bb84ddb3"
+- myPrivateField: String: "HELLO!"
 - myPublicField: int: 123
 
-### Set Private Field
+### Set Private Field Using Reflection
 ```java
 TestDto result = fixture.build(TestDto.class)
                         .with("myPrivateField", "HELLO!")
@@ -133,17 +134,6 @@ TestDto result = fixture.build(TestDto.class)
 TestDto:
 - myPrivateField: String: "HELLO!"
 - myPublicField: int: 26123854
-
-### Call a Setter
-```java
-TestDto result = fixture.build(TestDto.class)
-                        .with(x -> x.SetMyPrivateField("HELLO!"))
-                        .create();
-```
-#### Sample Result
-TestDto:
-- myPrivateField: String: "HELLO!"
-- myPublicField: int: 71
 
 ### Set all fields for type
 ```java
@@ -166,41 +156,16 @@ ParentDto result = fixture.build(ParentDto.class)
 ```java
 TestDto result = fixture.build(TestDto.class)
                         .without("myPrivateField")
-                        .create();
-```
-#### Sample Result
-TestDto:
-- myPrivateField: String: null
-- myPublicField: int: -128564
-
-### Omit Primitive Field
-```java
-TestDto result = fixture.build(TestDto.class)
                         .without("myPublicField")
                         .create();
 ```
 #### Sample Result
 TestDto:
-- myPrivateField: String: "349a1f87-9d00-4623-89cb-3031bb84ddb3"
+- myPrivateField: String: null
 - myPublicField: int: 0
 
-
-### Perform Multiple Operations
-```java
-String child = fixture.create(String.class);
-ParentDto parent = fixture.build(ParentDto.class)
-                          .with(x -> x.addChild(child))
-                          .with(x -> x.youngestChild = child)
-                          .create();
-```
-#### Sample Result
-ParentDto:
-- children: ArrayList:
-    - String: "710ba467-01a7-4bcc-b880-84eda5458989"
-    - String: "9452541b-c6f9-4316-b254-28d00b327d0d"
-    - String: "4ed0f3c4-5ea3-4dbb-b31c-f92c036af463"
-    - String: "349a1f87-9d00-4623-89cb-3031bb84ddb3"
-- youngestChild: String: "349a1f87-9d00-4623-89cb-3031bb84ddb3"
+#### Note
+Primitives will receive their default-value, classes will be `null`.
 
 ## Generics
 Due to Java's type erasure (further reading: [baeldung](https://www.baeldung.com/java-type-erasure)), it is difficult to reflect generic classes on runtime and the following doesn't work:

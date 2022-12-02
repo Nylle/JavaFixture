@@ -80,7 +80,10 @@ public class Fixture {
      * @param type the {@code Class<T>} based on which the object is created
      * @param <T> the type of the object to be created
      * @return a new {@code Optional} of the specified {@code Class<T>}
+     *
+     * This feature is deprecated without replacement.
      */
+    @Deprecated(forRemoval = true)
     public <T> Optional<T> createOptional(final Class<T> type) {
         return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createOptional();
     }

@@ -35,7 +35,10 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
 
     /**
      * @return a new {@code Optional<T>} based on this {@code ISpecimenBuilder<T>}
+     *
+     * This feature is deprecated without replacement.
      */
+    @Deprecated(forRemoval = true)
     @Override
     public Optional<T> createOptional() {
         return Optional.of(create());

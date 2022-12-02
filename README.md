@@ -115,8 +115,8 @@ ArrayList:
 ### Customize Property With Lambda
 ```java
 TestDto result = fixture.build(TestDto.class)
-                        .with(x -> x.myPublicField = 123)
                         .with(x -> x.setMyPrivateField("HELLO!"))
+                        .with(x -> x.myPublicField = 123)
                         .create();
 ```
 #### Sample Result
@@ -184,18 +184,6 @@ Please note the empty curly braces (`{}`) after the call to the constructor of `
 Optional result = fixture.create(SpecimenType.fromClass(Optional.class));
 
 Optional result = fixture.create(Optional.class); // convenience method for above
-```
-
-## Optionals
-To quickly create an `Optional<T>` of your desired type `T` without the need to use `SpecimenType<Optional<T>>` as described [above](#generics), here is some syntactic sugar:
-```java
-Optional<String> result = fixture.createOptional(String.class);
-```
-Or with customisation:
-```java
-Optional<TestDto> result = fixture.build(TestDto.class)
-                                  .without("myPublicField")
-                                  .createOptional();
 ```
 
 ## Constructor

@@ -89,6 +89,10 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
                 constraints = new StringConstraints(((Size)annotation).min(), ((Size)annotation).max());
             } else if(Column.class.isAssignableFrom(annotation.annotationType())) {
                 constraints = new StringConstraints(0, ((Column) annotation).length());
+            } else if (jakarta.validation.constraints.Size.class.isAssignableFrom(annotation.annotationType())) {
+                constraints = new StringConstraints(((jakarta.validation.constraints.Size)annotation).min(), ((jakarta.validation.constraints.Size)annotation).max());
+            } else if (jakarta.persistence.Column.class.isAssignableFrom(annotation.annotationType())) {
+                constraints = new StringConstraints(0, ((jakarta.persistence.Column) annotation).length());
             }
         }
         return constraints;

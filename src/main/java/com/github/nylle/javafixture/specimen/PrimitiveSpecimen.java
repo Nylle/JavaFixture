@@ -43,8 +43,7 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
     @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(String.class)) {
-            StringConstraints constraints = getStringConstraints(annotations);
-            return context.preDefined(type, (T) pseudoRandom.nextString(constraints));
+            return context.preDefined(type, (T) pseudoRandom.nextString(detectStringConstraints(annotations)));
         }
 
         if (type.asClass().equals(Boolean.class) || type.asClass().equals(boolean.class)) {
@@ -82,20 +81,25 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         throw new SpecimenException("Unsupported type: " + type);
     }
 
-    private StringConstraints getStringConstraints(Annotation[] annotations) {
-        var constraints = new StringConstraints(0, Integer.MAX_VALUE);
+    private StringConstraints detectStringConstraints(Annotation[] annotations) {
         for (var annotation : annotations) {
             if(Size.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(((Size)annotation).min(), ((Size)annotation).max());
-            } else if(Column.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(0, ((Column) annotation).length());
-            } else if (jakarta.validation.constraints.Size.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(((jakarta.validation.constraints.Size)annotation).min(), ((jakarta.validation.constraints.Size)annotation).max());
-            } else if (jakarta.persistence.Column.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(0, ((jakarta.persistence.Column) annotation).length());
+                return new StringConstraints(((Size)annotation).min(), ((Size)annotation).max());
+            }
+
+            if(Column.class.isAssignableFrom(annotation.annotationType())) {
+                return new StringConstraints(0, ((Column) annotation).length());
+            }
+
+            if (jakarta.validation.constraints.Size.class.isAssignableFrom(annotation.annotationType())) {
+                return new StringConstraints(((jakarta.validation.constraints.Size)annotation).min(), ((jakarta.validation.constraints.Size)annotation).max());
+            }
+
+            if (jakarta.persistence.Column.class.isAssignableFrom(annotation.annotationType())) {
+                return new StringConstraints(0, ((jakarta.persistence.Column) annotation).length());
             }
         }
-        return constraints;
+        return new StringConstraints(0, Integer.MAX_VALUE);
     }
 }
 

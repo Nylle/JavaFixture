@@ -10,8 +10,6 @@ import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
 
 import java.lang.annotation.Annotation;
-import javax.persistence.Column;
-import javax.validation.constraints.Size;
 
 public class PrimitiveSpecimen<T> implements ISpecimen<T> {
 
@@ -85,14 +83,19 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
     private StringConstraints getStringConstraints(Annotation[] annotations) {
         var constraints = new StringConstraints(0, Integer.MAX_VALUE);
         for (var annotation : annotations) {
-            if(Size.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(((Size)annotation).min(), ((Size)annotation).max());
-            } else if(Column.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(0, ((Column) annotation).length());
-            } else if (jakarta.validation.constraints.Size.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(((jakarta.validation.constraints.Size)annotation).min(), ((jakarta.validation.constraints.Size)annotation).max());
-            } else if (jakarta.persistence.Column.class.isAssignableFrom(annotation.annotationType())) {
-                constraints = new StringConstraints(0, ((jakarta.persistence.Column) annotation).length());
+            switch (annotation.annotationType().getCanonicalName()) {
+                case "jakarta.persistence.Column":
+                    constraints = new StringConstraints(0, ((jakarta.persistence.Column) annotation).length());
+                    break;
+                case "jakarta.validation.constraints.Size":
+                    constraints = new StringConstraints(((jakarta.validation.constraints.Size) annotation).min(), ((jakarta.validation.constraints.Size) annotation).max());
+                    break;
+                case "javax.persistence.Column":
+                    constraints = new StringConstraints(0, ((javax.persistence.Column) annotation).length());
+                    break;
+                case "javax.validation.constraints.Size":
+                    constraints = new StringConstraints(((javax.validation.constraints.Size) annotation).min(), ((javax.validation.constraints.Size) annotation).max());
+                    break;
             }
         }
         return constraints;

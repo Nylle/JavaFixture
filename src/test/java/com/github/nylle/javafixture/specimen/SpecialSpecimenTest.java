@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.Map;
@@ -111,4 +112,22 @@ public class SpecialSpecimenTest {
         assertThat(actual).isNotNegative();
     }
 
+    @Test
+    @DisplayName("create BigDecimal creates random number")
+    void createBigDecimal() {
+        var sut = new SpecialSpecimen<>(new SpecimenType<BigDecimal>() {}, context);
+        var actual = sut.create(noContext(), new Annotation[0]);
+
+        assertThat(actual).isInstanceOf(BigDecimal.class);
+    }
+
+    @Test
+    @DisplayName("create BigDecimal acreates non-negative random number when context demands it")
+    void createNonNegativeBigDecimal() {
+        var context = new Context(Configuration.configure().usePositiveNumbersOnly(true));
+        var sut = new SpecialSpecimen<>(new SpecimenType<BigDecimal>() {}, context);
+        var actual = sut.create(noContext(), new Annotation[0]);
+
+        assertThat(actual).isNotNegative();
+    }
 }

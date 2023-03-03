@@ -3,10 +3,12 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
+import com.github.nylle.javafixture.PseudoRandom;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,6 +46,9 @@ public class SpecialSpecimen<T> implements ISpecimen<T> {
         if (type.asClass().equals(BigInteger.class)) {
             return (T) createBigInteger();
         }
+        if (type.asClass().equals(BigDecimal.class)) {
+            return (T) createBigDecimal();
+        }
         try {
             return (T) new URI("https://localhost/" + UUID.randomUUID());
         } catch (URISyntaxException e) {
@@ -60,5 +65,13 @@ public class SpecialSpecimen<T> implements ISpecimen<T> {
             }
         }
         return result;
+    }
+
+    private BigDecimal createBigDecimal() {
+        var bd = new BigDecimal(new PseudoRandom().nextLong(new Random().nextBoolean()));
+        if (context.getConfiguration().usePositiveNumbersOnly()) {
+            return bd.abs();
+        }
+        return bd;
     }
 }

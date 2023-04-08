@@ -61,7 +61,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
     @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(Class.class)) {
-            return (T) specimens.entrySet().stream().findFirst().get().getValue().create(customizationContext,  new Annotation[0]).getClass();
+            return (T) specimens.entrySet().stream().findFirst().get().getValue().create(customizationContext, new Annotation[0]).getClass();
         }
 
         if (context.isCached(type)) {
@@ -73,7 +73,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         }
 
         if (customizationContext.useRandomConstructor()) {
-            return context.cached(type, instanceFactory.construct(type));
+            return context.cached(type, instanceFactory.construct(type, customizationContext));
         }
 
         return populate(customizationContext);
@@ -92,8 +92,8 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
                                     specimens.getOrDefault(
                                             field.getGenericType().getTypeName(),
                                             specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new CustomizationContext(List.of(), Map.of()), new Annotation[0]))));
-        } catch (SpecimenException ex ) {
-            return context.overwrite(type, instanceFactory.construct(type));
+        } catch (SpecimenException ex) {
+            return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }
         return result;
     }

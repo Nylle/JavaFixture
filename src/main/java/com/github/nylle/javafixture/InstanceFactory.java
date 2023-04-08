@@ -11,6 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -47,10 +48,6 @@ public class InstanceFactory {
     public InstanceFactory(SpecimenFactory specimenFactory) {
         this.specimenFactory = specimenFactory;
         this.random = new Random();
-    }
-
-    public <T> T construct(final SpecimenType<T> type) {
-        return construct(type, new CustomizationContext(true));
     }
 
     public <T> T construct(final SpecimenType<T> type, CustomizationContext customizationContext) {
@@ -115,13 +112,20 @@ public class InstanceFactory {
     private <T> T construct(final SpecimenType<T> type, final Constructor<?> constructor, CustomizationContext customizationContext) {
         try {
             constructor.setAccessible(true);
-            return (T) constructor.newInstance(stream(constructor.getGenericParameterTypes())
-                    .map(t -> specimenFactory.build(SpecimenType.fromClass(t)))
-                    .map(s -> s.create(customizationContext, new Annotation[0]))
+            return (T) constructor.newInstance(stream(constructor.getParameters())
+                    .map(p -> createParameter(p, customizationContext))
                     .toArray());
         } catch (Exception e) {
             return manufacture(type, customizationContext);
         }
+    }
+
+    private Object createParameter(Parameter parameter, CustomizationContext customizationContext) {
+        if (customizationContext.getCustomFields().containsKey(parameter.getName())) {
+            return customizationContext.getCustomFields().get(parameter.getName());
+        }
+        var specimen = specimenFactory.build(SpecimenType.fromClass(parameter.getParameterizedType()));
+        return specimen.create(customizationContext, new Annotation[0]);
     }
 
     private <T> T createProxyForAbstract(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {

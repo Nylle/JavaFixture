@@ -51,7 +51,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         }
 
         if (customizationContext.useRandomConstructor()) {
-            return context.cached(type, instanceFactory.construct(type));
+            return context.cached(type, instanceFactory.construct(type, customizationContext));
         }
 
         return populate(customizationContext);
@@ -71,7 +71,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                                             field.getGenericType().getTypeName(),
                                             specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of()), field.getAnnotations()))));
         } catch (SpecimenException ex ) {
-            return context.overwrite(type, instanceFactory.construct(type));
+            return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }
         return result;
     }

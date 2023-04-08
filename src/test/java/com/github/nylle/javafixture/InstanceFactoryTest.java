@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.factorymethod.ConstructorExceptionAndFactoryMethod;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithGenericArgument;
@@ -112,6 +113,33 @@ class InstanceFactoryTest {
             var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {}, new CustomizationContext(false));
 
             assertThat(result.getValue()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("arguments can be customized")
+        void argumentsCanBeCustomized() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var customizationContext = new CustomizationContext(true);
+            // use arg0, because .class files do not store formal parameter names by default
+            customizationContext.getCustomFields().put("arg0", "customized");
+            TestObject result = sut.construct(fromClass(TestObject.class), customizationContext);
+
+            assertThat(result.getValue()).isEqualTo("customized");
+        }
+
+        @Test
+        @DisplayName("constructor arguments are cached")
+        void constructorArgumentsAreCached() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var customizationContext = new CustomizationContext(true);
+            TestObject first = sut.construct(fromClass(TestObject.class), customizationContext);
+            TestObject second = sut.construct(fromClass(TestObject.class), customizationContext);
+
+            assertThat(first.getIntegers()).usingRecursiveComparison().isEqualTo(second.getIntegers());
+            assertThat(first.getStrings()).usingRecursiveComparison().isEqualTo(second.getStrings());
+            assertThat(first.getValue()).as("primitives are never cached").isNotEqualTo(second.getValue());
         }
     }
 

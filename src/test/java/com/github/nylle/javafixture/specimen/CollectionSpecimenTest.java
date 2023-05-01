@@ -104,6 +104,8 @@ class CollectionSpecimenTest {
         assertThat(actual).isInstanceOf(ArrayList.class);
         assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
         assertThat(actual.size()).isEqualTo(2);
+        assertThat(actual.get(0)).as("we should generate different strings for each list entry")
+                .isNotEqualTo(actual.get(1));
     }
 
     @Test

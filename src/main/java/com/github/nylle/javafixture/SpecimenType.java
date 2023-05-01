@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -220,19 +219,11 @@ public class SpecimenType<T> extends TypeCapture<T> {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (o instanceof SpecimenType<?>) {
+            SpecimenType<?> that = (SpecimenType<?>) o;
+            return this.type.equals(that.type);
         }
-
-        final SpecimenType that = (SpecimenType) o;
-
-        if (isParameterized() != that.isParameterized()) {
-            return false;
-        }
-
-        return isParameterized() && that.isParameterized()
-                ? Objects.equals(type, that.type) && Arrays.equals(getGenericTypeArguments(), that.getGenericTypeArguments())
-                : Objects.equals(type, that.type);
+        return false;
     }
 
     @Override

@@ -155,7 +155,7 @@ class TimeSpecimenTest {
     void canBePredefined(Class type) {
         var expected = fixture().create(type);
 
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type).hashCode(), expected));
+        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type), expected));
 
         var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
 

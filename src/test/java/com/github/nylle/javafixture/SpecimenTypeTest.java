@@ -11,6 +11,7 @@ import com.github.nylle.javafixture.testobjects.TestObjectWithGenerics;
 import com.github.nylle.javafixture.testobjects.TestObjectWithStaticMethods;
 import com.github.nylle.javafixture.testobjects.TestWildCardType;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithAllConstructors;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -488,5 +489,41 @@ class SpecimenTypeTest {
         var wildcardType = new TestWildCardType(new Type[0], new Type[0]);
 
         assertThat(SpecimenType.castToClass(wildcardType)).isEqualTo(Object.class);
+    }
+
+    @Nested
+    class EqualsTests {
+
+        @Test
+        void objectIsEqualToItself() {
+            var sut = SpecimenType.fromClass(String.class);
+            assertThat(sut.equals(sut)).isTrue();
+        }
+
+        @Test
+        void objectIsNotEqualToNull() {
+            var sut = SpecimenType.fromClass(String.class);
+            assertThat(sut.equals(null)).isFalse();
+        }
+
+        @Test
+        void objectIsNotEqualToOtherClass() {
+            var sut = SpecimenType.fromClass(String.class);
+            assertThat(sut.equals(String.class)).isFalse();
+        }
+
+        @Test
+        void objectIsEqualToSpecimenTypeOfSameClass() {
+            var sut = SpecimenType.fromClass(String.class);
+            var other = SpecimenType.fromClass(String.class);
+            assertThat(sut.equals(other)).isTrue();
+        }
+
+        @Test
+        void objectIsNotEqualToSpecimenTypeOfOtherClass() {
+            var sut = new SpecimenType<List<TestObject>>() {};
+            var other = new SpecimenType<List<List<TestObject>>>() {};
+            assertThat(sut.equals(other)).isFalse();
+        }
     }
 }

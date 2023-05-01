@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Context {
     private final Configuration configuration;
-    private final Map<Integer, Object> cache;
+    private final Map<SpecimenType<?>, Object> cache;
 
     public Context(Configuration configuration) {
 
@@ -17,7 +17,7 @@ public class Context {
         this.cache = new ConcurrentHashMap<>();
     }
 
-    public Context(Configuration configuration, Map<Integer, Object> predefinedInstances) {
+    public Context(Configuration configuration, Map<SpecimenType<?>, Object> predefinedInstances) {
 
         if (configuration == null) {
             throw new IllegalArgumentException("configuration: null");
@@ -32,25 +32,25 @@ public class Context {
     }
 
     public boolean isCached(SpecimenType<?> type) {
-        return cache.containsKey(type.hashCode());
+        return cache.containsKey(type);
     }
 
     public <T> T overwrite(SpecimenType<?> type, T instance) {
-        cache.put(type.hashCode(), instance);
-        return (T) cache.get(type.hashCode());
+        cache.put(type, instance);
+        return (T) cache.get(type);
     }
 
     public <T> T cached(SpecimenType<?> type, T instance) {
-        cache.putIfAbsent(type.hashCode(), instance);
-        return (T) cache.get(type.hashCode());
+        cache.putIfAbsent(type, instance);
+        return (T) cache.get(type);
     }
 
     public <T> T cached(SpecimenType<T> type) {
-        return (T) cache.get(type.hashCode());
+        return (T) cache.get(type);
     }
 
     public <T> T preDefined(SpecimenType<T> type, T instance) {
-        return cache.containsKey(type.hashCode()) ? (T) cache.get(type.hashCode()) : instance;
+        return cache.containsKey(type) ? (T) cache.get(type) : instance;
     }
 
 }

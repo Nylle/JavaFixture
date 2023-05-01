@@ -52,7 +52,7 @@ class EnumSpecimenTest {
     void canBePredefined() {
         var expected = fixture().create(TestEnum.class);
 
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(TestEnum.class).hashCode(), expected));
+        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(TestEnum.class), expected));
 
         var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), context);
 

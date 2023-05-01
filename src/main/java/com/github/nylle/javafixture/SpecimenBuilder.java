@@ -15,7 +15,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final List<Consumer<T>> functions = new LinkedList<>();
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
-    private final Map<Integer, Object> predefinedInstances = new ConcurrentHashMap<>();
+    private final Map<SpecimenType<?>, Object> predefinedInstances = new ConcurrentHashMap<>();
 
     private final SpecimenType<T> type;
     private final Configuration configuration;
@@ -98,7 +98,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
      */
     @Override
     public <U> ISpecimenBuilder<T> with(final Class<U> type, final U value) {
-        predefinedInstances.putIfAbsent(SpecimenType.fromClass(type).hashCode(), value);
+        predefinedInstances.putIfAbsent(SpecimenType.fromClass(type), value);
         return this;
     }
 
@@ -112,7 +112,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
      */
     @Override
     public <U> ISpecimenBuilder<T> with(final SpecimenType<U> type, final U value) {
-        predefinedInstances.putIfAbsent(type.hashCode(), value);
+        predefinedInstances.putIfAbsent(type, value);
         return this;
     }
 

@@ -143,7 +143,7 @@ class PrimitiveSpecimenTest {
     void canBePredefined(Class type) {
         var expected = fixture().create(type);
 
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type).hashCode(), expected));
+        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type), expected));
 
         var sut = new PrimitiveSpecimen<>(SpecimenType.fromClass(type), context);
 

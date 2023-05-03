@@ -81,7 +81,9 @@ public class ReflectedTestCase {
                         .map(key -> matrix.get(primitiveWrapperMap.getOrDefault(key, key)).get(index))
                         .collect(toList())))
                 .entrySet().stream()
-                .filter(indexToValuePair -> indexToValuePair.getValue().stream().filter(value -> !defaults.get(value.getClass()).equals(value)).count() > 1)
+                .filter(indexToValuePair -> indexToValuePair.getValue().stream()
+                        .filter(value -> !defaults.get(value.getClass()).equals(value))
+                        .count() > 1)
                 .map(indexToValuePair -> indexToValuePair.getKey())
                 .collect(toList());
 

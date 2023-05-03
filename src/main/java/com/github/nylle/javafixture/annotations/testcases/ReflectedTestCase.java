@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import com.github.nylle.javafixture.SpecimenException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,8 +9,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class ReflectedTestCase {
 
@@ -29,6 +35,7 @@ public class ReflectedTestCase {
         stream(TestCase.class.getDeclaredMethods())
                 .sorted(Comparator.comparing(Method::getName))
                 .forEachOrdered(m -> matrix.compute(m.getReturnType(), (k, v) -> addTo(v, invoke(m, testCase))));
+        validate(matrix);
     }
 
     @SuppressWarnings("unchecked")
@@ -54,4 +61,32 @@ public class ReflectedTestCase {
         return list;
     }
 
+    private static void validate(Map<Class<?>, List<?>> matrix) {
+        var defaults = Map.of(
+                Class.class, Object.class,
+                String.class, "",
+                Boolean.class, false,
+                Character.class, Character.MIN_VALUE,
+                Byte.class, (byte)0,
+                Short.class, (short)0,
+                Integer.class, 0,
+                Long.class, 0L,
+                Float.class, 0.0f,
+                Double.class, 0.0d
+        );
+
+        var duplicateIndices = Stream.iterate(0, i -> i + 1)
+                .limit(6)
+                .collect(toMap(index -> index, index -> defaults.keySet().stream()
+                        .map(key -> matrix.get(primitiveWrapperMap.getOrDefault(key, key)).get(index))
+                        .collect(toList())))
+                .entrySet().stream()
+                .filter(indexToValuePair -> indexToValuePair.getValue().stream().filter(value -> !defaults.get(value.getClass()).equals(value)).count() > 1)
+                .map(indexToValuePair -> indexToValuePair.getKey())
+                .collect(toList());
+
+        if(!duplicateIndices.isEmpty()) {
+            throw new SpecimenException("Duplicate customisation for test-method arguments at position " + duplicateIndices.stream().map(x -> String.valueOf(x+1)).collect(joining(", ")));
+        }
+    }
 }

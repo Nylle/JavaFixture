@@ -141,6 +141,18 @@ class InstanceFactoryTest {
             assertThat(first.getStrings()).usingRecursiveComparison().isEqualTo(second.getStrings());
             assertThat(first.getValue()).as("primitives are never cached").isNotEqualTo(second.getValue());
         }
+
+        @Test
+        @DisplayName("customized arguments are only used for the top level object (no nested objects)")
+        void constructorArgumentsAreUsedOnce() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var customizationContext = new CustomizationContext(true);
+            customizationContext.getCustomFields().put("arg0", 2);
+            TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), customizationContext);
+
+            assertThat(result.getSetByConstructor()).isEqualTo(2);
+        }
     }
 
     @Nested

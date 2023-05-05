@@ -122,7 +122,7 @@ public class InstanceFactory {
 
     private Object createParameter(Parameter parameter, CustomizationContext customizationContext) {
         if (customizationContext.getCustomFields().containsKey(parameter.getName())) {
-            return customizationContext.getCustomFields().get(parameter.getName());
+            return customizationContext.getCustomFields().remove(parameter.getName());
         }
         var specimen = specimenFactory.build(SpecimenType.fromClass(parameter.getParameterizedType()));
         return specimen.create(customizationContext, new Annotation[0]);

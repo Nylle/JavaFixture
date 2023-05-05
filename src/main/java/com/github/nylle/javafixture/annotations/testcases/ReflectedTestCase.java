@@ -1,7 +1,5 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
-import com.github.nylle.javafixture.SpecimenException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -50,7 +48,7 @@ public class ReflectedTestCase {
                 .collect(toList());
 
         if(isInvalid(type, nonDefaultValues)) {
-            throw new SpecimenException(String.format("Duplicate customisation found for argument at position %d, wanted: %s, found: %s",
+            throw new TestCaseException(String.format("Duplicate customisation found for argument at position %d, wanted: %s, found: %s",
                     i + 1,
                     type.getName(),
                     nonDefaultValues.stream().map(x -> x.getClass().getName()).collect(joining(", "))));

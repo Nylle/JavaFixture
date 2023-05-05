@@ -12,16 +12,65 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class ReflectedTestCaseTest {
 
     @Test
-    void throwsIfValuesForTwoDifferentTypesButSameIndexAreCustomized() {
-        var testCaseWithDuPlicateCustomizationsAt_1_2_3_4_6 = createCustomTestCase(
+    void getTestCaseValueFor_ThrowsIfTwoDifferentValuesAreCustomized() {
+        var testCaseWithDuplicateCustomizationsAt_1_2_3_4_6 = createCustomTestCase(
                 "foo", true,
                 2.0f, 2L,
                 TestObject.class, 3,
                 (short) 4, '4',
                 (byte) 6, 6.0d);
 
-        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> new ReflectedTestCase(testCaseWithDuPlicateCustomizationsAt_1_2_3_4_6))
-                .withMessage("Duplicate customisation for test-method arguments at position 1, 2, 3, 4, 6");
+        var sut = new ReflectedTestCase(testCaseWithDuplicateCustomizationsAt_1_2_3_4_6);
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(String.class, 0))
+                .withMessageContaining("Duplicate customisation found for argument at position 1, wanted: java.lang.String, found: ")
+                .withMessageContaining("java.lang.Boolean")
+                .withMessageContaining("java.lang.String");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Boolean.class, 0))
+                .withMessageContaining("Duplicate customisation found for argument at position 1, wanted: java.lang.Boolean, found: ")
+                .withMessageContaining("java.lang.Boolean")
+                .withMessageContaining("java.lang.String");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Float.class, 1))
+                .withMessageContaining("Duplicate customisation found for argument at position 2, wanted: java.lang.Float, found: ")
+                .withMessageContaining("java.lang.Float")
+                .withMessageContaining("java.lang.Long");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Long.class, 1))
+                .withMessageContaining("Duplicate customisation found for argument at position 2, wanted: java.lang.Long, found: ")
+                .withMessageContaining("java.lang.Float")
+                .withMessageContaining("java.lang.Long");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(TestObject.class.getClass(), 2))
+                .withMessageContaining("Duplicate customisation found for argument at position 3, wanted: java.lang.Class, found: ")
+                .withMessageContaining("java.lang.Class")
+                .withMessageContaining("java.lang.Integer");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Integer.class, 2))
+                .withMessageContaining("Duplicate customisation found for argument at position 3, wanted: java.lang.Integer, found: ")
+                .withMessageContaining("java.lang.Class")
+                .withMessageContaining("java.lang.Integer");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Short.class, 3))
+                .withMessageContaining("Duplicate customisation found for argument at position 4, wanted: java.lang.Short, found: ")
+                .withMessageContaining("java.lang.Short")
+                .withMessageContaining("java.lang.Character");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Character.class, 3))
+                .withMessageContaining("Duplicate customisation found for argument at position 4, wanted: java.lang.Character, found: ")
+                .withMessageContaining("java.lang.Short")
+                .withMessageContaining("java.lang.Character");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Byte.class, 5))
+                .withMessageContaining("Duplicate customisation found for argument at position 6, wanted: java.lang.Byte, found: ")
+                .withMessageContaining("java.lang.Byte")
+                .withMessageContaining("java.lang.Double");
+
+        assertThatExceptionOfType(SpecimenException.class).isThrownBy(() -> sut.getTestCaseValueFor(Double.class, 5))
+                .withMessageContaining("Duplicate customisation found for argument at position 6, wanted: java.lang.Double, found: ")
+                .withMessageContaining("java.lang.Byte")
+                .withMessageContaining("java.lang.Double");
     }
 
     @Test

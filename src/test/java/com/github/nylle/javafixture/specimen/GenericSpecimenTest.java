@@ -112,7 +112,7 @@ class GenericSpecimenTest {
     void cannotSetNonExistingField() {
         var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+        var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"), false);
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
@@ -124,7 +124,7 @@ class GenericSpecimenTest {
     void cannotOmitNonExistingField() {
         var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of());
+        var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of(), false);
 
         assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
@@ -136,7 +136,7 @@ class GenericSpecimenTest {
     void customFieldIsOnlyUsedInTopLevelObject() {
         var sut = new GenericSpecimen<>(new SpecimenType<WithTestObject<Integer>>() {}, context, specimenFactory);
 
-        var customizationContext = new CustomizationContext(List.of(), Map.of("topLevelValue", 42));
+        var customizationContext = new CustomizationContext(List.of(), Map.of("topLevelValue", 42), false);
 
         var actual = sut.create(customizationContext, new Annotation[0]);
 
@@ -178,7 +178,7 @@ class GenericSpecimenTest {
                     "parentField", "bar",
                     "baseField", "baz");
 
-            var actual = sut.create(new CustomizationContext(List.of(), customization), new Annotation[0]);
+            var actual = sut.create(new CustomizationContext(List.of(), customization, false), new Annotation[0]);
 
             assertThat(actual.getChildField()).isEqualTo("foo");
             assertThat(actual.getParentField()).isEqualTo("bar");
@@ -200,7 +200,7 @@ class GenericSpecimenTest {
                     "fieldIn2Classes", 100.0);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization), new Annotation[0]));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization, false), new Annotation[0]));
         }
 
         @Test
@@ -213,7 +213,7 @@ class GenericSpecimenTest {
                     "fieldIn2Classes");
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of()), new Annotation[0]));
+                    .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of(), false), new Annotation[0]));
         }
     }
 

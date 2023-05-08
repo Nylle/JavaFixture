@@ -30,7 +30,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
      */
     @Override
     public T create() {
-        return customize(new SpecimenFactory(new Context(configuration, predefinedInstances)).build(type).create(new CustomizationContext(ignoredFields, customFields), new Annotation[0]));
+        return customize(new SpecimenFactory(new Context(configuration, predefinedInstances)).build(type).create(new CustomizationContext(ignoredFields, customFields, false), new Annotation[0]));
     }
 
     /**
@@ -130,7 +130,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     }
 
     T construct() {
-        return new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(true), new Annotation[0]);
+        return new SpecimenFactory(new Context(configuration)).build(type).create(new CustomizationContext(List.of(), Map.of(), true), new Annotation[0]);
     }
 
     private T customize(T instance) {

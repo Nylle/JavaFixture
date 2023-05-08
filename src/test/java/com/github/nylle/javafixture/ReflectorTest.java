@@ -28,7 +28,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>());
 
-            var validCustomisation = new CustomizationContext(List.of(), Map.of("baseField", "foo"));
+            var validCustomisation = new CustomizationContext(List.of(), Map.of("baseField", "foo"), false);
 
             assertThatCode(() -> sut.validateCustomization(validCustomisation, new SpecimenType<>() {}))
                     .doesNotThrowAnyException();
@@ -40,7 +40,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>());
 
-            var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"));
+            var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"), false);
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
@@ -56,7 +56,7 @@ class ReflectorTest {
 
             Map<String, Object> customization = Map.of("fieldIn2Classes", 100.0);
 
-            var invalidCustomisation = new CustomizationContext(List.of(), customization);
+            var invalidCustomisation = new CustomizationContext(List.of(), customization, false);
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
@@ -74,7 +74,7 @@ class ReflectorTest {
 
             var omitting = List.of("fieldIn2Classes");
 
-            var invalidCustomisation = new CustomizationContext(omitting, Map.of());
+            var invalidCustomisation = new CustomizationContext(omitting, Map.of(), false);
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))

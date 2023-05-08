@@ -45,6 +45,17 @@ public class InstanceFactory {
     private final SpecimenFactory specimenFactory;
     private final Random random;
 
+    private static final Map<Class<?>, Object> primitiveDefaults = Map.of(
+            Boolean.TYPE, false,
+            Character.TYPE, '\0',
+            Byte.TYPE, (byte) 0,
+            Short.TYPE, 0,
+            Integer.TYPE, 0,
+            Long.TYPE, 0L,
+            Float.TYPE, 0.0f,
+            Double.TYPE, 0.0d
+    );
+
     public InstanceFactory(SpecimenFactory specimenFactory) {
         this.specimenFactory = specimenFactory;
         this.random = new Random();
@@ -120,7 +131,18 @@ public class InstanceFactory {
         }
     }
 
+    private static Object defaultValue(Class<?> type) {
+        if (type.isPrimitive()) {
+            return primitiveDefaults.get(type);
+        } else {
+            return null;
+        }
+    }
+
     private Object createParameter(Parameter parameter, CustomizationContext customizationContext) {
+        if (customizationContext.getIgnoredFields().contains(parameter.getName())) {
+            return defaultValue(parameter.getType());
+        }
         if (customizationContext.getCustomFields().containsKey(parameter.getName())) {
             return customizationContext.getCustomFields().get(parameter.getName());
         }

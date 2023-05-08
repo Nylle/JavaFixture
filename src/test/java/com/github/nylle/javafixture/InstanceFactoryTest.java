@@ -152,6 +152,17 @@ class InstanceFactoryTest {
 
             assertThat(result.getSetByConstructor()).isEqualTo(2);
         }
+
+        @Test
+        @DisplayName("customized arguments are used for exclusion, too")
+        void ignoredConstructorArgsAreRespected() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var customizationContext = new CustomizationContext(List.of("arg0"), Map.of(), true);
+            TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), customizationContext);
+
+            assertThat(result.getSetByConstructor()).isEqualTo(0);
+        }
     }
 
     @Nested

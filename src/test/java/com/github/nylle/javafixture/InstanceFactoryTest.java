@@ -24,6 +24,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.Queue;
@@ -52,7 +53,7 @@ class InstanceFactoryTest {
         void canCreateInstanceFromConstructor() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class), new CustomizationContext(false));
+            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class), new CustomizationContext(List.of(), Map.of(), false));
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getValue()).isInstanceOf(String.class);
@@ -65,7 +66,7 @@ class InstanceFactoryTest {
 
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class), new CustomizationContext(false));
+            TestObjectWithGenericConstructor result = sut.construct(fromClass(TestObjectWithGenericConstructor.class), new CustomizationContext(List.of(), Map.of(), false));
 
             assertThat(result).isInstanceOf(TestObjectWithGenericConstructor.class);
             assertThat(result.getPrivateField()).isNull();
@@ -77,7 +78,7 @@ class InstanceFactoryTest {
 
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), new CustomizationContext(true));
+            TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), new CustomizationContext(List.of(), Map.of(), true));
 
             assertThat(result).isInstanceOf(TestObjectWithConstructedField.class);
             assertThat(result.getTestObjectWithGenericConstructor().getPrivateField()).isNull();
@@ -90,7 +91,7 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class), new CustomizationContext(false)))
+                    .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class), new CustomizationContext(List.of(), Map.of(), false)))
                     .withMessageContaining("Cannot manufacture class")
                     .withNoCause();
         }
@@ -100,7 +101,7 @@ class InstanceFactoryTest {
         void useFactoryMethodWhenNoConstructorExists() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithoutArgument result = sut.construct(fromClass(FactoryMethodWithoutArgument.class), new CustomizationContext(false));
+            FactoryMethodWithoutArgument result = sut.construct(fromClass(FactoryMethodWithoutArgument.class), new CustomizationContext(List.of(), Map.of(), false));
 
             assertThat(result.getValue()).isEqualTo(42);
         }
@@ -110,7 +111,7 @@ class InstanceFactoryTest {
         void fallbackToFactoryMethodWhenConstructorThrowsException() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {}, new CustomizationContext(false));
+            var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {}, new CustomizationContext(List.of(), Map.of(), false));
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -120,9 +121,8 @@ class InstanceFactoryTest {
         void argumentsCanBeCustomized() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var customizationContext = new CustomizationContext(true);
             // use arg0, because .class files do not store formal parameter names by default
-            customizationContext.getCustomFields().put("arg0", "customized");
+            var customizationContext = new CustomizationContext(List.of(), Map.of("arg0", "customized"), true);
             TestObject result = sut.construct(fromClass(TestObject.class), customizationContext);
 
             assertThat(result.getValue()).isEqualTo("customized");
@@ -133,7 +133,7 @@ class InstanceFactoryTest {
         void constructorArgumentsAreCached() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var customizationContext = new CustomizationContext(true);
+            var customizationContext = new CustomizationContext(List.of(), Map.of(), true);
             TestObject first = sut.construct(fromClass(TestObject.class), customizationContext);
             TestObject second = sut.construct(fromClass(TestObject.class), customizationContext);
 
@@ -147,8 +147,7 @@ class InstanceFactoryTest {
         void constructorArgumentsAreUsedOnce() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var customizationContext = new CustomizationContext(true);
-            customizationContext.getCustomFields().put("arg0", 2);
+            var customizationContext = new CustomizationContext(List.of(), Map.of("arg0", 2), true);
             TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), customizationContext);
 
             assertThat(result.getSetByConstructor()).isEqualTo(2);

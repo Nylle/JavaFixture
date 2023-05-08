@@ -122,10 +122,10 @@ public class InstanceFactory {
 
     private Object createParameter(Parameter parameter, CustomizationContext customizationContext) {
         if (customizationContext.getCustomFields().containsKey(parameter.getName())) {
-            return customizationContext.getCustomFields().remove(parameter.getName());
+            return customizationContext.getCustomFields().get(parameter.getName());
         }
         var specimen = specimenFactory.build(SpecimenType.fromClass(parameter.getParameterizedType()));
-        return specimen.create(customizationContext, new Annotation[0]);
+        return specimen.create(new CustomizationContext(List.of(), Map.of(), customizationContext.useRandomConstructor()), new Annotation[0]);
     }
 
     private <T> T createProxyForAbstract(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {

@@ -12,21 +12,15 @@ public class CustomizationContext {
 
 
     private CustomizationContext() {
-        ignoredFields = Collections.emptyList();
+        ignoredFields = List.of();
         customFields = new HashMap<>();
         useRandomConstructor = false;
     }
 
-    public CustomizationContext(final boolean useRandomConstructor) {
-        ignoredFields = Collections.emptyList();
-        customFields = new HashMap<>();
+    public CustomizationContext(final List<String> ignoredFields, final Map<String, Object> customFields, boolean useRandomConstructor) {
+        this.ignoredFields = Collections.unmodifiableList(ignoredFields);
+        this.customFields = Collections.unmodifiableMap(customFields);
         this.useRandomConstructor = useRandomConstructor;
-    }
-
-    public CustomizationContext(final List<String> ignoredFields, final Map<String, Object> customFields) {
-        this.ignoredFields = ignoredFields;
-        this.customFields = customFields;
-        this.useRandomConstructor = false;
     }
 
     public static CustomizationContext noContext() {

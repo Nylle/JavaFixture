@@ -91,7 +91,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
                                     field.getName(),
                                     specimens.getOrDefault(
                                             field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new CustomizationContext(List.of(), Map.of()), new Annotation[0]))));
+                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]))));
         } catch (SpecimenException ex) {
             return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }

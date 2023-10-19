@@ -25,12 +25,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -293,6 +295,18 @@ class FixtureTest {
             assertThat(firstContractPosition.getStartDate()).isInstanceOf(LocalDate.class);
             assertThat(firstContractPosition.getRemainingPeriod()).isInstanceOf(Period.class);
             assertThat(firstContractPosition.getFile()).isInstanceOf(File.class);
+        }
+
+        @Test
+        void canCreateWithFieldsByType() {
+            Fixture fixture = new Fixture(configuration);
+
+            Contract result = fixture.build(Contract.class)
+                    .with(BigDecimal.class,BigDecimal.valueOf(100)).create();
+
+            AccountManager firstAccountManager = Arrays.stream(result.getAccountManagers()).findFirst().get();
+            assertThat(firstAccountManager).isInstanceOf(AccountManager.class)
+                    .hasFieldOrPropertyWithValue("salary", BigDecimal.valueOf(100));
         }
 
         @Test

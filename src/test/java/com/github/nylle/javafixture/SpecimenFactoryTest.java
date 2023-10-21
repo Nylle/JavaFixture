@@ -9,12 +9,15 @@ import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
+import com.github.nylle.javafixture.specimen.PredefinedSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
+import com.github.nylle.javafixture.testobjects.TestPrimitive;
 import com.github.nylle.javafixture.testobjects.example.IContract;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -66,7 +69,18 @@ class SpecimenFactoryTest {
         assertThat(sut.build(new SpecimenType<Map<String, Integer>>(){})).isExactlyInstanceOf(MapSpecimen.class);
         assertThat(sut.build(new SpecimenType<Class<String>>(){})).isExactlyInstanceOf(GenericSpecimen.class);
         assertThat(sut.build(new SpecimenType<TestObjectGeneric<String, List<Integer>>>(){})).isExactlyInstanceOf(GenericSpecimen.class);
+    }
 
+    @Test
+    @DisplayName( "when cache contains a predefined value, return this" )
+    void buildReturnsCacnedValue() {
+        var context = new Context( new Configuration() );
+        var cachedValue = new TestPrimitive();
+        var type = SpecimenType.fromClass( TestPrimitive.class );
+        context.overwrite( type, cachedValue );
+        var sut = new SpecimenFactory( context );
+
+        assertThat( sut.build( type ) ).isExactlyInstanceOf( PredefinedSpecimen.class );
     }
 
 

@@ -8,6 +8,7 @@ import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
 import com.github.nylle.javafixture.specimen.ObjectSpecimen;
+import com.github.nylle.javafixture.specimen.PredefinedSpecimen;
 import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
@@ -21,6 +22,10 @@ public class SpecimenFactory {
     }
 
     public <T> ISpecimen<T> build(final SpecimenType<T> type) {
+
+        if ( context.isCached(type) ) {
+            return new PredefinedSpecimen<>( type, context );
+        }
 
         if (type.isPrimitive() || type.isBoxed() || type.asClass() == String.class) {
             return new PrimitiveSpecimen<>(type, context);

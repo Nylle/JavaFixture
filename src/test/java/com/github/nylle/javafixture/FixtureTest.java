@@ -19,6 +19,7 @@ import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithoutDefaultConstructor;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -242,13 +243,18 @@ class FixtureTest {
         @Test
         void objectCanBeCustomizedWithType() {
             var expected = Period.ofDays(42);
+            var expectedFile = new File( "expected-file-name" );
             var result = fixture().build(Contract.class)
                     .with(Period.class, expected)
+                    .with(File.class, expectedFile)
                     .create();
 
             var actual = result.getBaseContractPosition().getRemainingPeriod();
 
-            assertThat(actual).isSameAs(expected);
+            var softly = new SoftAssertions();
+            softly.assertThat(actual).isSameAs(expected);
+            softly.assertThat(result.getBaseContractPosition().getFile()).isEqualTo( expectedFile );
+            softly.assertAll();
         }
 
         @Test

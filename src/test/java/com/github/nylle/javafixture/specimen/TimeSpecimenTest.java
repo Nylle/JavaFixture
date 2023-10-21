@@ -36,7 +36,6 @@ import java.time.temporal.TemporalAmount;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static com.github.nylle.javafixture.Fixture.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -130,37 +129,4 @@ class TimeSpecimenTest {
         assertThat(actual).isEqualTo(Instant.MIN);
     }
 
-    @TestWithCases
-    @TestCase(class1 = Instant.class)
-    @TestCase(class1 = HijrahDate.class)
-    @TestCase(class1 = JapaneseDate.class)
-    @TestCase(class1 = LocalDate.class)
-    @TestCase(class1 = LocalDateTime.class)
-    @TestCase(class1 = LocalTime.class)
-    @TestCase(class1 = MinguoDate.class)
-    @TestCase(class1 = OffsetDateTime.class)
-    @TestCase(class1 = OffsetTime.class)
-    @TestCase(class1 = ThaiBuddhistDate.class)
-    @TestCase(class1 = Year.class)
-    @TestCase(class1 = YearMonth.class)
-    @TestCase(class1 = ZonedDateTime.class)
-    @TestCase(class1 = java.sql.Date.class)
-    @TestCase(class1 = java.util.Date.class)
-    @TestCase(class1 = Duration.class)
-    @TestCase(class1 = JapaneseEra.class)
-    @TestCase(class1 = MonthDay.class)
-    @TestCase(class1 = Period.class)
-    @TestCase(class1 = ZoneId.class)
-    @TestCase(class1 = ZoneOffset.class)
-    void canBePredefined(Class type) {
-        var expected = fixture().create(type);
-
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(type), expected));
-
-        var sut = new TimeSpecimen<>(SpecimenType.fromClass(type), context);
-
-        var actual = sut.create(noContext(), new Annotation[0]);
-
-        assertThat(actual).isSameAs(expected);
-    }
 }

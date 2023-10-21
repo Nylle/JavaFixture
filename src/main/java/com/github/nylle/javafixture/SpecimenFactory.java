@@ -32,7 +32,7 @@ public class SpecimenFactory {
         }
 
         if (type.isEnum()) {
-            return new EnumSpecimen<>(type, context);
+            return new EnumSpecimen<>(type );
         }
 
         if (type.isCollection()) {

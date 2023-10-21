@@ -49,41 +49,41 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         if (Temporal.class.isAssignableFrom(type.asClass())) {
             try {
                 Method now = type.asClass().getMethod("now", Clock.class);
-                return context.preDefined(type, (T) now.invoke(null, context.getConfiguration().getClock()));
+                return (T) now.invoke(null, context.getConfiguration().getClock());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 throw new SpecimenException("Unsupported type: " + type.asClass());
             }
         }
 
         if (type.asClass().equals(java.util.Date.class)) {
-            return context.preDefined(type, (T) java.sql.Timestamp.valueOf(LocalDateTime.now(context.getConfiguration().getClock())));
+            return (T) java.sql.Timestamp.valueOf(LocalDateTime.now(context.getConfiguration().getClock()));
         }
 
         if (type.asClass().equals(java.sql.Date.class)) {
-            return context.preDefined(type, (T) java.sql.Date.valueOf(LocalDateTime.now(context.getConfiguration().getClock()).toLocalDate()));
+            return (T) java.sql.Date.valueOf(LocalDateTime.now(context.getConfiguration().getClock()).toLocalDate());
         }
 
         if (type.asClass().equals(MonthDay.class)) {
-            return context.preDefined(type, (T) MonthDay.now(context.getConfiguration().getClock()));
+            return (T) MonthDay.now(context.getConfiguration().getClock());
         }
 
         if (type.asClass().equals(JapaneseEra.class)) {
-            return context.preDefined(type, (T) JapaneseEra.values()[random.nextInt(JapaneseEra.values().length)]);
+            return (T) JapaneseEra.values()[random.nextInt(JapaneseEra.values().length)];
         }
 
         if (type.asClass().equals(ZoneOffset.class)) {
-            return context.preDefined(type, (T) ZoneOffset.ofHours(new Random().nextInt(19)));
+            return (T) ZoneOffset.ofHours(new Random().nextInt(19));
         }
         if (type.asClass().equals(Duration.class)) {
-            return context.preDefined(type, (T) Duration.ofDays(random.nextInt()));
+            return (T) Duration.ofDays(random.nextInt());
         }
 
         if (type.asClass().equals(Period.class)) {
-            return context.preDefined(type, (T) Period.ofDays(random.nextInt()));
+            return (T) Period.ofDays(random.nextInt());
         }
 
         if (type.asClass().equals(ZoneId.class)) {
-            return context.preDefined(type, (T) ZoneId.of(ZoneId.getAvailableZoneIds().iterator().next()));
+            return (T) ZoneId.of(ZoneId.getAvailableZoneIds().iterator().next());
         }
 
         throw new SpecimenException("Unsupported type: " + type.asClass());

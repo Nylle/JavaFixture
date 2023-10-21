@@ -1,46 +1,41 @@
 package com.github.nylle.javafixture.specimen;
 
-import com.github.nylle.javafixture.Configuration;
-import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
 
-import static com.github.nylle.javafixture.Configuration.configure;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
-import static com.github.nylle.javafixture.Fixture.fixture;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class EnumSpecimenTest {
 
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new EnumSpecimen<>(null, new Context(configure())))
+        assertThatThrownBy(() -> new EnumSpecimen<>(null ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void onlyEnumTypes() {
-        assertThatThrownBy(() -> new EnumSpecimen<>(SpecimenType.fromClass(Object.class), new Context(configure())))
+        assertThatThrownBy(() -> new EnumSpecimen<>(SpecimenType.fromClass(Object.class) ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: " + Object.class.getName());
     }
 
     @Test
-    void contextIsRequired() {
-        assertThatThrownBy(() -> new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("context: null");
+    void contextIsNotRequired() {
+        assertThatCode(() -> new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class) ))
+                .doesNotThrowAnyException();
     }
 
     @Test
     void createEnum() {
-        var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), new Context(configure()));
+        var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class) );
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -48,16 +43,4 @@ class EnumSpecimenTest {
         assertThat(actual.toString()).isIn("VALUE1", "VALUE2", "VALUE3");
     }
 
-    @Test
-    void canBePredefined() {
-        var expected = fixture().create(TestEnum.class);
-
-        var context = new Context(Configuration.configure(), Map.of(SpecimenType.fromClass(TestEnum.class), expected));
-
-        var sut = new EnumSpecimen<>(SpecimenType.fromClass(TestEnum.class), context);
-
-        var actual = sut.create(noContext(), new Annotation[0]);
-
-        assertThat(actual).isSameAs(expected);
-    }
 }

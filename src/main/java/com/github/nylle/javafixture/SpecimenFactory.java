@@ -96,7 +96,8 @@ public class SpecimenFactory {
     private <T> ISpecimen<T> implementationOrProxy(final SpecimenType<T> interfaceType) {
         try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
             var implementingClasses = scanResult.getClassesImplementing(interfaceType.asClass()).stream()
-                    .filter(x -> interfaceType.isParameterized() || isNotParametrized(x))
+                    .filter(x -> isNotParametrized(x) || interfaceType.isParameterized())
+                    .filter(x -> isNotParametrized(x) || typeParametersMatch(x, interfaceType))
                     .collect(Collectors.toList());
 
             if (implementingClasses.isEmpty()) {
@@ -121,9 +122,11 @@ public class SpecimenFactory {
         return classInfo.getTypeSignature() == null || classInfo.getTypeSignature().getTypeParameters().isEmpty();
     }
 
+    private static <T> boolean typeParametersMatch(ClassInfo implementingClass, SpecimenType<T> genericType) {
+        return resolveTypeArguments(genericType, implementingClass).length >= implementingClass.getTypeSignature().getTypeParameters().size();
+    }
+
     private static <T> Type[] resolveTypeArguments(SpecimenType<T> genericType, ClassInfo implementingClass) {
-        // throws NPE if implementing class has more type arguments than interface
-        // this was not intended, but luckily causes a fallback to proxy, because we wouldn't be able to resolve the additional type anyway
         var typeParameters = IntStream.range(0, genericType.getGenericTypeArguments().length)
                 .boxed()
                 .collect(toMap(
@@ -131,7 +134,9 @@ public class SpecimenFactory {
                         i -> SpecimenType.fromClass(genericType.getGenericTypeArgument(i))));
 
         return implementingClass.getTypeSignature().getTypeParameters().stream()
-                .map(x -> typeParameters.get(x.getName()).asClass())
+                .map(x -> typeParameters.getOrDefault(x.getName(), null))
+                .filter(x -> x != null)
+                .map(x -> x.asClass())
                 .toArray(size -> new Type[size]);
     }
 }

@@ -4,8 +4,8 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
-import com.github.nylle.javafixture.testobjects.TestInterface;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,25 +43,25 @@ class InterfaceSpecimenTest {
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(TestInterface.class), null, specimenFactory))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(TestInterface.class), context, null))
+        assertThatThrownBy(() -> new InterfaceSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }
 
     @Test
     void createInterface() {
-        var sut = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory);
+        var sut = new InterfaceSpecimen<InterfaceWithoutImplementation>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
-        assertThat(actual).isInstanceOf(TestInterface.class);
+        assertThat(actual).isInstanceOf(InterfaceWithoutImplementation.class);
         assertThat(actual.publicField).isInstanceOf(Integer.class);
         assertThat(actual.publicField).isEqualTo(1);
 
@@ -72,10 +72,10 @@ class InterfaceSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create(noContext(), new Annotation[0]);
-        var cached = new InterfaceSpecimen<TestInterface>(SpecimenType.fromClass(TestInterface.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var original = new InterfaceSpecimen<InterfaceWithoutImplementation>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var cached = new InterfaceSpecimen<InterfaceWithoutImplementation>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
-        assertThat(original).isInstanceOf(TestInterface.class);
+        assertThat(original).isInstanceOf(InterfaceWithoutImplementation.class);
         assertThat(original).isSameAs(cached);
         assertThat(original.toString()).isEqualTo(cached.toString());
         assertThat(original.getTestObject()).isSameAs(cached.getTestObject());

@@ -18,5 +18,4 @@ class ConfigurationTest {
 
         assertThat(result).hasSize(1);
     }
-
 }

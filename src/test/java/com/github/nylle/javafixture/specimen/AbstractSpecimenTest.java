@@ -5,7 +5,7 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
-import com.github.nylle.javafixture.testobjects.TestInterface;
+import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,14 +44,14 @@ class AbstractSpecimenTest {
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(TestInterface.class), null, specimenFactory))
+        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), null, specimenFactory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(TestInterface.class), context, null))
+        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("specimenFactory: null");
     }

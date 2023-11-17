@@ -3,7 +3,6 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
 import com.github.nylle.javafixture.testobjects.TestEnum;
-import com.github.nylle.javafixture.testobjects.TestInterface;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestObjectWithDeepNesting;
 import com.github.nylle.javafixture.testobjects.TestObjectWithEnumMap;
@@ -17,6 +16,9 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
+import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationU;
+import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationUImpl;
+import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithoutDefaultConstructor;
 import org.assertj.core.api.SoftAssertions;
@@ -261,7 +263,7 @@ class FixtureTest {
         void interfaceCanBeCustomizedWithType() {
             Fixture sut = new Fixture(configuration);
 
-            var result = sut.build(TestInterface.class)
+            var result = sut.build(InterfaceWithoutImplementation.class)
                     .with(String.class, "expected")
                     .create();
 
@@ -413,6 +415,7 @@ class FixtureTest {
     @Nested
     @DisplayName("when using SpecimenType<T>")
     class WhenSpecimenType {
+
         @Test
         void canCreateGenericObject() {
             Fixture fixture = new Fixture(configuration);
@@ -439,6 +442,18 @@ class FixtureTest {
             assertThat(result.getU().getTestGeneric()).isInstanceOf(TestObjectGeneric.class);
             assertThat(result.getU().getTestGeneric().getT()).isInstanceOf(String.class);
             assertThat(result.getU().getTestGeneric().getU()).isInstanceOf(Integer.class);
+        }
+
+        @Test
+        void canCreateGenericObjectFromInterfaceWithMismatchingNumberOfTypeParameters() {
+            var fixture = new Fixture(Configuration.configure().experimentalInterfaces(true));
+
+            var result = fixture.create(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {});
+
+            assertThat(result).isInstanceOf(GenericInterfaceTUWithGenericImplementationUImpl.class);
+            assertThat(result.publicField).isInstanceOf(Integer.class);
+            assertThat(result.getT()).isInstanceOf(String.class);
+            assertThat(result.getU()).isInstanceOf(Integer.class);
         }
 
         @Test
@@ -554,7 +569,6 @@ class FixtureTest {
             assertThat(result.getValue()).isInstanceOf(String.class);
             assertThat(result.getInteger()).isInstanceOf(Optional.class);
         }
-
     }
 
     @Test

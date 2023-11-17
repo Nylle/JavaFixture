@@ -10,6 +10,7 @@ public class Configuration {
     private int minCollectionSize = 2;
     private int streamSize = 3;
     private boolean usePositiveNumbersOnly = false;
+    private boolean experimentalInterfaces = false;
 
     private Clock clock = Clock.fixed(Instant.now(), ZoneOffset.UTC);
 
@@ -111,6 +112,10 @@ public class Configuration {
         return this.usePositiveNumbersOnly;
     }
 
+    public boolean experimentalInterfaces() {
+        return this.experimentalInterfaces;
+    }
+
     /**
      * @param streamSize the stream size when creating many objects at once
      * @return this {@code Configuration}
@@ -148,6 +153,11 @@ public class Configuration {
      */
     public Configuration usePositiveNumbersOnly(boolean usePositiveNumbersOnly) {
         this.usePositiveNumbersOnly = usePositiveNumbersOnly;
+        return this;
+    }
+
+    public Configuration experimentalInterfaces(boolean experimentalInterfaces) {
+        this.experimentalInterfaces = experimentalInterfaces;
         return this;
     }
 

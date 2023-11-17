@@ -20,6 +20,7 @@ import com.github.nylle.javafixture.testobjects.example.IContract;
 import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationT;
 import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationTU;
 import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationU;
+import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTWithGenericImplementationTU;
 import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceWithImplementation;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithGenericImplementation;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithImplementation;
@@ -111,15 +112,22 @@ class SpecimenFactoryTest {
 
             @Test
             @DisplayName("no implementations found")
-            void createsInterfaceSpecimenIfInterfaceHasNoImplementations() {
+            void ifInterfaceHasNoImplementations() {
                 assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(InterfaceWithoutImplementation.class)))
                         .isExactlyInstanceOf(InterfaceSpecimen.class);
             }
 
             @Test
             @DisplayName("implementation is generic and interface is not")
-            void createsInterfaceSpecimenIfImplementationIsGenericAndInterfaceIsNot() {
+            void ifImplementationIsGenericAndInterfaceIsNot() {
                 assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(InterfaceWithGenericImplementation.class)))
+                        .isExactlyInstanceOf(InterfaceSpecimen.class);
+            }
+
+            @Test
+            @DisplayName("implementation has more type arguments than interface")
+            void ifImplementationHasMoreTypeArgumentsThanInterface() {
+                assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericInterfaceTWithGenericImplementationTU<String>>() {}))
                         .isExactlyInstanceOf(InterfaceSpecimen.class);
             }
         }
@@ -130,14 +138,14 @@ class SpecimenFactoryTest {
 
             @Test
             @DisplayName("implementation is not generic and interface is not generic")
-            void createsObjectSpecimenIfBothImplementationAndInterfaceAreNotGeneric() {
+            void ifBothImplementationAndInterfaceAreNotGeneric() {
                 assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(InterfaceWithImplementation.class)))
                         .isExactlyInstanceOf(ObjectSpecimen.class);
             }
 
             @Test
             @DisplayName("implementation is not generic and interface is generic")
-            void createsObjectSpecimenIfImplementationIsNotGenericAndInterfaceIs() {
+            void ifImplementationIsNotGenericAndInterfaceIs() {
                 assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericInterfaceWithImplementation<Integer, String>>() {}))
                         .isExactlyInstanceOf(ObjectSpecimen.class);
             }
@@ -149,21 +157,21 @@ class SpecimenFactoryTest {
 
             @Test
             @DisplayName("implementation is generic and interface is generic")
-            void createsGenericSpecimenIfImplementationAndInterfaceAreGeneric() {
+            void ifImplementationAndInterfaceAreGeneric() {
                 assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericInterfaceTUWithGenericImplementationTU<String, Integer>>() {}))
                         .isExactlyInstanceOf(GenericSpecimen.class);
             }
 
             @Test
             @DisplayName("generic implementation only uses first type-argument of generic interface")
-            void createsGenericSpecimenIfGenericImplementationOnlyUsesFirstTypeArgumentOfGenericInterface() {
+            void ifGenericImplementationOnlyUsesFirstTypeArgumentOfGenericInterface() {
                 assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericInterfaceTUWithGenericImplementationT<String, Integer>>() {}))
                         .isExactlyInstanceOf(GenericSpecimen.class);
             }
 
             @Test
             @DisplayName("generic implementation only uses second type-argument of generic interface")
-            void createsGenericSpecimenIfGenericImplementationOnlyUsesSecondTypeArgumentOfGenericInterface() {
+            void ifGenericImplementationOnlyUsesSecondTypeArgumentOfGenericInterface() {
                 assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {}))
                         .isExactlyInstanceOf(GenericSpecimen.class);
             }

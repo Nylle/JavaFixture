@@ -14,10 +14,12 @@ import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
 import java.lang.reflect.Type;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toMap;
@@ -93,37 +95,44 @@ public class SpecimenFactory {
 
     private <T> ISpecimen<T> implementationOrProxy(final SpecimenType<T> interfaceType) {
         try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-            var implementingClasses = scanResult.getClassesImplementing(interfaceType.asClass());
+            var implementingClasses = scanResult.getClassesImplementing(interfaceType.asClass()).stream()
+                    .filter(x -> interfaceType.isParameterized() || isNotParametrized(x))
+                    .collect(Collectors.toList());
+
             if (implementingClasses.isEmpty()) {
                 return new InterfaceSpecimen<>(interfaceType, context, this);
             }
 
             var implementingClass = implementingClasses.get(new Random().nextInt(implementingClasses.size()));
-            if (implementingClass.getTypeSignature() == null || implementingClass.getTypeSignature().getTypeParameters().isEmpty()) {
+            if (isNotParametrized(implementingClass)) {
                 return new ObjectSpecimen<>(SpecimenType.fromClass(implementingClass.loadClass()), context, this);
             }
 
-            if (!interfaceType.isParameterized()) {
-                return new InterfaceSpecimen<>(interfaceType, context, this);
-            }
-
-            var typeParameters = IntStream.range(0, interfaceType.getGenericTypeArguments().length)
-                    .boxed()
-                    .collect(toMap(
-                            i -> interfaceType.getTypeParameterName(i),
-                            i -> SpecimenType.fromClass(interfaceType.getGenericTypeArgument(i))));
-
-            var actualTypeArguments = implementingClass.getTypeSignature().getTypeParameters().stream()
-                    .map(x -> typeParameters.get(x.getName()).asClass())
-                    .toArray(size -> new Type[size]);
-
             return new GenericSpecimen<>(
-                    SpecimenType.fromRawType(implementingClass.loadClass(), actualTypeArguments),
+                    SpecimenType.fromRawType(implementingClass.loadClass(), resolveTypeArguments(interfaceType, implementingClass)),
                     context,
                     this);
         } catch (Exception ex) {
             return new InterfaceSpecimen<>(interfaceType, context, this);
         }
+    }
+
+    private static boolean isNotParametrized(ClassInfo classInfo) {
+        return classInfo.getTypeSignature() == null || classInfo.getTypeSignature().getTypeParameters().isEmpty();
+    }
+
+    private static <T> Type[] resolveTypeArguments(SpecimenType<T> genericType, ClassInfo implementingClass) {
+        // throws NPE if implementing class has more type arguments than interface
+        // this was not intended, but luckily causes a fallback to proxy, because we wouldn't be able to resolve the additional type anyway
+        var typeParameters = IntStream.range(0, genericType.getGenericTypeArguments().length)
+                .boxed()
+                .collect(toMap(
+                        i -> genericType.getTypeParameterName(i),
+                        i -> SpecimenType.fromClass(genericType.getGenericTypeArgument(i))));
+
+        return implementingClass.getTypeSignature().getTypeParameters().stream()
+                .map(x -> typeParameters.get(x.getName()).asClass())
+                .toArray(size -> new Type[size]);
     }
 }
 

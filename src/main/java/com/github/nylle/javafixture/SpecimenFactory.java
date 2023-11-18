@@ -13,14 +13,6 @@ import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
-
-import java.lang.reflect.Type;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 public class SpecimenFactory {
 
     private final Context context;
@@ -102,72 +94,19 @@ public class SpecimenFactory {
     }
 
     private <T> ISpecimen<T> implementationOrProxy(final SpecimenType<T> interfaceType) {
-        try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-            var implementingClasses = scanResult.getClassesImplementing(interfaceType.asClass()).stream()
-                    .filter(x -> isNotParametrized(x) || interfaceType.isParameterized())
-                    .filter(x -> isNotParametrized(x) || typeParametersMatch(x, interfaceType))
-                    .collect(Collectors.toList());
-
-            if (implementingClasses.isEmpty()) {
-                return new InterfaceSpecimen<>(interfaceType, context, this);
-            }
-
-            var implementingClass = implementingClasses.get(new Random().nextInt(implementingClasses.size()));
-            if (isNotParametrized(implementingClass)) {
-                return new ObjectSpecimen<>(SpecimenType.fromClass(implementingClass.loadClass()), context, this);
-            }
-
-            return new GenericSpecimen<>(
-                    SpecimenType.fromRawType(implementingClass.loadClass(), resolveTypeArguments(interfaceType, implementingClass)),
-                    context,
-                    this);
-        } catch (Exception ex) {
-            return new InterfaceSpecimen<>(interfaceType, context, this);
-        }
+        return new ClassPathScanner().findRandomClassFor(interfaceType)
+                .map(x -> x.isParameterized()
+                        ? new GenericSpecimen<>(x, context, this)
+                        : new ObjectSpecimen<>(x, context, this))
+                .orElseGet(() -> new InterfaceSpecimen<>(interfaceType, context, this));
     }
 
     private <T> ISpecimen<T> subClassOrProxy(final SpecimenType<T> abstractType) {
-        try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-            var subClasses = scanResult.getSubclasses(abstractType.asClass()).stream()
-                    .filter(x -> !x.isAbstract())
-                    .filter(x -> isNotParametrized(x) || abstractType.isParameterized())
-                    .filter(x -> isNotParametrized(x) || typeParametersMatch(x, abstractType))
-                    .collect(Collectors.toList());
-
-            if (subClasses.isEmpty()) {
-                return new AbstractSpecimen<>(abstractType, context, this);
-            }
-
-            var implementingClass = subClasses.get(new Random().nextInt(subClasses.size()));
-            if (isNotParametrized(implementingClass)) {
-                return new ObjectSpecimen<>(SpecimenType.fromClass(implementingClass.loadClass()), context, this);
-            }
-
-            return new GenericSpecimen<>(
-                    SpecimenType.fromRawType(implementingClass.loadClass(), resolveTypeArguments(abstractType, implementingClass)),
-                    context,
-                    this);
-        } catch (Exception ex) {
-            return new AbstractSpecimen<>(abstractType, context, this);
-        }
-    }
-
-    private static boolean isNotParametrized(ClassInfo classInfo) {
-        return classInfo.getTypeSignature() == null || classInfo.getTypeSignature().getTypeParameters().isEmpty();
-    }
-
-    private static <T> boolean typeParametersMatch(ClassInfo implementingClass, SpecimenType<T> genericType) {
-        return resolveTypeArguments(genericType, implementingClass).length >= implementingClass.getTypeSignature().getTypeParameters().size();
-    }
-
-    private static <T> Type[] resolveTypeArguments(SpecimenType<T> genericType, ClassInfo implementingClass) {
-        var typeParameters = genericType.getTypeParameterNamesAndTypes(x -> x);
-
-        return implementingClass.getTypeSignature().getTypeParameters().stream()
-                .map(x -> typeParameters.getOrDefault(x.getName(), null))
-                .filter(x -> x != null)
-                .map(x -> x.asClass())
-                .toArray(size -> new Type[size]);
+        return new ClassPathScanner().findRandomClassFor(abstractType)
+                .map(x -> x.isParameterized()
+                        ? new GenericSpecimen<>(x, context, this)
+                        : new ObjectSpecimen<>(x, context, this))
+                .orElseGet(() -> new AbstractSpecimen<>(abstractType, context, this));
     }
 }
 

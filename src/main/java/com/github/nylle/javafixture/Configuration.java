@@ -1,5 +1,8 @@
 package com.github.nylle.javafixture;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -25,6 +28,7 @@ public class Configuration {
      * </ul><p>
      */
     public Configuration() {
+        this.experimentalInterfaces = experimentalInterfacesIsEnabled();
     }
 
     /**
@@ -35,6 +39,7 @@ public class Configuration {
      * @param streamSize the exact size of the result stream when creating many objects at once
      */
     public Configuration(final int maxCollectionSize, final int minCollectionSize, final int streamSize) {
+        this();
         this.maxCollectionSize = maxCollectionSize;
         this.minCollectionSize = minCollectionSize;
         this.streamSize = streamSize;
@@ -50,9 +55,7 @@ public class Configuration {
      * @param usePositiveNumbersOnly whether to generate only positive numbers including 0
      */
     public Configuration(final int maxCollectionSize, final int minCollectionSize, final int streamSize, final boolean usePositiveNumbersOnly) {
-        this.maxCollectionSize = maxCollectionSize;
-        this.minCollectionSize = minCollectionSize;
-        this.streamSize = streamSize;
+        this(maxCollectionSize, minCollectionSize, streamSize);
         this.usePositiveNumbersOnly = usePositiveNumbersOnly;
     }
 
@@ -168,5 +171,16 @@ public class Configuration {
      */
     public Fixture fixture() {
         return new Fixture(this);
+    }
+
+    private boolean experimentalInterfacesIsEnabled() {
+        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("javafixture/com.github.nylle.javafixture.experimetalInterfaces")) {
+            if(in == null) {
+                return false;
+            }
+            return new BufferedReader(new InputStreamReader(in)).lines().findFirst().map(x -> x.equals("enabled")).orElse(false);
+        } catch(Exception ex) {
+            return false;
+        }
     }
 }

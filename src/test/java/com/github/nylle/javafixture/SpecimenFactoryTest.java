@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import com.github.nylle.javafixture.specimen.AbstractSpecimen;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
@@ -16,6 +17,14 @@ import com.github.nylle.javafixture.specimen.TimeSpecimen;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithAbstractImplementation;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithGenericImplementation;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithImplementation;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithoutImplementation;
+import com.github.nylle.javafixture.testobjects.abstractclasses.GenericAbstractClassTUWithGenericImplementationT;
+import com.github.nylle.javafixture.testobjects.abstractclasses.GenericAbstractClassTUWithGenericImplementationTU;
+import com.github.nylle.javafixture.testobjects.abstractclasses.GenericAbstractClassTUWithGenericImplementationU;
+import com.github.nylle.javafixture.testobjects.abstractclasses.GenericAbstractClassWithImplementation;
 import com.github.nylle.javafixture.testobjects.example.IContract;
 import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationT;
 import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationTU;
@@ -175,6 +184,94 @@ class SpecimenFactoryTest {
             @DisplayName("generic implementation only uses second type-argument of generic interface")
             void ifGenericImplementationOnlyUsesSecondTypeArgumentOfGenericInterface() {
                 assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {}))
+                        .isExactlyInstanceOf(GenericSpecimen.class);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("For abstract classes")
+    class AbstractClasses {
+
+        Context context = new Context(Configuration.configure().experimentalInterfaces(true));
+
+        @TestWithCases
+        @TestCase(bool1 = true, class2 = ObjectSpecimen.class)
+        @TestCase(bool1 = false, class2 = AbstractSpecimen.class)
+        @DisplayName("only scans for sub-classes if experimentalInterfaces is")
+        void abstractImplementationsAreOnlySupportedIfExperimentalInterfacesAreEnabled(boolean experimental, Class<?> expected) {
+            var context = new Context(Configuration.configure().experimentalInterfaces(experimental));
+
+            assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(AbstractClassWithImplementation.class))).isExactlyInstanceOf(expected);
+        }
+
+        @Nested
+        @DisplayName("creates AbstractSpecimen if")
+        class CreatesAbstractSpecimen {
+
+            @Test
+            @DisplayName("no subclasses found")
+            void createsAbstractSpecimenIfNoSubclassFound() {
+                assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(AbstractClassWithoutImplementation.class)))
+                        .isExactlyInstanceOf(AbstractSpecimen.class);
+            }
+
+            @Test
+            @DisplayName("only abstract subclasses found")
+            void createsAbstractSpecimenIfOnlyAbstractSubclassesFound() {
+                assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(AbstractClassWithAbstractImplementation.class)))
+                        .isExactlyInstanceOf(AbstractSpecimen.class);
+            }
+
+            @Test
+            @DisplayName("subclass is generic and superclass is not")
+            void createsAbstractSpecimenIfSubclassIsGenericAndSuperclassIsNot() {
+                assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(AbstractClassWithGenericImplementation.class)))
+                        .isExactlyInstanceOf(AbstractSpecimen.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("creates ObjectSpecimen if")
+        class CreatesObjectSpecimen {
+
+            @Test
+            @DisplayName("subclass is not generic and superclass is not generic")
+            void createsObjectSpecimenIfBothSubclassAndSuperclassAreNotGeneric() {
+                assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(AbstractClassWithImplementation.class)))
+                        .isExactlyInstanceOf(ObjectSpecimen.class);
+            }
+
+            @Test
+            @DisplayName("subclass is not generic and superclass is generic")
+            void createsObjectSpecimenIfSubclassIsNotGenericAndSuperclassIs() {
+                assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericAbstractClassWithImplementation<Integer, String>>() {}))
+                        .isExactlyInstanceOf(ObjectSpecimen.class);
+            }
+        }
+
+        @Nested
+        @DisplayName("creates GenericSpecimen if")
+        class CreatesGenericSpecimen {
+
+            @Test
+            @DisplayName("subclass is generic and superclass is generic")
+            void createsGenericSpecimenIfSubclassAndSuperclassAreGeneric() {
+                assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericAbstractClassTUWithGenericImplementationTU<String, Integer>>() {}))
+                        .isExactlyInstanceOf(GenericSpecimen.class);
+            }
+
+            @Test
+            @DisplayName("generic subclass only uses first type-argument of generic superclass")
+            void createsGenericSpecimenIfGenericSubclassOnlyUsesFirstTypeArgumentOfGenericSuperclass() {
+                assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericAbstractClassTUWithGenericImplementationT<String, Integer>>() {}))
+                        .isExactlyInstanceOf(GenericSpecimen.class);
+            }
+
+            @Test
+            @DisplayName("generic subclass only uses second type-argument of generic superclass")
+            void createsGenericSpecimenIfGenericSubclassOnlyUsesSecondTypeArgumentOfGenericSuperclass() {
+                assertThat(new SpecimenFactory(context).build(new SpecimenType<GenericAbstractClassTUWithGenericImplementationU<String, Integer>>() {}))
                         .isExactlyInstanceOf(GenericSpecimen.class);
             }
         }

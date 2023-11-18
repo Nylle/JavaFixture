@@ -51,13 +51,21 @@ public class SpecimenFactory {
             return new MapSpecimen<>(type, context, this);
         }
 
-        if (type.isParameterized() && !type.isInterface()) {
+        if (type.isParameterized() && !type.isInterface() && !type.isAbstract()) {
             return new GenericSpecimen<>(type, context, this);
         }
 
         if (type.isParameterized() && type.isInterface()) {
             if (context.getConfiguration().experimentalInterfaces()) {
                 return implementationOrProxy(type);
+            }
+
+            return new GenericSpecimen<>(type, context, this);
+        }
+
+        if (type.isParameterized() && type.isAbstract()) {
+            if (context.getConfiguration().experimentalInterfaces() && type.isAbstract()) {
+                return subClassOrProxy(type);
             }
 
             return new GenericSpecimen<>(type, context, this);
@@ -80,6 +88,9 @@ public class SpecimenFactory {
         }
 
         if (type.isAbstract()) {
+            if (context.getConfiguration().experimentalInterfaces()) {
+                return subClassOrProxy(type);
+            }
             return new AbstractSpecimen<>(type, context, this);
         }
 
@@ -112,6 +123,32 @@ public class SpecimenFactory {
                     this);
         } catch (Exception ex) {
             return new InterfaceSpecimen<>(interfaceType, context, this);
+        }
+    }
+
+    private <T> ISpecimen<T> subClassOrProxy(final SpecimenType<T> abstractType) {
+        try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
+            var subClasses = scanResult.getSubclasses(abstractType.asClass()).stream()
+                    .filter(x -> !x.isAbstract())
+                    .filter(x -> isNotParametrized(x) || abstractType.isParameterized())
+                    .filter(x -> isNotParametrized(x) || typeParametersMatch(x, abstractType))
+                    .collect(Collectors.toList());
+
+            if (subClasses.isEmpty()) {
+                return new AbstractSpecimen<>(abstractType, context, this);
+            }
+
+            var implementingClass = subClasses.get(new Random().nextInt(subClasses.size()));
+            if (isNotParametrized(implementingClass)) {
+                return new ObjectSpecimen<>(SpecimenType.fromClass(implementingClass.loadClass()), context, this);
+            }
+
+            return new GenericSpecimen<>(
+                    SpecimenType.fromRawType(implementingClass.loadClass(), resolveTypeArguments(abstractType, implementingClass)),
+                    context,
+                    this);
+        } catch (Exception ex) {
+            return new AbstractSpecimen<>(abstractType, context, this);
         }
     }
 

@@ -281,10 +281,11 @@ class SpecimenTypeTest {
     void getGenericTypeArgument() {
         var sut = new SpecimenType<Map<String, Optional<Integer>>>() {};
 
-        assertThat(sut.getGenericTypeArgument(0)).isEqualTo(String.class);
-        assertThat(sut.getGenericTypeArgument(1)).isInstanceOf(ParameterizedType.class);
-        assertThat(((ParameterizedType) (sut.getGenericTypeArgument(1))).getRawType()).isEqualTo(Optional.class);
-        assertThat(((ParameterizedType) (sut.getGenericTypeArgument(1))).getActualTypeArguments()[0]).isEqualTo(Integer.class);
+        assertThat(sut.getGenericTypeArgument(0).asClass()).isEqualTo(String.class);
+        assertThat(sut.getGenericTypeArgument(1).asClass()).isEqualTo(Optional.class);
+        assertThat(sut.getGenericTypeArgument(1).asParameterizedType()).isInstanceOf(ParameterizedType.class);
+        assertThat(sut.getGenericTypeArgument(1).asParameterizedType().getRawType()).isEqualTo(Optional.class);
+        assertThat(sut.getGenericTypeArgument(1).asParameterizedType().getActualTypeArguments()[0]).isEqualTo(Integer.class);
 
         assertThatExceptionOfType(SpecimenTypeException.class)
                 .isThrownBy(() -> SpecimenType.fromClass(String.class).getGenericTypeArgument(0))
@@ -352,7 +353,7 @@ class SpecimenTypeTest {
             assertThat(actual).hasSize(2);
             assertThat(actual.get("T").asClass()).isEqualTo(String.class);
             assertThat(actual.get("U").asClass()).isEqualTo(Optional.class);
-            assertThat(actual.get("U").getGenericTypeArgument(0)).isEqualTo(Integer.class);
+            assertThat(actual.get("U").getGenericTypeArgument(0).asClass()).isEqualTo(Integer.class);
         }
 
         @Test

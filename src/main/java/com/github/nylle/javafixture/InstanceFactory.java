@@ -166,7 +166,7 @@ public class InstanceFactory {
             for (int i = 0; i < method.getParameterCount(); i++) {
                 var genericParameterType = method.getGenericParameterTypes()[i];
                 var specimen = specimenFactory.build(type.isParameterized()
-                        ? SpecimenType.fromClass(type.getGenericTypeArgument(i))
+                        ? type.getGenericTypeArgument(i)
                         : SpecimenType.fromClass(genericParameterType));
                 var o = specimen.create(customizationContext, new Annotation[0]);
                 arguments.add(o);

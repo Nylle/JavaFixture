@@ -68,47 +68,43 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public ParameterizedType asParameterizedType() {
-        if (isParameterized()) {
-            return (ParameterizedType) type;
+        if (!isParameterized()) {
+            throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
         }
-
-        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
-    }
-
-    public Type[] getGenericTypeArguments() {
-        if (isParameterized()) {
-            return ((ParameterizedType) type).getActualTypeArguments();
-        }
-
-        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
-    }
-
-    public Type getGenericTypeArgument(final int index) {
-        return getGenericTypeArguments()[index];
+        return (ParameterizedType) type;
     }
 
     public String[] getTypeParameterNames() {
-        if (isParameterized()) {
-            return Stream.of(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
+        if (!isParameterized()) {
+            throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
         }
-
-        throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
+        return Stream.of(asClass().getTypeParameters()).map(x -> x.getName()).toArray(size -> new String[size]);
     }
 
     public String getTypeParameterName(final int index) {
         return getTypeParameterNames()[index];
     }
 
+    public Type[] getGenericTypeArguments() {
+        if (!isParameterized()) {
+            throw new SpecimenTypeException(format("%s is not a ParameterizedType", type));
+        }
+        return ((ParameterizedType) type).getActualTypeArguments();
+    }
+
+    public <A> SpecimenType<A> getGenericTypeArgument(int index) {
+        return SpecimenType.fromClass(getGenericTypeArguments()[index]);
+    }
+
     public <A> Map<String, A> getTypeParameterNamesAndTypes(Function<SpecimenType<?>, A> f) {
         if (!isParameterized()) {
             return Map.of();
         }
-
         return IntStream.range(0, this.getGenericTypeArguments().length)
                 .boxed()
                 .collect(toMap(
                         i -> this.getTypeParameterName(i),
-                        i -> f.apply(SpecimenType.fromClass(this.getGenericTypeArgument(i)))));
+                        i -> f.apply(this.getGenericTypeArgument(i))));
     }
 
     public Class<?> getComponentType() {

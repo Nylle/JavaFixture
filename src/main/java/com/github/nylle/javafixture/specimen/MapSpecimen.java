@@ -49,8 +49,8 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         this.context = context;
 
         if (type.isParameterized()) {
-            this.keySpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
-            this.valueSpecimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(1)));
+            this.keySpecimen = specimenFactory.build(type.getGenericTypeArgument(0));
+            this.valueSpecimen = specimenFactory.build(type.getGenericTypeArgument(1));
         }
     }
 
@@ -72,7 +72,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
     private Map<K, V> createFromConcreteType(final SpecimenType<T> type) {
         if (type.asClass().equals(EnumMap.class)) {
-            return (Map<K, V>) new EnumMap((Class<K>) type.getGenericTypeArgument(0));
+            return (Map<K, V>) new EnumMap(type.getGenericTypeArgument(0).asClass());
         }
 
         try {

@@ -43,7 +43,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         this.context = context;
 
         if (type.isParameterized()) {
-            this.specimen = specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(0)));
+            this.specimen = specimenFactory.build(type.getGenericTypeArgument(0));
         }
         this.instanceFactory = new InstanceFactory(specimenFactory);
     }

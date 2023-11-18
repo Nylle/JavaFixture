@@ -93,6 +93,7 @@ class SpecimenFactoryTest {
     }
 
     @Nested
+    @DisplayName("For interfaces")
     class Interfaces {
 
         Context context = new Context(Configuration.configure().experimentalInterfaces(true));
@@ -100,6 +101,7 @@ class SpecimenFactoryTest {
         @TestWithCases
         @TestCase(bool1 = true, class2 = ObjectSpecimen.class)
         @TestCase(bool1 = false, class2 = InterfaceSpecimen.class)
+        @DisplayName("only scans for implementations if experimentalInterfaces is")
         void interfaceImplementationsAreOnlySupportedIfExperimentalInterfacesAreEnabled(boolean experimental, Class<?> expected) {
             var context = new Context(Configuration.configure().experimentalInterfaces(experimental));
 

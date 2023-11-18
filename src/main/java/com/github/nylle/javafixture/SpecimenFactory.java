@@ -20,9 +20,6 @@ import io.github.classgraph.ScanResult;
 import java.lang.reflect.Type;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toMap;
 
 public class SpecimenFactory {
 
@@ -127,11 +124,7 @@ public class SpecimenFactory {
     }
 
     private static <T> Type[] resolveTypeArguments(SpecimenType<T> genericType, ClassInfo implementingClass) {
-        var typeParameters = IntStream.range(0, genericType.getGenericTypeArguments().length)
-                .boxed()
-                .collect(toMap(
-                        i -> genericType.getTypeParameterName(i),
-                        i -> SpecimenType.fromClass(genericType.getGenericTypeArgument(i))));
+        var typeParameters = genericType.getTypeParameterNamesAndTypes(x -> x);
 
         return implementingClass.getTypeSignature().getTypeParameters().stream()
                 .map(x -> typeParameters.getOrDefault(x.getName(), null))

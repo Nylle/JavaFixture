@@ -12,9 +12,6 @@ import com.github.nylle.javafixture.SpecimenType;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toMap;
 
 public class GenericSpecimen<T> implements ISpecimen<T> {
 
@@ -50,12 +47,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         this.context = context;
         this.specimenFactory = specimenFactory;
         this.instanceFactory = new InstanceFactory(specimenFactory);
-
-        this.specimens = IntStream.range(0, type.getGenericTypeArguments().length)
-                .boxed()
-                .collect(toMap(
-                        i -> type.getTypeParameterName(i),
-                        i -> specimenFactory.build(SpecimenType.fromClass(type.getGenericTypeArgument(i)))));
+        this.specimens = type.getTypeParameterNamesAndTypes(x -> specimenFactory.build(x));
     }
 
     @Override

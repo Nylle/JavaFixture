@@ -14,11 +14,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class SpecimenType<T> extends TypeCapture<T> {
 
@@ -94,6 +97,18 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public String getTypeParameterName(final int index) {
         return getTypeParameterNames()[index];
+    }
+
+    public <A> Map<String, A> getTypeParameterNamesAndTypes(Function<SpecimenType<?>, A> f) {
+        if (!isParameterized()) {
+            return Map.of();
+        }
+
+        return IntStream.range(0, this.getGenericTypeArguments().length)
+                .boxed()
+                .collect(toMap(
+                        i -> this.getTypeParameterName(i),
+                        i -> f.apply(SpecimenType.fromClass(this.getGenericTypeArgument(i)))));
     }
 
     public Class<?> getComponentType() {

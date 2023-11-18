@@ -335,6 +335,38 @@ class SpecimenTypeTest {
                 .withNoCause();
     }
 
+    @Nested
+    class GetTypeParameterNamesAndTypes {
+
+        @Test
+        void returnsEmptyMapIfNotAParametrizedType() {
+            assertThat(SpecimenType.fromClass(String.class).getTypeParameterNamesAndTypes(x -> x)).isEmpty();
+        }
+
+        @Test
+        void returnsMapOfTypeParameterNamesAndSpecimenTypes() {
+            var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {};
+
+            var actual = sut.getTypeParameterNamesAndTypes(x -> x);
+
+            assertThat(actual).hasSize(2);
+            assertThat(actual.get("T").asClass()).isEqualTo(String.class);
+            assertThat(actual.get("U").asClass()).isEqualTo(Optional.class);
+            assertThat(actual.get("U").getGenericTypeArgument(0)).isEqualTo(Integer.class);
+        }
+
+        @Test
+        void takesAValueMapper() {
+            var sut = new SpecimenType<TestObjectGeneric<String, Optional<Integer>>>() {};
+
+            var actual = sut.getTypeParameterNamesAndTypes(x -> x.asClass());
+
+            assertThat(actual).hasSize(2);
+            assertThat(actual.get("T")).isEqualTo(String.class);
+            assertThat(actual.get("U")).isEqualTo(Optional.class);
+        }
+    }
+
     @Test
     void getComponentType() {
         assertThat(new SpecimenType<int[]>() {}.getComponentType()).isEqualTo(int.class);

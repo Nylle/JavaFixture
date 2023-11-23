@@ -15,7 +15,6 @@ The purpose of this project is to generate full object graphs for use in test su
 - [Configuration](#configuration)
 - [JUnit5 Support](#junit5-support)
 - [Parameterized Tests](#parameterized-tests)
-- [Experimental Features](#experimental-features)
 
 
 ## Getting Started
@@ -322,21 +321,3 @@ void testStringLength(String input, @Fixture TestDto fixture) {
 The test will be run for every `@TestCase`-annotation injecting the provided and the randomly generated values into the test's arguments.
 
 **The random values will be identical for all test-cases!**
-
-### Experimental Features
-Since version [2.10.0](https://github.com/Nylle/JavaFixture/releases/tag/2.10.0), a new experimental feature is available. If you enable `experimentalInterfaces`, Fixture will attempt to find implementations for an interface (or non-abstract subclasses of an abstract class) on your classpath and create those instead of wrapping the interface with a proxy. If no suitable implementation is found, the proxy will be created as a fallback.
-
-```java
-@Test
-void canCreateGenericObjectFromInterfaceWithMismatchingNumberOfTypeParameters() {
-    var fixture = new Fixture(Configuration.configure().experimentalInterfaces(true));
-
-    var result = fixture.create(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {});
-
-    assertThat(result).isInstanceOf(GenericInterfaceTUWithGenericImplementationUImpl.class);
-    assertThat(result.publicField).isInstanceOf(Integer.class);
-    assertThat(result.getT()).isInstanceOf(String.class);
-    assertThat(result.getU()).isInstanceOf(Integer.class);
-}
-```
-This setting is not supported with annotations. However, to enable this feature globally, place a file `javafixture/com.github.nylle.javafixture.experimetalInterfaces` on your classpath with the content "enabled". To disable it, either delete the file or change the content to something else, e.g. "disabled".

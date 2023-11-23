@@ -4,6 +4,7 @@ import com.github.nylle.javafixture.specimen.AbstractSpecimen;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
+import com.github.nylle.javafixture.specimen.ExperimentalAbstractSpecimen;
 import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
@@ -47,17 +48,9 @@ public class SpecimenFactory {
             return new GenericSpecimen<>(type, context, this);
         }
 
-        if (type.isParameterized() && type.isInterface()) {
+        if (type.isParameterized() && (type.isInterface() || type.isAbstract())) {
             if (context.getConfiguration().experimentalInterfaces()) {
-                return implementationOrProxy(type);
-            }
-
-            return new GenericSpecimen<>(type, context, this);
-        }
-
-        if (type.isParameterized() && type.isAbstract()) {
-            if (context.getConfiguration().experimentalInterfaces() && type.isAbstract()) {
-                return subClassOrProxy(type);
+                return experimentalAbstract(type);
             }
 
             return new GenericSpecimen<>(type, context, this);
@@ -73,7 +66,7 @@ public class SpecimenFactory {
 
         if (type.isInterface()) {
             if (context.getConfiguration().experimentalInterfaces()) {
-                return implementationOrProxy(type);
+                return experimentalAbstract(type);
             }
 
             return new InterfaceSpecimen<>(type, context, this);
@@ -81,7 +74,7 @@ public class SpecimenFactory {
 
         if (type.isAbstract()) {
             if (context.getConfiguration().experimentalInterfaces()) {
-                return subClassOrProxy(type);
+                return experimentalAbstract(type);
             }
             return new AbstractSpecimen<>(type, context, this);
         }
@@ -93,20 +86,8 @@ public class SpecimenFactory {
         return new ObjectSpecimen<>(type, context, this);
     }
 
-    private <T> ISpecimen<T> implementationOrProxy(final SpecimenType<T> interfaceType) {
-        return new ClassPathScanner().findRandomClassFor(interfaceType)
-                .map(x -> x.isParameterized()
-                        ? new GenericSpecimen<>(x, context, this)
-                        : new ObjectSpecimen<>(x, context, this))
-                .orElseGet(() -> new InterfaceSpecimen<>(interfaceType, context, this));
-    }
-
-    private <T> ISpecimen<T> subClassOrProxy(final SpecimenType<T> abstractType) {
-        return new ClassPathScanner().findRandomClassFor(abstractType)
-                .map(x -> x.isParameterized()
-                        ? new GenericSpecimen<>(x, context, this)
-                        : new ObjectSpecimen<>(x, context, this))
-                .orElseGet(() -> new AbstractSpecimen<>(abstractType, context, this));
+    private <T> ISpecimen<T> experimentalAbstract(SpecimenType<T> interfaceType) {
+        return new ExperimentalAbstractSpecimen<>(interfaceType, new ClassPathScanner().findAllClassesFor(interfaceType), context, this);
     }
 }
 

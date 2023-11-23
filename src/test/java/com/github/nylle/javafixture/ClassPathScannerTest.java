@@ -23,104 +23,104 @@ class ClassPathScannerTest {
     private ClassPathScanner sut = new ClassPathScanner();
 
     @Nested
-    @DisplayName("trying to resolve a random implementation of an interface")
-    class FindRandomClassForInterface {
+    @DisplayName("trying to resolve all implementations of an interface class")
+    class FindAllClassesForInterface {
 
         @Test
-        @DisplayName("returns an empty Optional if none was found")
-        void returnsAnEmptyOptionalIfNoneWasFound() {
-            var actual = sut.findRandomClassFor(SpecimenType.fromClass(InterfaceWithoutImplementation.class));
+        @DisplayName("returns an empty list if none was found")
+        void returnsAnEmptyListIfNoneWasFound() {
+            var actual = sut.findAllClassesFor(SpecimenType.fromClass(InterfaceWithoutImplementation.class));
 
             assertThat(actual).isEmpty();
         }
 
         @Test
-        @DisplayName("returns an empty Optional if not an interface nor abstract")
-        void returnsAnEmptyOptionalIfNotAnInterfaceNorAbstract() {
-            var actual = sut.findRandomClassFor(SpecimenType.fromClass(String.class));
+        @DisplayName("returns an empty list if not an interface nor abstract")
+        void returnsAnEmptyListIfNotAnInterfaceNorAbstract() {
+            var actual = sut.findAllClassesFor(SpecimenType.fromClass(String.class));
 
             assertThat(actual).isEmpty();
         }
 
         @Test
-        @DisplayName("returns an empty Optional if exception was thrown")
-        void returnsAnEmptyOptionalIfExceptionWasThrown() {
+        @DisplayName("returns an empty list if exception was thrown")
+        void returnsAnEmptyListIfExceptionWasThrown() {
             var throwingType = Mockito.mock(SpecimenType.class);
             doThrow(new IllegalArgumentException("expected for test")).when(throwingType).isInterface();
 
-            var actual = sut.findRandomClassFor(throwingType);
+            var actual = sut.findAllClassesFor(throwingType);
 
             assertThat(actual).isEmpty();
         }
 
         @Test
-        @DisplayName("returns a SpecimenType representing an implementing class")
-        void returnsASpecimenTypeRepresentingAnImplementingClass() {
-            var actual = sut.findRandomClassFor(SpecimenType.fromClass(InterfaceWithImplementation.class));
+        @DisplayName("returns a list of SpecimenType all representing an implementing class")
+        void returnsSpecimenTypesRepresentingImplementingClasses() {
+            var actual = sut.findAllClassesFor(SpecimenType.fromClass(InterfaceWithImplementation.class));
 
-            assertThat(actual).isNotEmpty();
-            assertThat(actual.get().asClass()).isEqualTo(InterfaceWithImplementationImpl.class);
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).asClass()).isEqualTo(InterfaceWithImplementationImpl.class);
         }
 
         @Test
-        @DisplayName("returns a SpecimenType representing an implementing generic class")
-        void returnsASpecimenTypeRepresentingAnImplementingGenericClass() {
-            var actual = sut.findRandomClassFor(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {});
+        @DisplayName("returns a list of SpecimenType all representing an implementing generic class")
+        void returnsSpecimenTypesRepresentingGenericImplementations() {
+            var actual = sut.findAllClassesFor(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {});
 
-            assertThat(actual).isNotEmpty();
-            assertThat(actual.get().asClass()).isEqualTo(GenericInterfaceTUWithGenericImplementationUImpl.class);
-            assertThat(actual.get().getGenericTypeArgument(0).asClass()).isEqualTo(Integer.class);
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).asClass()).isEqualTo(GenericInterfaceTUWithGenericImplementationUImpl.class);
+            assertThat(actual.get(0).getGenericTypeArgument(0).asClass()).isEqualTo(Integer.class);
         }
     }
 
     @Nested
-    @DisplayName("trying to resolve a random implementation of an abstract class")
-    class FindRandomClassForAbstractClass {
+    @DisplayName("trying to resolve all subclasses of an abstract class")
+    class FindAllClassesForAbstractClass {
 
         @Test
-        @DisplayName("returns an empty Optional if none was found")
-        void returnsAnEmptyOptionalIfNoneWasFound() {
-            var actual = sut.findRandomClassFor(SpecimenType.fromClass(AbstractClassWithoutImplementation.class));
+        @DisplayName("returns an empty list if none was found")
+        void returnsAnEmptyListIfNoneWasFound() {
+            var actual = sut.findAllClassesFor(SpecimenType.fromClass(AbstractClassWithoutImplementation.class));
 
             assertThat(actual).isEmpty();
         }
 
         @Test
-        @DisplayName("returns an empty Optional if not an interface nor abstract")
-        void returnsAnEmptyOptionalIfNotAnInterfaceNorAbstract() {
-            var actual = sut.findRandomClassFor(SpecimenType.fromClass(String.class));
+        @DisplayName("returns an empty list if not an interface nor abstract")
+        void returnsAnEmptyListIfNotAnInterfaceNorAbstract() {
+            var actual = sut.findAllClassesFor(SpecimenType.fromClass(String.class));
 
             assertThat(actual).isEmpty();
         }
 
         @Test
-        @DisplayName("returns an empty Optional if exception was thrown")
-        void returnsAnEmptyOptionalIfExceptionWasThrown() {
+        @DisplayName("returns an empty list if exception was thrown")
+        void returnsAnEmptyListIfExceptionWasThrown() {
             var throwingType = Mockito.mock(SpecimenType.class);
             doThrow(new IllegalArgumentException("expected for test")).when(throwingType).isInterface();
 
-            var actual = sut.findRandomClassFor(throwingType);
+            var actual = sut.findAllClassesFor(throwingType);
 
             assertThat(actual).isEmpty();
         }
 
         @Test
-        @DisplayName("returns a SpecimenType representing an extending class")
-        void returnsASpecimenTypeRepresentingAnImplementingClass() {
-            var actual = sut.findRandomClassFor(SpecimenType.fromClass(AbstractClassWithImplementation.class));
+        @DisplayName("returns SpecimenTypes all representing a subclass")
+        void returnsSpecimenTypesRepresentingSubclasses() {
+            var actual = sut.findAllClassesFor(SpecimenType.fromClass(AbstractClassWithImplementation.class));
 
-            assertThat(actual).isNotEmpty();
-            assertThat(actual.get().asClass()).isEqualTo(AbstractClassWithImplementationImpl.class);
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).asClass()).isEqualTo(AbstractClassWithImplementationImpl.class);
         }
 
         @Test
-        @DisplayName("returns a SpecimenType representing an implementing generic class")
-        void returnsASpecimenTypeRepresentingAnImplementingGenericClass() {
-            var actual = sut.findRandomClassFor(new SpecimenType<GenericAbstractClassTUWithGenericImplementationU<String, Integer>>() {});
+        @DisplayName("returns SpecimenTypes all representing an implementing generic class")
+        void returnsSpecimenTypesRepresentingGenericSubclasses() {
+            var actual = sut.findAllClassesFor(new SpecimenType<GenericAbstractClassTUWithGenericImplementationU<String, Integer>>() {});
 
-            assertThat(actual).isNotEmpty();
-            assertThat(actual.get().asClass()).isEqualTo(GenericAbstractClassTUWithGenericImplementationUImpl.class);
-            assertThat(actual.get().getGenericTypeArgument(0).asClass()).isEqualTo(Integer.class);
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).asClass()).isEqualTo(GenericAbstractClassTUWithGenericImplementationUImpl.class);
+            assertThat(actual.get(0).getGenericTypeArgument(0).asClass()).isEqualTo(Integer.class);
         }
     }
 }

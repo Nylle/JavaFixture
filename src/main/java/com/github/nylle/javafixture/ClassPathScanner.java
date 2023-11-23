@@ -6,31 +6,15 @@ import io.github.classgraph.ScanResult;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class ClassPathScanner {
 
-    public <T> Optional<SpecimenType<T>> findRandomClassFor(SpecimenType<T> type) {
+    public <T> List<SpecimenType<? extends T>> findAllClassesFor(SpecimenType<T> type) {
         try (ScanResult scanResult = new ClassGraph().enableAllInfo().scan()) {
-
-            var result = filter(scanResult, type);
-
-            if (result.isEmpty()) {
-                return Optional.empty();
-            }
-
-            var implementingClass = result.get(new Random().nextInt(result.size()));
-
-            if (isNotParametrized(implementingClass)) {
-                return Optional.of(SpecimenType.fromClass(implementingClass.loadClass()));
-            }
-
-            return Optional.of(SpecimenType.fromRawType(implementingClass.loadClass(), resolveTypeArguments(type, implementingClass)));
-
+            return filter(scanResult, type).stream().map(x -> specimenTypeOf(x, type)).collect(Collectors.toList());
         } catch (Exception ex) {
-            return Optional.empty();
+            return List.of();
         }
     }
 
@@ -51,6 +35,14 @@ public class ClassPathScanner {
         }
 
         return List.of();
+    }
+
+    private static <T, R extends T> SpecimenType<R> specimenTypeOf(ClassInfo implementingClass, SpecimenType<T> type) {
+        if (isNotParametrized(implementingClass)) {
+            return SpecimenType.fromClass(implementingClass.loadClass());
+        }
+
+        return SpecimenType.fromRawType(implementingClass.loadClass(), resolveTypeArguments(type, implementingClass));
     }
 
     private static boolean isNotParametrized(ClassInfo classInfo) {

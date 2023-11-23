@@ -23,7 +23,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.10.0</version>
+    <version>2.10.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -324,7 +324,7 @@ The test will be run for every `@TestCase`-annotation injecting the provided and
 **The random values will be identical for all test-cases!**
 
 ### Experimental Features
-Since version 2.10.0, a new experimental feature is available. If you enable `experimentalInterfaces`, Fixture will attempt to find implementations for an interface (or non-abstract subclasses of an abstract class) on your classpath and create those instead of wrapping the interface with a proxy. If no suitable implementation is found, the proxy will be created as a fallback.
+Since version [2.10.0](https://github.com/Nylle/JavaFixture/releases/tag/2.10.0), a new experimental feature is available. If you enable `experimentalInterfaces`, Fixture will attempt to find implementations for an interface (or non-abstract subclasses of an abstract class) on your classpath and create those instead of wrapping the interface with a proxy. If no suitable implementation is found, the proxy will be created as a fallback.
 
 ```java
 @Test

@@ -24,7 +24,8 @@
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <junit-jupiter-engine.version>5.5.1</junit-jupiter-engine.version>
-        <mockito.version>4.5.1</mockito.version>
+        <mockito.version>5.11.0</mockito.version>
+        <assertj-core.version>3.25.1</assertj-core.version>
     </properties>
 
     <dependencies>
@@ -80,18 +81,12 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.23.1</version>
+            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>

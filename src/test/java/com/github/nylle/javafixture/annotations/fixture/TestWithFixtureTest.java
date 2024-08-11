@@ -7,6 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,5 +34,13 @@ public class TestWithFixtureTest {
     void injectTempDirViaJunit(Integer intValue, @TempDir Path injectedTempDir) {
         assertThat(injectedTempDir).isEqualTo(tempPath);
         assertThat( intValue ).isNotNull();
+    }
+
+    @TestWithFixture(minCollectionSize = 3, maxCollectionSize = 9)
+    @DisplayName("sets should have at least minCollectionSize and at most MaxCollectionSize elements")
+    void setsHaveEnoughElements( Set<Object> sut ) {
+        assertThat(sut).hasSizeGreaterThanOrEqualTo(3)
+                       .hasSizeLessThanOrEqualTo(9);
+
     }
 }

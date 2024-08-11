@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +38,11 @@ public class JavaFixtureClassExtensionTest {
         assertThat( positiveValue ).isPositive();
         assertThat( collection.size()).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
         collection.forEach( member -> assertThat(member).isPositive());
+    }
+
+    @FixturedTest(minCollectionSize = 2, maxCollectionSize = 2)
+    void setsShouldContainEnoughElements( Set<Object> sut) {
+        assertThat(sut).hasSize(2);
     }
 
     @FixturedTest

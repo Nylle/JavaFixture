@@ -33,14 +33,14 @@ public class TestWithFixtureTest {
     @DisplayName("Annotated parameters will work when they are at the end of the list")
     void injectTempDirViaJunit(Integer intValue, @TempDir Path injectedTempDir) {
         assertThat(injectedTempDir).isEqualTo(tempPath);
-        assertThat( intValue ).isNotNull();
+        assertThat(intValue).isNotNull();
     }
 
     @TestWithFixture(minCollectionSize = 3, maxCollectionSize = 9)
     @DisplayName("sets should have at least minCollectionSize and at most MaxCollectionSize elements")
-    void setsHaveEnoughElements( Set<Object> sut ) {
+    void setsHaveEnoughElements(Set<Object> sut) {
         assertThat(sut).hasSizeGreaterThanOrEqualTo(3)
-                       .hasSizeLessThanOrEqualTo(9);
+                .hasSizeLessThanOrEqualTo(9);
 
     }
 }

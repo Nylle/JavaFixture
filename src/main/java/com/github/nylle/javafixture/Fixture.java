@@ -29,7 +29,7 @@ public class Fixture {
      *
      * @param configuration the configuration
      */
-    public Fixture( Configuration configuration ) {
+    public Fixture(Configuration configuration) {
         this.configuration = configuration;
     }
 
@@ -70,7 +70,7 @@ public class Fixture {
      * @param <T>  the type of the object to be created
      * @return a new object of the specified {@code Class<T>}
      */
-    public <T> T create( final Class<T> type ) {
+    public <T> T create(final Class<T> type) {
         return create(SpecimenType.fromClass(type));
     }
 
@@ -84,7 +84,7 @@ public class Fixture {
      * This feature is deprecated without replacement.
      */
     @Deprecated(forRemoval = true)
-    public <T> Optional<T> createOptional( final Class<T> type ) {
+    public <T> Optional<T> createOptional(final Class<T> type) {
         return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createOptional();
     }
 
@@ -95,17 +95,17 @@ public class Fixture {
      * @param <T>  the type of the object to be created
      * @return a new object of the specified type {@code T}
      */
-    public <T> T create( final SpecimenType<T> type ) {
+    public <T> T create(final SpecimenType<T> type) {
         var res = new SpecimenBuilder<>(type, configuration).create();
-        if ( type.isCollection() ) {
-            var o = ( (Collection<?>) res ).toArray()[0];
+        if (type.isCollection()) {
+            var o = ((Collection<?>) res).toArray()[0];
             var elems = new SpecimenBuilder<>(
                     SpecimenType.fromClass(
                             o.getClass()),
                     configuration).createMany(configuration.getRandomCollectionSize())
-                                  .collect(Collectors.toList());
-            ( (Collection) res ).clear();
-            ( (Collection) res ).addAll(elems);
+                    .collect(Collectors.toList());
+            ((Collection) res).clear();
+            ((Collection) res).addAll(elems);
         }
         return res;
     }
@@ -117,7 +117,7 @@ public class Fixture {
      * @param <T>  the type of the object to be created
      * @return a new object of the specified type {@code T}
      */
-    public <T> T construct( final Class<T> type ) {
+    public <T> T construct(final Class<T> type) {
         return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).construct();
     }
 
@@ -128,7 +128,7 @@ public class Fixture {
      * @param <T>  the type of the object to be created
      * @return a new object of the specified type {@code T}
      */
-    public <T> T construct( final SpecimenType<T> type ) {
+    public <T> T construct(final SpecimenType<T> type) {
         return new SpecimenBuilder<>(type, configuration).construct();
     }
 
@@ -139,7 +139,7 @@ public class Fixture {
      * @param <T>  the type of the objects to be created
      * @return a {@code Stream} of objects of the specified type {@code T}
      */
-    public <T> Stream<T> createMany( final Class<T> type ) {
+    public <T> Stream<T> createMany(final Class<T> type) {
         return new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createMany();
     }
 
@@ -150,7 +150,7 @@ public class Fixture {
      * @param <T>  the type of the objects to be created
      * @return a {@code Stream} of objects of the specified type {@code T}
      */
-    public <T> Stream<T> createMany( final SpecimenType<T> type ) {
+    public <T> Stream<T> createMany(final SpecimenType<T> type) {
         return new SpecimenBuilder<>(type, configuration).createMany();
     }
 
@@ -161,7 +161,7 @@ public class Fixture {
      * @param <T>  the type of the object to be created
      * @return a builder for further customisation
      */
-    public <T> ISpecimenBuilder<T> build( final Class<T> type ) {
+    public <T> ISpecimenBuilder<T> build(final Class<T> type) {
         return new SpecimenBuilder<>(SpecimenType.fromClass(type), configuration);
     }
 
@@ -172,7 +172,7 @@ public class Fixture {
      * @param <T>  the type of the object to be created
      * @return a builder for further customisation
      */
-    public <T> ISpecimenBuilder<T> build( final SpecimenType<T> type ) {
+    public <T> ISpecimenBuilder<T> build(final SpecimenType<T> type) {
         return new SpecimenBuilder<>(type, configuration);
     }
 
@@ -184,7 +184,7 @@ public class Fixture {
      * @param type   the {@code Class<T>} based on which the objects are created
      * @param <T>    the type of the collection and the objects to be added
      */
-    public <T> void addManyTo( Collection<T> result, final Class<T> type ) {
+    public <T> void addManyTo(Collection<T> result, final Class<T> type) {
         result.addAll(new SpecimenBuilder<T>(SpecimenType.fromClass(type), configuration).createMany().collect(Collectors.toList()));
     }
 
@@ -196,7 +196,7 @@ public class Fixture {
      * @param type   the {@code SpecimenType<T>} based on which the objects are created
      * @param <T>    the type of the collection and the objects to be added
      */
-    public <T> void addManyTo( Collection<T> result, final SpecimenType<T> type ) {
+    public <T> void addManyTo(Collection<T> result, final SpecimenType<T> type) {
         result.addAll(new SpecimenBuilder<>(type, configuration).createMany().collect(Collectors.toList()));
     }
 }

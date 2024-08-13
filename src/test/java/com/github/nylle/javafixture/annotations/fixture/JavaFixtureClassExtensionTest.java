@@ -15,7 +15,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(JavaFixtureExtension.class)
-public class JavaFixtureClassExtensionTest {
+class JavaFixtureClassExtensionTest {
 
     @TempDir
     Path tempPath;
@@ -30,18 +30,18 @@ public class JavaFixtureClassExtensionTest {
     @FixturedTest
     void injectTempDirViaJunit(@TempDir Path injectedTempDir, Integer intValue) {
         assertThat(injectedTempDir).isEqualTo(tempPath);
-        assertThat( intValue ).isNotNull();
+        assertThat(intValue).isNotNull();
     }
 
     @FixturedTest(positiveNumbersOnly = true, minCollectionSize = 2, maxCollectionSize = 3)
     void useAnnotationProperties(Long positiveValue, List<Integer> collection) {
-        assertThat( positiveValue ).isPositive();
-        assertThat( collection.size()).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
-        collection.forEach( member -> assertThat(member).isPositive());
+        assertThat(positiveValue).isPositive();
+        assertThat(collection.size()).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
+        collection.forEach(member -> assertThat(member).isPositive());
     }
 
     @FixturedTest(minCollectionSize = 2, maxCollectionSize = 2)
-    void setsShouldContainEnoughElements( Set<Object> sut) {
+    void setsShouldContainEnoughElements(Set<Object> sut) {
         assertThat(sut).hasSize(2);
     }
 
@@ -51,7 +51,7 @@ public class JavaFixtureClassExtensionTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1,2})
+    @ValueSource(ints = {1, 2})
     @DisplayName("you can mix @FixturedTest with other tests in the same class")
     void ignoreExtensionwhenTestIsNotFixtureTest(int fromJunit) {
         assertThat(fromJunit).isGreaterThanOrEqualTo(1).isLessThanOrEqualTo(2);

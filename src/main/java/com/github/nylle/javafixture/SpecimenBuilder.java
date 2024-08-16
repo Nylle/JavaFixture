@@ -35,7 +35,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
 
     /**
      * @return a new {@code Optional<T>} based on this {@code ISpecimenBuilder<T>}
-     *
+     * <p>
      * This feature is deprecated without replacement.
      */
     @Deprecated(forRemoval = true)
@@ -79,7 +79,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
      * Sets the field with the specified name to the specified value during object creation
      *
      * @param fieldName the name of the field to be set
-     * @param value the value to be set to the field
+     * @param value     the value to be set to the field
      * @return this builder for further customisation
      */
     @Override
@@ -91,9 +91,9 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     /**
      * Sets all fields with the specified type to the specified value during object creation.
      *
-     * @param type the type of the fields to be set
+     * @param type  the type of the fields to be set
      * @param value the value to be set to the fields
-     * @param <U> the type of the value
+     * @param <U>   the type of the value
      * @return this builder for further customisation
      */
     @Override
@@ -105,9 +105,9 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     /**
      * Sets all fields with the specified type to the specified value during object creation.
      *
-     * @param type the type of the fields to be set
+     * @param type  the type of the fields to be set
      * @param value the value to be set to the fields
-     * @param <U> the type of the value
+     * @param <U>   the type of the value
      * @return this builder for further customisation
      */
     @Override

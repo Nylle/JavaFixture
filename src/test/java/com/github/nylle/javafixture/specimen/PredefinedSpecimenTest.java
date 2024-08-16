@@ -13,35 +13,35 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class PredefinedSpecimenTest {
     @Test
     void typeIsRequired() {
-        assertThatThrownBy(() -> new PredefinedSpecimen<>(null, new Context( configure())))
+        assertThatThrownBy(() -> new PredefinedSpecimen<>(null, new Context(configure())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("type: null");
     }
 
     @Test
     void contextIsRequired() {
-        assertThatThrownBy(() -> new PredefinedSpecimen<>( SpecimenType.fromClass( TestEnum.class), null))
+        assertThatThrownBy(() -> new PredefinedSpecimen<>(SpecimenType.fromClass(TestEnum.class), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("context: null");
     }
 
     @Test
     void createReturnsCachedValue() {
-        var type = SpecimenType.fromClass( TestObject.class );
-        var testObject = new TestObject( null, null, null );
-        var context = new Context( configure() );
-        context.overwrite( type,  testObject);
-        var sut = new PredefinedSpecimen<>( type, context );
+        var type = SpecimenType.fromClass(TestObject.class);
+        var testObject = new TestObject(null, null, null);
+        var context = new Context(configure());
+        context.overwrite(type, testObject);
+        var sut = new PredefinedSpecimen<>(type, context);
 
-        assertThat( sut.create( null, null ) ).isEqualTo( testObject );
+        assertThat(sut.create(null, null)).isEqualTo(testObject);
     }
 
     @Test
     void createReturnsNullIfNoCachedValueIsFound() {
-        var type = SpecimenType.fromClass( TestObject.class );
-        var context = new Context( configure() );
-        var sut = new PredefinedSpecimen<>( type, context );
+        var type = SpecimenType.fromClass(TestObject.class);
+        var context = new Context(configure());
+        var sut = new PredefinedSpecimen<>(type, context);
 
-        assertThat( sut.create( null, null ) ).isNull();
+        assertThat(sut.create(null, null)).isNull();
     }
 }

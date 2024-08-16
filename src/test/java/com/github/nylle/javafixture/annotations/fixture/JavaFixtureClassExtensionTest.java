@@ -29,14 +29,14 @@ public class JavaFixtureClassExtensionTest {
     @FixturedTest
     void injectTempDirViaJunit(@TempDir Path injectedTempDir, Integer intValue) {
         assertThat(injectedTempDir).isEqualTo(tempPath);
-        assertThat( intValue ).isNotNull();
+        assertThat(intValue).isNotNull();
     }
 
     @FixturedTest(positiveNumbersOnly = true, minCollectionSize = 2, maxCollectionSize = 3)
     void useAnnotationProperties(Long positiveValue, List<Integer> collection) {
-        assertThat( positiveValue ).isPositive();
-        assertThat( collection.size()).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
-        collection.forEach( member -> assertThat(member).isPositive());
+        assertThat(positiveValue).isPositive();
+        assertThat(collection.size()).isGreaterThanOrEqualTo(2).isLessThanOrEqualTo(3);
+        collection.forEach(member -> assertThat(member).isPositive());
     }
 
     @FixturedTest
@@ -45,7 +45,7 @@ public class JavaFixtureClassExtensionTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1,2})
+    @ValueSource(ints = {1, 2})
     @DisplayName("you can mix @FixturedTest with other tests in the same class")
     void ignoreExtensionwhenTestIsNotFixtureTest(int fromJunit) {
         assertThat(fromJunit).isGreaterThanOrEqualTo(1).isLessThanOrEqualTo(2);

@@ -68,8 +68,8 @@ public class ExperimentalAbstractSpecimen<T> implements ISpecimen<T> {
     private <R extends T> R proxy(CustomizationContext customizationContext) {
         try {
             return (R) instanceFactory.proxy(type);
-        } catch(SpecimenException ex) {
-            if(type.isAbstract()) {
+        } catch (SpecimenException ex) {
+            if (type.isAbstract()) {
                 return (R) instanceFactory.manufacture(type, customizationContext);
             }
             throw ex;
@@ -79,7 +79,7 @@ public class ExperimentalAbstractSpecimen<T> implements ISpecimen<T> {
     private static <T> Optional<T> tryCreate(ISpecimen<T> specimen, CustomizationContext customizationContext, Annotation[] annotations) {
         try {
             return Optional.of(specimen.create(customizationContext, annotations));
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return Optional.empty();
         }
     }

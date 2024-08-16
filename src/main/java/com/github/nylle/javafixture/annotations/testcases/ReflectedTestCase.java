@@ -47,7 +47,7 @@ public class ReflectedTestCase {
                 .filter(value -> !defaults.get(value.getClass()).equals(value))
                 .collect(toList());
 
-        if(isInvalid(type, nonDefaultValues)) {
+        if (isInvalid(type, nonDefaultValues)) {
             throw new TestCaseException(String.format("Duplicate customisation found for argument at position %d, wanted: %s, found: %s",
                     i + 1,
                     type.getName(),
@@ -74,10 +74,10 @@ public class ReflectedTestCase {
     }
 
     private static <T> boolean isInvalid(Class<T> type, List<?> nonDefaultValues) {
-        if(nonDefaultValues.size() < 1) {
+        if (nonDefaultValues.size() < 1) {
             return false;
         }
-        if(nonDefaultValues.size() > 1) {
+        if (nonDefaultValues.size() > 1) {
             return true;
         }
         return asPrimitive(type) != asPrimitive(nonDefaultValues.get(0).getClass());

@@ -36,7 +36,7 @@ public class Configuration {
      *
      * @param maxCollectionSize the maximum size of arrays, collections and maps
      * @param minCollectionSize the minimum size of arrays, collections and maps
-     * @param streamSize the exact size of the result stream when creating many objects at once
+     * @param streamSize        the exact size of the result stream when creating many objects at once
      */
     public Configuration(final int maxCollectionSize, final int minCollectionSize, final int streamSize) {
         this();
@@ -49,9 +49,9 @@ public class Configuration {
     /**
      * Creates a new configuration with the specified values
      *
-     * @param maxCollectionSize the maximum size of arrays, collections and maps
-     * @param minCollectionSize the minimum size of arrays, collections and maps
-     * @param streamSize the exact size of the result stream when creating many objects at once
+     * @param maxCollectionSize      the maximum size of arrays, collections and maps
+     * @param minCollectionSize      the minimum size of arrays, collections and maps
+     * @param streamSize             the exact size of the result stream when creating many objects at once
      * @param usePositiveNumbersOnly whether to generate only positive numbers including 0
      */
     public Configuration(final int maxCollectionSize, final int minCollectionSize, final int streamSize, final boolean usePositiveNumbersOnly) {
@@ -174,12 +174,12 @@ public class Configuration {
     }
 
     private boolean experimentalInterfacesIsEnabled() {
-        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("javafixture/com.github.nylle.javafixture.experimetalInterfaces")) {
-            if(in == null) {
+        try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("javafixture/com.github.nylle.javafixture.experimetalInterfaces")) {
+            if (in == null) {
                 return false;
             }
             return new BufferedReader(new InputStreamReader(in)).lines().findFirst().map(x -> x.equals("enabled")).orElse(false);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return false;
         }
     }

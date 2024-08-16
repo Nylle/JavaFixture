@@ -12,7 +12,7 @@ public class PredefinedSpecimen<T> implements ISpecimen<T> {
     private final Context context;
     private final SpecimenType<T> type;
 
-    public PredefinedSpecimen( SpecimenType<T> type, Context context ) {
+    public PredefinedSpecimen(SpecimenType<T> type, Context context) {
         if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
@@ -26,7 +26,7 @@ public class PredefinedSpecimen<T> implements ISpecimen<T> {
     }
 
     @Override
-    public T create( CustomizationContext customizationContext, Annotation[] annotations ) {
-        return context.cached( type );
+    public T create(CustomizationContext customizationContext, Annotation[] annotations) {
+        return context.cached(type);
     }
 }

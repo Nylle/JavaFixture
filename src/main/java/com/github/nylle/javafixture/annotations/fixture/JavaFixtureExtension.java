@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 public class JavaFixtureExtension implements ParameterResolver {
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        if(!extensionContext.getRequiredTestMethod().isAnnotationPresent(FixturedTest.class))
+        if (!extensionContext.getRequiredTestMethod().isAnnotationPresent(FixturedTest.class))
             return false;
         return parameterContext.getParameter().getAnnotations().length <= 0;
     }

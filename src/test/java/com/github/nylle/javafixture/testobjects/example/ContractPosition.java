@@ -16,8 +16,8 @@ public class ContractPosition {
     private Contract contract;
 
     public ContractPosition(int quantity, final LocalDate startDate,
-            File file, final Period remainingPeriod,
-            final boolean billingIsPeriodic) {
+                            File file, final Period remainingPeriod,
+                            final boolean billingIsPeriodic) {
         this.quantity = quantity;
         this.startDate = startDate;
         this.file = file;

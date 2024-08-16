@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,6 +56,40 @@ class ContextTest {
         assertThat(actual).isEqualTo(expected);
         assertThat(actual.getValue()).isEqualTo("World!");
 
+    }
+
+    @DisplayName("remove")
+    @Nested
+    class RemoveTest {
+
+        @DisplayName("will return null if type was not in cache")
+        @Test
+        void removeWillReturnNull() {
+            var sut = new Context(new Configuration());
+
+            var actual = sut.remove(new SpecimenType<>() {});
+
+            assertThat(actual).isNull();
+
+        }
+
+        @DisplayName("will return instance from cache if type was in cache")
+        @Test
+        void returnCacheInstance() {
+            var sut = new Context(new Configuration());
+            var specimenType = new SpecimenType<>() {};
+            var object = new Object();
+
+            sut.cached(specimenType, object);
+
+            assertThat(sut.isCached(specimenType)).isTrue();
+
+            var actual = sut.remove(specimenType);
+
+            assertThat(actual).isSameAs(object);
+            assertThat(sut.isCached(specimenType)).isFalse();
+
+        }
     }
 
     class TestObject {

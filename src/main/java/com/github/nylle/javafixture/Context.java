@@ -53,5 +53,9 @@ public class Context {
         return cache.containsKey(type) ? (T) cache.get(type) : instance;
     }
 
+    public <T> T remove(SpecimenType<T> type) {
+        return (T) cache.remove(type);
+    }
+
 }
 

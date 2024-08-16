@@ -246,7 +246,7 @@ class FixtureTest {
         @Test
         void objectCanBeCustomizedWithType() {
             var expected = Period.ofDays(42);
-            var expectedFile = new File( "expected-file-name" );
+            var expectedFile = new File("expected-file-name");
             var result = fixture().build(Contract.class)
                     .with(Period.class, expected)
                     .with(File.class, expectedFile)
@@ -256,7 +256,7 @@ class FixtureTest {
 
             var softly = new SoftAssertions();
             softly.assertThat(actual).isSameAs(expected);
-            softly.assertThat(result.getBaseContractPosition().getFile()).isEqualTo( expectedFile );
+            softly.assertThat(result.getBaseContractPosition().getFile()).isEqualTo(expectedFile);
             softly.assertAll();
         }
 

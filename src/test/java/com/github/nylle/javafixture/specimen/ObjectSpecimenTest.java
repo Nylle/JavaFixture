@@ -87,6 +87,7 @@ class ObjectSpecimenTest {
         assertThat(second.getKey()).isExactlyInstanceOf(Integer.class);
         assertThat(second.getValue()).isExactlyInstanceOf(String.class);
     }
+
     @Test
     void resultIsCached() {
 
@@ -98,10 +99,11 @@ class ObjectSpecimenTest {
         assertThat(original.getValue()).isEqualTo(cached.getValue());
         assertThat(original.getIntegers()).isEqualTo(cached.getIntegers());
     }
+
     @Test
     void revertToConstructorIfReflectionFails() {
 
-        var actual = new ObjectSpecimen<Throwable>(new SpecimenType<>(){}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var actual = new ObjectSpecimen<Throwable>(new SpecimenType<>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Throwable.class);
     }
@@ -144,10 +146,10 @@ class ObjectSpecimenTest {
         var customizationContext = new CustomizationContext(List.of(), Map.of("topLevelValue", 42), false);
         var actual = sut.create(customizationContext, new Annotation[0]);
         assertThat(actual.getTopLevelValue()).isEqualTo(42);
-        assertThat( actual.getTestObject() ).isNotNull();
-        assertThat( actual.getTestObject().getValue() ).isNotNull();
-        assertThat( actual.getTestObject().getStrings() ).isNotEmpty();
-        assertThat( actual.getTestObject().getIntegers() ).isNotEmpty();
+        assertThat(actual.getTestObject()).isNotNull();
+        assertThat(actual.getTestObject().getValue()).isNotNull();
+        assertThat(actual.getTestObject().getStrings()).isNotEmpty();
+        assertThat(actual.getTestObject().getIntegers()).isNotEmpty();
     }
 
     @Nested

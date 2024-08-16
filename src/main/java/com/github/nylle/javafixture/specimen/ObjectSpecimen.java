@@ -69,7 +69,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                                     Map.<String, ISpecimen<?>>of().getOrDefault(
                                             field.getGenericType().getTypeName(),
                                             specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of(), false), field.getAnnotations()))));
-        } catch (SpecimenException ex ) {
+        } catch (SpecimenException ex) {
             return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }
         return result;

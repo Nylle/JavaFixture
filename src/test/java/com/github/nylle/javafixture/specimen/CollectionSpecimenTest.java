@@ -76,7 +76,7 @@ class CollectionSpecimenTest {
 
     @Test
     void nonParameterizedCollectionIsEmpty() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Collection>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<Collection>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -86,7 +86,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayListFromCollectionInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Collection<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<Collection<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -97,7 +97,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayListFromListInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<List<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -110,7 +110,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSetFromNavigableSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<NavigableSet<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<NavigableSet<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -121,7 +121,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSetFromSortedSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<SortedSet<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<SortedSet<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -132,7 +132,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSetFromSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Set<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<Set<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -143,7 +143,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingDequeFromBlockingDequeInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<BlockingDeque<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<BlockingDeque<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -154,7 +154,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayDequeFromDequeInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Deque<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<Deque<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -165,7 +165,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedTransferQueueFromTransferQueueInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<TransferQueue<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<TransferQueue<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -176,7 +176,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingQueueFromBlockingQueueInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<BlockingQueue<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<BlockingQueue<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -187,7 +187,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedListFromQueueInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Queue<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<Queue<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -198,7 +198,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayList() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<ArrayList<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<ArrayList<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -209,7 +209,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createTreeSet() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<TreeSet<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<TreeSet<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -220,7 +220,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSet() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<HashSet<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<HashSet<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -231,7 +231,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createEnumSet() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<EnumSet<TestEnum>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<EnumSet<TestEnum>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -241,7 +241,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingDeque() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingDeque<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingDeque<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -252,7 +252,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createArrayDeque() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<ArrayDeque<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<ArrayDeque<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -263,7 +263,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedTransferQueue() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedTransferQueue<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedTransferQueue<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -274,7 +274,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedBlockingQueue() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingQueue<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedBlockingQueue<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -285,7 +285,7 @@ class CollectionSpecimenTest {
 
     @Test
     void createLinkedList() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedList<String>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<LinkedList<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -297,8 +297,8 @@ class CollectionSpecimenTest {
     @Test
     void resultIsCached() {
 
-        var original = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory).create(noContext(), new Annotation[0]);
-        var cached = new CollectionSpecimen<>(new SpecimenType<List<String>>(){}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var original = new CollectionSpecimen<>(new SpecimenType<List<String>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var cached = new CollectionSpecimen<>(new SpecimenType<List<String>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(List.class);
         assertThat(original.size()).isEqualTo(2);
@@ -309,7 +309,7 @@ class CollectionSpecimenTest {
 
     @Test
     void nestedLists() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<List<List<String>>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<List<List<String>>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -325,7 +325,7 @@ class CollectionSpecimenTest {
     @Test
     void nonPrimitiveElementsAreSameInstance() {
 
-        var sut = new CollectionSpecimen<>(new SpecimenType<List<TestObject>>(){}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<List<TestObject>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 

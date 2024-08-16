@@ -19,14 +19,14 @@ public class ClassPathScanner {
     }
 
     private <T> List<ClassInfo> filter(ScanResult scanResult, SpecimenType<T> type) {
-        if(type.isInterface()) {
+        if (type.isInterface()) {
             return scanResult.getClassesImplementing(type.asClass()).stream()
                     .filter(x -> isNotParametrized(x) || type.isParameterized())
                     .filter(x -> isNotParametrized(x) || typeParametersMatch(x, type))
                     .collect(Collectors.toList());
         }
 
-        if(type.isAbstract()) {
+        if (type.isAbstract()) {
             return scanResult.getSubclasses(type.asClass()).stream()
                     .filter(x -> !x.isAbstract())
                     .filter(x -> isNotParametrized(x) || type.isParameterized())

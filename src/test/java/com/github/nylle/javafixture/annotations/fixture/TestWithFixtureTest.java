@@ -32,6 +32,6 @@ public class TestWithFixtureTest {
     @DisplayName("Annotated parameters will work when they are at the end of the list")
     void injectTempDirViaJunit(Integer intValue, @TempDir Path injectedTempDir) {
         assertThat(injectedTempDir).isEqualTo(tempPath);
-        assertThat( intValue ).isNotNull();
+        assertThat(intValue).isNotNull();
     }
 }

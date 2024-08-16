@@ -77,7 +77,8 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
         try {
             return (Map<K, V>) type.asClass().getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new SpecimenException("Unable to create map of type " + type.getName(), e);
         }
     }

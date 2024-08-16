@@ -6,6 +6,7 @@ public class ConstructorExceptionAndFactoryMethod {
     public ConstructorExceptionAndFactoryMethod() {
         throw new IllegalArgumentException("expected for tests");
     }
+
     private ConstructorExceptionAndFactoryMethod(int value) {
         this.value = value;
     }

@@ -80,7 +80,7 @@ class GenericSpecimenTest {
 
     @Test
     void createClass() {
-        var sut = new GenericSpecimen<>(new SpecimenType<Class<String>>(){}, context, specimenFactory);
+        var sut = new GenericSpecimen<>(new SpecimenType<Class<String>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -90,7 +90,7 @@ class GenericSpecimenTest {
 
     @Test
     void createGeneric() {
-        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>(){}, context, specimenFactory);
+        var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
@@ -102,7 +102,7 @@ class GenericSpecimenTest {
 
     @Test
     void subSpecimenAreProperlyCached() {
-        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>(){}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var result = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<Optional<String>, Optional<Integer>>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(result.getT()).isInstanceOf(Optional.class);
         assertThat(result.getU()).isInstanceOf(Optional.class);
@@ -141,10 +141,10 @@ class GenericSpecimenTest {
         var actual = sut.create(customizationContext, new Annotation[0]);
 
         assertThat(actual.getTopLevelValue()).isEqualTo(42);
-        assertThat( actual.getTestObject() ).isNotNull();
-        assertThat( actual.getTestObject().getValue() ).isNotNull();
-        assertThat( actual.getTestObject().getStrings() ).isNotEmpty();
-        assertThat( actual.getTestObject().getIntegers() ).isNotEmpty();
+        assertThat(actual.getTestObject()).isNotNull();
+        assertThat(actual.getTestObject().getValue()).isNotNull();
+        assertThat(actual.getTestObject().getStrings()).isNotEmpty();
+        assertThat(actual.getTestObject().getIntegers()).isNotEmpty();
     }
 
     @Nested

@@ -12,7 +12,7 @@ public class EnumSpecimen<T> implements ISpecimen<T> {
     private final SpecimenType<T> type;
     private final Random random;
 
-    public EnumSpecimen(final SpecimenType<T> type ) {
+    public EnumSpecimen(final SpecimenType<T> type) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");

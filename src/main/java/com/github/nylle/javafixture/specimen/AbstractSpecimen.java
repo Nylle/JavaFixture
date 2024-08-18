@@ -4,16 +4,20 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.InstanceFactory;
+import com.github.nylle.javafixture.Reflector;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Map;
 
 public class AbstractSpecimen<T> implements ISpecimen<T> {
 
     private final SpecimenType<T> type;
     private final Context context;
+    private final SpecimenFactory specimenFactory;
     private final InstanceFactory instanceFactory;
 
     public AbstractSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
@@ -36,6 +40,7 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
 
         this.type = type;
         this.context = context;
+        this.specimenFactory = specimenFactory;
         this.instanceFactory = new InstanceFactory(specimenFactory);
     }
 
@@ -46,7 +51,17 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
         }
 
         try {
-            return (T) context.cached(type, instanceFactory.proxy(type));
+            var result = (T) context.cached(type, instanceFactory.proxy(type));
+            var reflector = new Reflector<>(result, type.asClass()).validateCustomization(customizationContext, type);
+            reflector.getDeclaredFields()
+                    .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
+                    .forEach(field -> reflector.setField(field,
+                            customizationContext.getCustomFields().getOrDefault(
+                                    field.getName(),
+                                    Map.<String, ISpecimen<?>>of().getOrDefault(
+                                            field.getGenericType().getTypeName(),
+                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of(), false), field.getAnnotations()))));
+            return result;
         } catch(SpecimenException ignored) {
             return context.cached(type, instanceFactory.manufacture(type, customizationContext));
         }

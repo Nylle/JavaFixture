@@ -1,6 +1,7 @@
 package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConcreteMethod;
 import com.github.nylle.javafixture.testobjects.factorymethod.ConstructorExceptionAndFactoryMethod;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithGenericArgument;
@@ -9,6 +10,7 @@ import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithO
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.GenericClassWithFactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
+import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithDefaultMethod;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithPrivateConstructor;
@@ -21,6 +23,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -174,7 +178,7 @@ class InstanceFactoryTest {
         void canCreateInstanceFromAbstractClassUsingFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.manufacture(new SpecimenType<Charset>() {}, CustomizationContext.noContext());
+            var actual = sut.manufacture(new SpecimenType<Charset>() {}, noContext());
 
             assertThat(actual).isInstanceOf(Charset.class);
         }
@@ -185,7 +189,7 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), CustomizationContext.noContext()))
+                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), noContext()))
                     .withMessageContaining("Cannot manufacture class")
                     .withNoCause();
         }
@@ -195,7 +199,7 @@ class InstanceFactoryTest {
         void factoryMethodWithArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class), CustomizationContext.noContext());
+            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class), noContext());
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -205,7 +209,7 @@ class InstanceFactoryTest {
         void shouldFilter() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithItselfAsArgument result = sut.manufacture(fromClass(FactoryMethodWithItselfAsArgument.class), CustomizationContext.noContext());
+            FactoryMethodWithItselfAsArgument result = sut.manufacture(fromClass(FactoryMethodWithItselfAsArgument.class), noContext());
 
             assertThat(result.getValue()).isNull();
         }
@@ -216,7 +220,7 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.manufacture(fromClass(FactoryMethodWithOnlyItselfAsArgument.class), CustomizationContext.noContext()));
+                    .isThrownBy(() -> sut.manufacture(fromClass(FactoryMethodWithOnlyItselfAsArgument.class), noContext()));
 
         }
 
@@ -225,7 +229,7 @@ class InstanceFactoryTest {
         void createOptional() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<Optional<String>>() {}, CustomizationContext.noContext());
+            var result = sut.manufacture(new SpecimenType<Optional<String>>() {}, noContext());
 
             assertThat(result).isInstanceOf(Optional.class);
             assertThat(result.orElse("optional may be empty")).isInstanceOf(String.class);
@@ -236,7 +240,7 @@ class InstanceFactoryTest {
         void factoryMethodWithoutArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class), CustomizationContext.noContext());
+            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class), noContext());
 
             assertThat(result.getValue()).isEqualTo(42);
         }
@@ -246,7 +250,7 @@ class InstanceFactoryTest {
         void factoryMethodWithGenericArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {}, CustomizationContext.noContext());
+            var result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {}, noContext());
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -256,7 +260,7 @@ class InstanceFactoryTest {
         void genericNoArgumentFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {}, CustomizationContext.noContext());
+            var result = sut.manufacture(new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {}, noContext());
 
             assertThat(result).isNotNull();
             assertThat(result.getValue()).isEqualTo(42);
@@ -445,6 +449,33 @@ class InstanceFactoryTest {
 
             assertThat(actual).isInstanceOf(LinkedList.class);
             assertThat(actual).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("when creating proxy")
+    class ProxyTest {
+
+        @DisplayName("if we create from interface, default methods are called and not fixtured")
+        @Test
+        void foo() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var actual = (InterfaceWithDefaultMethod) sut.proxy(new SpecimenType<InterfaceWithDefaultMethod>() {}, new HashMap<String, ISpecimen<?>>());
+
+            assertThat(actual.getTestObject()).isNotNull();
+            assertThat(actual.getDefaultInt()).isEqualTo(42);
+        }
+
+        @DisplayName("if we create from an abstract class, public methods are called and not fixtured")
+        @Test
+        void fromAbstractClass() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var actual = (AbstractClassWithConcreteMethod) sut.proxy(new SpecimenType<AbstractClassWithConcreteMethod>() {}, new HashMap<String, ISpecimen<?>>());
+
+            assertThat(actual.getTestObject()).isNotNull();
+            assertThat(actual.getDefaultInt()).isEqualTo(42);
         }
     }
 }

@@ -12,7 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,10 +106,13 @@ public class InstanceFactory {
 
     public <T> Object proxy(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
         if (type.isInterface()) {
-            return Proxy.newProxyInstance(
-                    type.asClass().getClassLoader(),
-                    new Class[]{type.asClass()},
-                    new ProxyInvocationHandler(specimenFactory, specimens));
+            var proxyFactory = new ProxyFactory();
+            proxyFactory.setInterfaces( new Class<?>[]{type.asClass()});
+            try {
+                return proxyFactory.create(new Class[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
+            } catch (Exception e) {
+                throw new SpecimenException(format("Unable to construct interface %s: %s", type.asClass(), e.getMessage()), e);
+            }
         }
 
         return createProxyForAbstract(type, specimens);

@@ -20,8 +20,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import javassist.util.proxy.Proxy;
+
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -227,7 +228,7 @@ class ExperimentalAbstractSpecimenTest {
                 var actual = sut.create(noContext(), new Annotation[0]);
 
                 assertThat(actual)
-                        .isInstanceOf(javassist.util.proxy.Proxy.class)
+                        .isInstanceOf(Proxy.class)
                         .isInstanceOf(AbstractClassWithoutImplementation.class);
                 assertThat(actual.toString()).isInstanceOf(String.class);
                 assertThat(actual.getTestObject()).isInstanceOf(TestObject.class);
@@ -251,7 +252,7 @@ class ExperimentalAbstractSpecimenTest {
                 var actual = sut.create(noContext(), new Annotation[0]);
 
                 assertThat(actual)
-                        .isInstanceOf(javassist.util.proxy.Proxy.class)
+                        .isInstanceOf(Proxy.class)
                         .isInstanceOf(AbstractClassWithImplementation.class);
                 assertThat(actual.toString()).isInstanceOf(String.class);
                 assertThat(actual.getTestObject()).isInstanceOf(TestObject.class);
@@ -269,7 +270,7 @@ class ExperimentalAbstractSpecimenTest {
                 var actual = sut.create(noContext(), new Annotation[0]);
 
                 assertThat(actual)
-                        .isNotInstanceOf(javassist.util.proxy.Proxy.class)
+                        .isNotInstanceOf(Proxy.class)
                         .isExactlyInstanceOf(AbstractClassWithImplementationImpl.class);
                 assertThat(actual.toString()).isInstanceOf(String.class);
                 assertThat(actual.getTestObject()).isInstanceOf(TestObject.class);
@@ -286,7 +287,7 @@ class ExperimentalAbstractSpecimenTest {
                 var actual = sut.create(noContext(), new Annotation[0]);
 
                 assertThat(actual)
-                        .isNotInstanceOf(javassist.util.proxy.Proxy.class)
+                        .isNotInstanceOf(Proxy.class)
                         .isExactlyInstanceOf(GenericAbstractClassTUWithGenericImplementationUImpl.class);
                 assertThat(actual.toString()).isInstanceOf(String.class);
                 assertThat(actual.getT()).isInstanceOf(String.class);

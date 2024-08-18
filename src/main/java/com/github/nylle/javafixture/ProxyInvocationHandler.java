@@ -5,6 +5,7 @@ import javassist.util.proxy.MethodHandler;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -30,9 +31,17 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
             return null;
         }
 
-        return methodResults.computeIfAbsent(
-                method.toString(),
-                key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create(noContext(), new Annotation[0]));
+        if (Modifier.isAbstract(method.getModifiers())) {
+            return methodResults.computeIfAbsent(
+                    method.toString(),
+                    key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create(noContext(), new Annotation[0]));
+        } else {
+            try {
+                return method.invoke(proxy, args);
+            } catch (Exception ex) {
+                return null;
+            }
+        }
     }
 
     @Override
@@ -40,10 +49,18 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
         if (thisMethod.getReturnType() == void.class) {
             return null;
         }
+        if (Modifier.isAbstract(thisMethod.getModifiers())) {
 
-        return methodResults.computeIfAbsent(
-                thisMethod.toString(),
-                key -> specimens.getOrDefault(thisMethod.getGenericReturnType().getTypeName(), resolveSpecimen(thisMethod)).create(noContext(), new Annotation[0]));
+            return methodResults.computeIfAbsent(
+                    thisMethod.toString(),
+                    key -> specimens.getOrDefault(thisMethod.getGenericReturnType().getTypeName(), resolveSpecimen(thisMethod)).create(noContext(), new Annotation[0]));
+        } else {
+            try {
+                return proceed.invoke(self, args);
+            } catch (Exception ex) {
+                return null;
+            }
+        }
     }
 
     private ISpecimen<?> resolveSpecimen(final Method method) {

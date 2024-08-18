@@ -13,13 +13,19 @@ import static java.util.stream.Collectors.toList;
 
 public class Reflector<T> {
     private final T instance;
+    private final Class<?> clazz;
 
     public Reflector(T instance) {
+        this(instance, instance.getClass());
+    }
+
+    public Reflector(T instance, Class<?> clazz) {
         this.instance = instance;
+        this.clazz = clazz;
     }
 
     public Reflector<T> validateCustomization(CustomizationContext customizationContext, SpecimenType<T> type) {
-        var declaredFields = getDeclaredFields(instance.getClass()).map(field -> field.getName()).collect(toList());
+        var declaredFields = getDeclaredFields(clazz).map(field -> field.getName()).collect(toList());
 
         var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
                 .filter(entry -> !declaredFields.contains(entry))
@@ -29,7 +35,7 @@ public class Reflector<T> {
             throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
 
-        var duplicateField = getDeclaredFields(instance.getClass())
+        var duplicateField = getDeclaredFields(clazz)
                 .collect(groupingBy(field -> field.getName()))
                 .entrySet()
                 .stream()
@@ -47,7 +53,7 @@ public class Reflector<T> {
     }
 
     public Stream<Field> getDeclaredFields() {
-        return getDeclaredFields(instance.getClass());
+        return getDeclaredFields(clazz);
     }
 
     private Stream<Field> getDeclaredFields(Class<?> type) {
@@ -63,9 +69,9 @@ public class Reflector<T> {
             field.setAccessible(true);
             field.set(instance, value);
         } catch (SecurityException e) {
-            throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
+            throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), clazz.getName()), e);
         } catch (IllegalAccessException | InaccessibleObjectException e) {
-            throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), instance.getClass().getName()), e);
+            throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), clazz.getName()), e);
         }
     }
 }

@@ -4,6 +4,7 @@ import javassist.util.proxy.MethodHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -26,30 +27,20 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) {
-        if (method.getReturnType() == void.class) {
-            return null;
-        }
-
-        if (Modifier.isAbstract(method.getModifiers())) {
-            return methodResults.computeIfAbsent(
-                    method.toString(),
-                    key -> specimens.getOrDefault(method.getGenericReturnType().getTypeName(), resolveSpecimen(method)).create(noContext(), new Annotation[0]));
-        } else {
-            try {
-                return method.invoke(proxy, args);
-            } catch (Exception ex) {
-                return null;
-            }
-        }
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable{
+        return invokeOrFixture(proxy, method, method, args);
     }
 
     @Override
-    public Object invoke(final Object self, final Method thisMethod, final Method proceed, final Object[] args) {
-        if (thisMethod.getReturnType() == void.class) {
-            return null;
-        }
+    public Object invoke(final Object self, final Method thisMethod, final Method proceed, final Object[] args) throws Throwable{
+        return invokeOrFixture(self, thisMethod, proceed, args);
+    }
+
+    private Object invokeOrFixture(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable{
         if (Modifier.isAbstract(thisMethod.getModifiers())) {
+            if (thisMethod.getReturnType() == void.class) {
+                return null;
+            }
 
             return methodResults.computeIfAbsent(
                     thisMethod.toString(),
@@ -57,8 +48,8 @@ public class ProxyInvocationHandler implements InvocationHandler, MethodHandler 
         } else {
             try {
                 return proceed.invoke(self, args);
-            } catch (Exception ex) {
-                return null;
+            } catch (InvocationTargetException ex) {
+                throw ex.getCause();
             }
         }
     }

@@ -458,7 +458,7 @@ class InstanceFactoryTest {
 
         @DisplayName("if we create from interface, default methods are called and not fixtured")
         @Test
-        void foo() {
+        void callsDefaultMethods() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             var actual = (InterfaceWithDefaultMethod) sut.proxy(new SpecimenType<InterfaceWithDefaultMethod>() {}, new HashMap<String, ISpecimen<?>>());

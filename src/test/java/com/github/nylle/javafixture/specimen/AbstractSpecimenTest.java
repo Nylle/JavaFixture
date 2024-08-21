@@ -5,16 +5,23 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConcreteMethod;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AbstractSpecimenTest {
@@ -65,6 +72,38 @@ class AbstractSpecimenTest {
         assertThat(actual).isInstanceOf(TestAbstractClass.class);
         assertThat(actual.getString()).isNotBlank();
         assertThat(actual.abstractMethod()).isNotBlank();
+    }
+
+    @DisplayName("if a void method is concrete, we call it")
+    @Test
+    void voidMethodsAreCalledIfPublic() {
+        var sut = new AbstractSpecimen<AbstractClassWithConcreteMethod>(SpecimenType.fromClass(AbstractClassWithConcreteMethod.class), context, specimenFactory);
+
+        var actual = sut.create(noContext(), new Annotation[0]);
+        List<String> willBeEmptied = new ArrayList<>(List.of("1"));
+        actual.methodWithSideEffect(willBeEmptied);
+        assertThat(willBeEmptied).isEmpty();
+    }
+
+    @DisplayName("if a void method throws an exception, we pass it through")
+    @Test
+    void voidMethodPropagatesException() {
+        var sut = new AbstractSpecimen<AbstractClassWithConcreteMethod>(SpecimenType.fromClass(AbstractClassWithConcreteMethod.class), context, specimenFactory);
+
+        var actual = sut.create(noContext(), new Annotation[0]);
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> actual.methodWithSideEffect(List.of()));
+        assertThatExceptionOfType(IOException.class).isThrownBy(actual::methodThatThrowsException);
+    }
+
+    @DisplayName("if a void method is abstract, we just do nothing")
+    @Test
+    void voidAbstractMethodsWillJustReturnVoid() {
+        var sut = new AbstractSpecimen<AbstractClassWithConcreteMethod>(SpecimenType.fromClass(AbstractClassWithConcreteMethod.class), context, specimenFactory);
+
+        var actual = sut.create(noContext(), new Annotation[0]);
+
+        assertThatCode(() -> actual.abstractMethodWithoutSideEffect(List.of())).as("trying to modify List.of() would throw")
+                .doesNotThrowAnyException();
     }
 
     @Test

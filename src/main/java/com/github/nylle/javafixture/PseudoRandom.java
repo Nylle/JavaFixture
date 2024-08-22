@@ -3,6 +3,10 @@ package com.github.nylle.javafixture;
 import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,5 +80,11 @@ public class PseudoRandom {
 
     public Byte nextByte() {
         return UUID.randomUUID().toString().getBytes(Charset.defaultCharset())[0];
+    }
+
+    public <T> List<T> shuffled(Collection<T> collection) {
+        var result = new ArrayList<>(collection);
+        Collections.shuffle(result, random);
+        return result;
     }
 }

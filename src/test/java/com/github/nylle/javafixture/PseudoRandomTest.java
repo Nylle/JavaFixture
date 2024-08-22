@@ -6,6 +6,8 @@ import com.github.nylle.javafixture.specimen.constraints.StringConstraints;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -83,5 +85,16 @@ class PseudoRandomTest {
     @Test
     void nextByte() {
         assertThat(new PseudoRandom().nextByte()).isBetween(Byte.MIN_VALUE, Byte.MAX_VALUE);
+    }
+
+    @Test
+    void shuffled() {
+        var input = List.of(0, 1, 2, 3, 4);
+
+        var actual = new PseudoRandom().shuffled(input);
+
+        assertThat(actual).isNotEqualTo(input);
+        assertThat(actual).isNotSameAs(input);
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(input);
     }
 }

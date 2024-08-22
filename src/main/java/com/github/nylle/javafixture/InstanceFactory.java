@@ -15,7 +15,6 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -37,12 +35,11 @@ import java.util.concurrent.TransferQueue;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 public class InstanceFactory {
 
     private final SpecimenFactory specimenFactory;
-    private final Random random;
+    private final PseudoRandom random;
 
     private static final Map<Class<?>, Object> primitiveDefaults = Map.of(
             Boolean.TYPE, false,
@@ -57,34 +54,27 @@ public class InstanceFactory {
 
     public InstanceFactory(SpecimenFactory specimenFactory) {
         this.specimenFactory = specimenFactory;
-        this.random = new Random();
+        this.random = new PseudoRandom();
     }
 
     public <T> T construct(final SpecimenType<T> type, CustomizationContext customizationContext) {
-        var constructors = type.getDeclaredConstructors()
+        return random.shuffled(type.getDeclaredConstructors())
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
-                .collect(toList());
-
-        if (constructors.isEmpty()) {
-            return manufacture(type, customizationContext);
-        }
-
-        return construct(type, constructors.get(random.nextInt(constructors.size())), customizationContext);
+                .findFirst()
+                .map(x -> construct(type, x, customizationContext))
+                .orElseGet(() -> manufacture(type, customizationContext));
     }
 
     public <T> T manufacture(final SpecimenType<T> type, CustomizationContext customizationContext) {
-        var factoryMethods = type.getFactoryMethods();
-        Collections.shuffle(factoryMethods);
-        var results = factoryMethods
+        return random.shuffled(type.getFactoryMethods())
                 .stream()
                 .filter(method -> Modifier.isPublic(method.getModifiers()))
                 .filter(method -> !hasSpecimenTypeAsParameter(method, type))
                 .map(x -> manufactureOrNull(x, type, customizationContext))
                 .filter(x -> x != null)
-                .findFirst();
-
-        return results.orElseThrow(() -> new SpecimenException(format("Cannot manufacture %s", type.asClass())));
+                .findFirst()
+                .orElseThrow(() -> new SpecimenException(format("Cannot create instance of %s", type.asClass())));
     }
 
     private <T> boolean hasSpecimenTypeAsParameter(Method m, SpecimenType<T> type) {
@@ -107,7 +97,7 @@ public class InstanceFactory {
     public <T> Object proxy(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
         if (type.isInterface()) {
             var proxyFactory = new ProxyFactory();
-            proxyFactory.setInterfaces( new Class<?>[]{type.asClass()});
+            proxyFactory.setInterfaces(new Class<?>[]{type.asClass()});
             try {
                 return proxyFactory.create(new Class[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
             } catch (Exception e) {
@@ -227,8 +217,7 @@ public class InstanceFactory {
     private <G, T extends Collection<G>> T createCollectionFromConcreteType(final SpecimenType<T> type) {
         try {
             return type.asClass().getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new SpecimenException("Unable to create collection of type " + type.getName(), e);
         }
     }

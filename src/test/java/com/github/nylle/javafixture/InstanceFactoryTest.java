@@ -96,7 +96,7 @@ class InstanceFactoryTest {
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class), new CustomizationContext(List.of(), Map.of(), false)))
-                    .withMessageContaining("Cannot manufacture class")
+                    .withMessageContaining("Cannot create instance of class")
                     .withNoCause();
         }
 
@@ -111,7 +111,7 @@ class InstanceFactoryTest {
         }
 
         @Test
-        @DisplayName("will fallback to factor method when constructor fails")
+        @DisplayName("will fallback to factory method when constructor fails")
         void fallbackToFactoryMethodWhenConstructorThrowsException() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
@@ -190,7 +190,7 @@ class InstanceFactoryTest {
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), noContext()))
-                    .withMessageContaining("Cannot manufacture class")
+                    .withMessageContaining("Cannot create instance of class")
                     .withNoCause();
         }
 
@@ -256,7 +256,7 @@ class InstanceFactoryTest {
         }
 
         @Test
-        @DisplayName("method without arguments is used")
+        @DisplayName("generic method without arguments is used")
         void genericNoArgumentFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 

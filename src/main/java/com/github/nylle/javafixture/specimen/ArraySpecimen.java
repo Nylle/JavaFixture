@@ -49,6 +49,6 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
 
         IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create(customizationContext, new Annotation[0])));
 
-        return result;
+        return context.remove(type);
     }
 }

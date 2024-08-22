@@ -65,7 +65,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
                 .filter(x -> specimen != null)
                 .forEach(x -> collection.add(specimen.create(customizationContext, new Annotation[0])));
 
-        return (T) collection;
+        return context.remove(type);
     }
 
     private <G extends Enum> T createEnumSet(CustomizationContext customizationContext) {

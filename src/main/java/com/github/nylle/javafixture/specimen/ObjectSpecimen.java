@@ -51,7 +51,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         }
 
         if (customizationContext.useRandomConstructor()) {
-            return context.cached(type, instanceFactory.construct(type, customizationContext));
+            return instanceFactory.construct(type, customizationContext);
         }
 
         return populate(customizationContext);
@@ -72,6 +72,6 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         } catch (SpecimenException ex) {
             return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }
-        return result;
+        return context.remove(type);
     }
 }

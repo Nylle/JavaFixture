@@ -6,6 +6,8 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.inheritance.Child;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,16 +90,20 @@ class ObjectSpecimenTest {
         assertThat(second.getValue()).isExactlyInstanceOf(String.class);
     }
 
-    @Test
-    void resultIsCached() {
+    @DisplayName("when creating objects, they are not cached, regardless of the creation technique")
+    @TestWithCases
+    @TestCase(bool1 = true)
+    @TestCase(bool1 = false)
+    void resultIsNotCached(boolean useRandomConstructor) {
 
-        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(noContext(), new Annotation[0]);
-        var cached = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var customizationContext = new CustomizationContext(List.of(), Map.of(), useRandomConstructor);
+        var original = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(customizationContext, new Annotation[0]);
+        var second = new ObjectSpecimen<TestObject>(SpecimenType.fromClass(TestObject.class), context, specimenFactory).create(customizationContext, new Annotation[0]);
 
         assertThat(original).isInstanceOf(TestObject.class);
-        assertThat(original).isSameAs(cached);
-        assertThat(original.getValue()).isEqualTo(cached.getValue());
-        assertThat(original.getIntegers()).isEqualTo(cached.getIntegers());
+        assertThat(original).isNotEqualTo(second);
+        assertThat(original.getValue()).isNotEqualTo(second.getValue());
+        assertThat(original.getIntegers()).isNotEqualTo(second.getIntegers());
     }
 
     @Test

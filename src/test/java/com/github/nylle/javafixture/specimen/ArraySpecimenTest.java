@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
@@ -83,8 +84,18 @@ class ArraySpecimenTest {
         assertThat(actual).isInstanceOf(AccountManager[].class);
         assertThat(actual.length).isEqualTo(2);
         assertThat(actual[0]).isInstanceOf(AccountManager.class);
-        assertThat(actual[0]).isSameAs(actual[1]);
+        assertThat(actual[0]).isNotEqualTo(actual[1]);
         assertThat(actual[0].getOtherAccountManagers()).isInstanceOf(AccountManager[].class);
         assertThat(actual[0].getOtherAccountManagers()).isSameAs(actual);
+    }
+
+    @Test
+    void createdArraysAreNotCached() {
+        var sut = new ArraySpecimen<AccountManager[]>(SpecimenType.fromClass(AccountManager[].class), context, specimenFactory);
+
+        var actual = sut.create(noContext(), new Annotation[0]);
+        var second = sut.create(noContext(), new Annotation[0]);
+
+        assertThat(Arrays.asList(actual)).doesNotContainAnyElementsOf(Arrays.asList(second));
     }
 }

@@ -113,16 +113,16 @@ class ExperimentalAbstractSpecimenTest {
     class WhenCallingCreate {
 
         @Test
-        @DisplayName("the result is cached")
-        void resultIsCached() {
+        @DisplayName("the result is not cached")
+        void resultIsNotCached() {
             var original = new InterfaceSpecimen<InterfaceWithoutImplementation>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory).create(noContext(), new Annotation[0]);
-            var cached = new InterfaceSpecimen<InterfaceWithoutImplementation>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+            var second = new InterfaceSpecimen<InterfaceWithoutImplementation>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
             assertThat(original)
                     .isInstanceOf(InterfaceWithoutImplementation.class)
-                    .isSameAs(cached);
-            assertThat(original.toString()).isEqualTo(cached.toString());
-            assertThat(original.getTestObject()).isSameAs(cached.getTestObject());
+                    .isNotEqualTo(second);
+            assertThat(original.toString()).isNotEqualTo(second.toString());
+            assertThat(original.getTestObject()).isNotEqualTo(second.getTestObject());
         }
 
         @Nested

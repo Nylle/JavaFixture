@@ -134,15 +134,15 @@ class InstanceFactoryTest {
 
         @Test
         @DisplayName("constructor arguments are cached")
-        void constructorArgumentsAreCached() {
+        void constructorArgumentsAreNotCached() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             var customizationContext = new CustomizationContext(List.of(), Map.of(), true);
             TestObject first = sut.construct(fromClass(TestObject.class), customizationContext);
             TestObject second = sut.construct(fromClass(TestObject.class), customizationContext);
 
-            assertThat(first.getIntegers()).usingRecursiveComparison().isEqualTo(second.getIntegers());
-            assertThat(first.getStrings()).usingRecursiveComparison().isEqualTo(second.getStrings());
+            assertThat(first.getIntegers()).usingRecursiveComparison().isNotEqualTo(second.getIntegers());
+            assertThat(first.getStrings()).usingRecursiveComparison().isNotEqualTo(second.getStrings());
             assertThat(first.getValue()).as("primitives are never cached").isNotEqualTo(second.getValue());
         }
 

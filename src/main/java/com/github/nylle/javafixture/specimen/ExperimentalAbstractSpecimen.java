@@ -58,11 +58,11 @@ public class ExperimentalAbstractSpecimen<T> implements ISpecimen<T> {
             return context.cached(type);
         }
 
-        return context.cached(type, shuffledStream(derivedTypes)
+        return shuffledStream(derivedTypes)
                 .map(derivedType -> specimenFactory.build(derivedType))
                 .flatMap(derivedSpecimen -> tryCreate(derivedSpecimen, customizationContext, annotations).stream())
                 .findFirst()
-                .orElseGet(() -> proxy(customizationContext)));
+                .orElseGet(() -> proxy(customizationContext));
     }
 
     private <R extends T> R proxy(CustomizationContext customizationContext) {

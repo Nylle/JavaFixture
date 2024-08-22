@@ -183,16 +183,15 @@ class MapSpecimenTest {
     }
 
     @Test
-    void resultIsCached() {
+    void resultIsNotCached() {
 
         var original = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
-        var cached = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var second = new MapSpecimen<>(new SpecimenType<Map<String, Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(Map.class);
         assertThat(original.size()).isEqualTo(2);
-        assertThat(original).isSameAs(cached);
-        assertThat(original.get(0)).isEqualTo(cached.get(0));
-        assertThat(original.get(1)).isEqualTo(cached.get(1));
+        assertThat(original).isNotEqualTo(second);
+        assertThat(original.values()).doesNotContainAnyElementsOf(second.values());
     }
 
     @Test

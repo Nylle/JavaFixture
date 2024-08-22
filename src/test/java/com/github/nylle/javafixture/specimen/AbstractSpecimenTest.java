@@ -9,6 +9,7 @@ import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWit
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -35,32 +36,36 @@ class AbstractSpecimenTest {
         specimenFactory = new SpecimenFactory(context);
     }
 
-    @Test
-    void onlyAbstractTypes() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: " + Map.class.getName());
-    }
+    @Nested
+    class WhenConstructing {
 
-    @Test
-    void typeIsRequired() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>((SpecimenType) null, context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: null");
-    }
+        @Test
+        void onlyAbstractTypesAreAllowed() {
+            assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: " + Map.class.getName());
+        }
 
-    @Test
-    void contextIsRequired() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), null, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("context: null");
-    }
+        @Test
+        void typeIsRequired() {
+            assertThatThrownBy(() -> new AbstractSpecimen<>((SpecimenType) null, context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: null");
+        }
 
-    @Test
-    void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("specimenFactory: null");
+        @Test
+        void contextIsRequired() {
+            assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), null, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("context: null");
+        }
+
+        @Test
+        void specimenFactoryIsRequired() {
+            assertThatThrownBy(() -> new AbstractSpecimen<>(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("specimenFactory: null");
+        }
     }
 
     @Test
@@ -107,7 +112,7 @@ class AbstractSpecimenTest {
     }
 
     @Test
-    void createAbstractClassWithoutConstructor() {
+    void creatingAbstractClassWithoutConstructorFallsBackToManufacturing() {
         SpecimenType<Charset> specimenType = SpecimenType.fromClass(Charset.class);
         var sut = new AbstractSpecimen<>(specimenType, context, specimenFactory);
         assertThat(context.isCached(specimenType)).isFalse();

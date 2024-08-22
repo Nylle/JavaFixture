@@ -37,32 +37,36 @@ class ObjectSpecimenTest {
         specimenFactory = new SpecimenFactory(context);
     }
 
-    @Test
-    void onlyObjectTypes() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: " + Map.class.getName());
-    }
+    @Nested
+    class WhenConstructing {
 
-    @Test
-    void typeIsRequired() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(null, context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: null");
-    }
+        @Test
+        void onlyObjectTypesAreAllowed() {
+            assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: " + Map.class.getName());
+        }
 
-    @Test
-    void contextIsRequired() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Object.class), null, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("context: null");
-    }
+        @Test
+        void typeIsRequired() {
+            assertThatThrownBy(() -> new ObjectSpecimen<>(null, context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: null");
+        }
 
-    @Test
-    void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Object.class), context, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("specimenFactory: null");
+        @Test
+        void contextIsRequired() {
+            assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Object.class), null, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("context: null");
+        }
+
+        @Test
+        void specimenFactoryIsRequired() {
+            assertThatThrownBy(() -> new ObjectSpecimen<>(SpecimenType.fromClass(Object.class), context, null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("specimenFactory: null");
+        }
     }
 
     @Test

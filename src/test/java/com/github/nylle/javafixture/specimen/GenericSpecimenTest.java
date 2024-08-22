@@ -39,46 +39,50 @@ class GenericSpecimenTest {
         specimenFactory = new SpecimenFactory(context);
     }
 
-    @Test
-    void typeIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(null, context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: null");
-    }
+    @Nested
+    class WhenConstructing {
 
-    @Test
-    void typeMustBeParametrized() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Object.class), context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: java.lang.Object");
-    }
+        @Test
+        void typeIsRequired() {
+            assertThatThrownBy(() -> new GenericSpecimen<>(null, context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: null");
+        }
 
-    @Test
-    void typeMustNotBeCollection() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Collection.class), context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: java.util.Collection");
-    }
+        @Test
+        void typeMustBeParametrized() {
+            assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Object.class), context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: java.lang.Object");
+        }
 
-    @Test
-    void typeMustNotBeMap() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: java.util.Map");
-    }
+        @Test
+        void typeMustNotBeCollection() {
+            assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Collection.class), context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: java.util.Collection");
+        }
 
-    @Test
-    void contextIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Optional.class), null, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("context: null");
-    }
+        @Test
+        void typeMustNotBeMap() {
+            assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Map.class), context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: java.util.Map");
+        }
 
-    @Test
-    void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Optional.class), context, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("specimenFactory: null");
+        @Test
+        void contextIsRequired() {
+            assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Optional.class), null, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("context: null");
+        }
+
+        @Test
+        void specimenFactoryIsRequired() {
+            assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Optional.class), context, null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("specimenFactory: null");
+        }
     }
 
     @Test

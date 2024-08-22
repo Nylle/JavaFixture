@@ -77,11 +77,6 @@ public class InstanceFactory {
                 .orElseThrow(() -> new SpecimenException(format("Cannot create instance of %s", type.asClass())));
     }
 
-    private <T> boolean hasSpecimenTypeAsParameter(Method m, SpecimenType<T> type) {
-        return stream(m.getGenericParameterTypes())
-                .anyMatch(t -> t.getTypeName().equals(type.asClass().getName()));
-    }
-
     public <T> T instantiate(final SpecimenType<T> type) {
         try {
             return type.asClass().getDeclaredConstructor().newInstance();
@@ -95,21 +90,19 @@ public class InstanceFactory {
     }
 
     public <T> Object proxy(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
-        if (type.isInterface()) {
-            var proxyFactory = new ProxyFactory();
-            proxyFactory.setInterfaces(new Class<?>[]{type.asClass()});
-            try {
-                return proxyFactory.create(new Class[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
-            } catch (Exception e) {
-                throw new SpecimenException(format("Unable to construct interface %s: %s", type.asClass(), e.getMessage()), e);
-            }
-        }
-
-        return createProxyForAbstract(type, specimens);
+        return type.isInterface()
+                ? createProxyForInterface(type, specimens)
+                : createProxyForAbstract(type, specimens);
     }
 
     public <G, T extends Collection<G>> T createCollection(final SpecimenType<T> type) {
-        return type.isInterface() ? createCollectionFromInterfaceType(type.asClass()) : createCollectionFromConcreteType(type);
+        return type.isInterface()
+                ? createCollectionFromInterfaceType(type.asClass())
+                : createCollectionFromConcreteType(type);
+    }
+
+    private <T> boolean hasSpecimenTypeAsParameter(Method m, SpecimenType<T> type) {
+        return stream(m.getGenericParameterTypes()).anyMatch(t -> t.getTypeName().equals(type.asClass().getName()));
     }
 
     private <T> T construct(final SpecimenType<T> type, final Constructor<?> constructor, CustomizationContext customizationContext) {
@@ -124,11 +117,9 @@ public class InstanceFactory {
     }
 
     private static Object defaultValue(Class<?> type) {
-        if (type.isPrimitive()) {
-            return primitiveDefaults.get(type);
-        } else {
-            return null;
-        }
+        return type.isPrimitive()
+                ? primitiveDefaults.get(type)
+                : null;
     }
 
     private Object createParameter(Parameter parameter, CustomizationContext customizationContext) {
@@ -138,8 +129,19 @@ public class InstanceFactory {
         if (customizationContext.getCustomFields().containsKey(parameter.getName())) {
             return customizationContext.getCustomFields().get(parameter.getName());
         }
-        var specimen = specimenFactory.build(SpecimenType.fromClass(parameter.getParameterizedType()));
-        return specimen.create(new CustomizationContext(List.of(), Map.of(), customizationContext.useRandomConstructor()), new Annotation[0]);
+        return specimenFactory
+                .build(SpecimenType.fromClass(parameter.getParameterizedType()))
+                .create(new CustomizationContext(List.of(), Map.of(), customizationContext.useRandomConstructor()), new Annotation[0]);
+    }
+
+    private <T> Object createProxyForInterface(SpecimenType<T> type, Map<String, ISpecimen<?>> specimens) {
+        try {
+            var proxyFactory = new ProxyFactory();
+            proxyFactory.setInterfaces(new Class<?>[]{type.asClass()});
+            return proxyFactory.create(new Class[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
+        } catch (Exception e) {
+            throw new SpecimenException(format("Unable to proxy interface %s: %s", type.asClass(), e.getMessage()), e);
+        }
     }
 
     private <T> T createProxyForAbstract(final SpecimenType<T> type, final Map<String, ISpecimen<?>> specimens) {
@@ -148,7 +150,7 @@ public class InstanceFactory {
             factory.setSuperclass(type.asClass());
             return (T) factory.create(new Class<?>[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
         } catch (Exception e) {
-            throw new SpecimenException(format("Unable to construct abstract class %s: %s", type.asClass(), e.getMessage()), e);
+            throw new SpecimenException(format("Unable to create instance of abstract class %s: %s", type.asClass(), e.getMessage()), e);
         }
     }
 

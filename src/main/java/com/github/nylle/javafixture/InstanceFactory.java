@@ -57,16 +57,16 @@ public class InstanceFactory {
         this.random = new PseudoRandom();
     }
 
-    public <T> T construct(final SpecimenType<T> type, CustomizationContext customizationContext) {
+    public <T> T construct(SpecimenType<T> type, CustomizationContext customizationContext) {
         return random.shuffled(type.getDeclaredConstructors())
                 .stream()
                 .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .findFirst()
                 .map(x -> construct(type, x, customizationContext))
-                .orElseGet(() -> manufacture(type, customizationContext));
+                .orElseGet(() -> manufacture(type, customizationContext, new SpecimenException("No public constructor found")));
     }
 
-    public <T> T manufacture(final SpecimenType<T> type, CustomizationContext customizationContext) {
+    public <T> T manufacture(SpecimenType<T> type, CustomizationContext customizationContext, Throwable throwable) {
         return random.shuffled(type.getFactoryMethods())
                 .stream()
                 .filter(method -> Modifier.isPublic(method.getModifiers()))
@@ -74,10 +74,10 @@ public class InstanceFactory {
                 .map(x -> manufactureOrNull(x, type, customizationContext))
                 .filter(x -> x != null)
                 .findFirst()
-                .orElseThrow(() -> new SpecimenException(format("Cannot create instance of %s", type.asClass())));
+                .orElseThrow(() -> new SpecimenException(format("Cannot create instance of %s: no factory-method found", type.asClass()), throwable));
     }
 
-    public <T> T instantiate(final SpecimenType<T> type) {
+    public <T> T instantiate(SpecimenType<T> type) {
         try {
             return type.asClass().getDeclaredConstructor().newInstance();
         } catch (Exception e) {
@@ -111,8 +111,8 @@ public class InstanceFactory {
             return (T) constructor.newInstance(stream(constructor.getParameters())
                     .map(p -> createParameter(p, customizationContext))
                     .toArray());
-        } catch (Exception e) {
-            return manufacture(type, customizationContext);
+        } catch (Exception ex) {
+            return manufacture(type, customizationContext, ex);
         }
     }
 
@@ -149,8 +149,8 @@ public class InstanceFactory {
             var factory = new ProxyFactory();
             factory.setSuperclass(type.asClass());
             return (T) factory.create(new Class<?>[0], new Object[0], new ProxyInvocationHandler(specimenFactory, specimens));
-        } catch (Exception e) {
-            throw new SpecimenException(format("Unable to create instance of abstract class %s: %s", type.asClass(), e.getMessage()), e);
+        } catch (Exception ex) {
+            throw new SpecimenException(format("Unable to create instance of abstract %s: %s", type.asClass(), ex.getMessage()), ex);
         }
     }
 

@@ -62,8 +62,8 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
                                             field.getGenericType().getTypeName(),
                                             specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of(), false), field.getAnnotations()))));
             return context.remove(type);
-        } catch(SpecimenException ignored) {
-            return instanceFactory.manufacture(type, customizationContext);
+        } catch(SpecimenException ex) {
+            return instanceFactory.manufacture(type, customizationContext, ex);
         }
     }
 }

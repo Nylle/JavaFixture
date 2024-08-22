@@ -2,10 +2,12 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConcreteMethod;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConstructorException;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +124,24 @@ class AbstractSpecimenTest {
 
         assertThat(actual).isInstanceOf(Charset.class);
         assertThat(context.isCached(specimenType)).isFalse();
+    }
+
+    @Test
+    void exceptionsArePassedOnToManufacturingFallback() {
+        var specimenType = SpecimenType.fromClass(AbstractClassWithConstructorException.class);
+        var sut = new AbstractSpecimen<>(specimenType, context, specimenFactory);
+
+        assertThatExceptionOfType(SpecimenException.class)
+                .isThrownBy(() -> sut.create(noContext(), new Annotation[0]))
+                .withMessage("Cannot create instance of class com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConstructorException: no factory-method found")
+                .havingCause()
+                .isInstanceOf(SpecimenException.class)
+                .withMessage("Unable to create instance of abstract class com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConstructorException: null")
+                .havingCause()
+                .isInstanceOf(InvocationTargetException.class)
+                .havingCause()
+                .isInstanceOf(IllegalArgumentException.class)
+                .withMessage("expected for tests");
     }
 
     @Test

@@ -11,6 +11,7 @@ import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWitho
 import com.github.nylle.javafixture.testobjects.factorymethod.GenericClassWithFactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithDefaultMethod;
+import com.github.nylle.javafixture.testobjects.withconstructor.ConstructorExceptionAndNoFactoryMethod;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithPrivateConstructor;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -97,7 +99,9 @@ class InstanceFactoryTest {
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.construct(fromClass(TestObjectWithPrivateConstructor.class), new CustomizationContext(List.of(), Map.of(), false)))
                     .withMessageContaining("Cannot create instance of class")
-                    .withNoCause();
+                    .havingCause()
+                    .isInstanceOf(SpecimenException.class)
+                    .withMessage("No public constructor found");
         }
 
         @Test
@@ -118,6 +122,17 @@ class InstanceFactoryTest {
             var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {}, new CustomizationContext(List.of(), Map.of(), false));
 
             assertThat(result.getValue()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("will fallback to factory method and pass exceptions on")
+        void passExceptionToFallbackWhenConstructorThrows() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.construct(new SpecimenType<ConstructorExceptionAndNoFactoryMethod>() {}, new CustomizationContext(List.of(), Map.of(), false)))
+                    .withMessageContaining("Cannot create instance of class")
+                    .withCauseInstanceOf(InvocationTargetException.class);
         }
 
         @Test
@@ -178,7 +193,7 @@ class InstanceFactoryTest {
         void canCreateInstanceFromAbstractClassUsingFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = sut.manufacture(new SpecimenType<Charset>() {}, noContext());
+            var actual = sut.manufacture(new SpecimenType<Charset>() {}, noContext(), null);
 
             assertThat(actual).isInstanceOf(Charset.class);
         }
@@ -189,9 +204,22 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), noContext()))
+                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), noContext(), null))
                     .withMessageContaining("Cannot create instance of class")
                     .withNoCause();
+        }
+
+        @Test
+        @DisplayName("includes provided throwable as cause")
+        void takesThrowableAsCause() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var throwable = new RuntimeException("expected for test");
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.manufacture(fromClass(TestObjectWithNonPublicFactoryMethods.class), noContext(), throwable))
+                    .withMessageContaining("Cannot create instance of class")
+                    .withCause(throwable);
         }
 
         @Test
@@ -199,7 +227,7 @@ class InstanceFactoryTest {
         void factoryMethodWithArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class), noContext());
+            FactoryMethodWithArgument result = sut.manufacture(fromClass(FactoryMethodWithArgument.class), noContext(), null);
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -209,7 +237,7 @@ class InstanceFactoryTest {
         void shouldFilter() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithItselfAsArgument result = sut.manufacture(fromClass(FactoryMethodWithItselfAsArgument.class), noContext());
+            FactoryMethodWithItselfAsArgument result = sut.manufacture(fromClass(FactoryMethodWithItselfAsArgument.class), noContext(), null);
 
             assertThat(result.getValue()).isNull();
         }
@@ -220,7 +248,7 @@ class InstanceFactoryTest {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.manufacture(fromClass(FactoryMethodWithOnlyItselfAsArgument.class), noContext()));
+                    .isThrownBy(() -> sut.manufacture(fromClass(FactoryMethodWithOnlyItselfAsArgument.class), noContext(), null));
 
         }
 
@@ -229,7 +257,7 @@ class InstanceFactoryTest {
         void createOptional() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<Optional<String>>() {}, noContext());
+            var result = sut.manufacture(new SpecimenType<Optional<String>>() {}, noContext(), null);
 
             assertThat(result).isInstanceOf(Optional.class);
             assertThat(result.orElse("optional may be empty")).isInstanceOf(String.class);
@@ -240,7 +268,7 @@ class InstanceFactoryTest {
         void factoryMethodWithoutArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class), noContext());
+            FactoryMethodWithoutArgument result = sut.manufacture(fromClass(FactoryMethodWithoutArgument.class), noContext(), null);
 
             assertThat(result.getValue()).isEqualTo(42);
         }
@@ -250,7 +278,7 @@ class InstanceFactoryTest {
         void factoryMethodWithGenericArgument() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {}, noContext());
+            var result = sut.manufacture(new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {}, noContext(), null);
 
             assertThat(result.getValue()).isNotNull();
         }
@@ -260,7 +288,7 @@ class InstanceFactoryTest {
         void genericNoArgumentFactoryMethod() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var result = sut.manufacture(new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {}, noContext());
+            var result = sut.manufacture(new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {}, noContext(), null);
 
             assertThat(result).isNotNull();
             assertThat(result.getValue()).isEqualTo(42);
@@ -461,7 +489,7 @@ class InstanceFactoryTest {
         void callsDefaultMethods() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = (InterfaceWithDefaultMethod) sut.proxy(new SpecimenType<InterfaceWithDefaultMethod>() {}, new HashMap<String, ISpecimen<?>>());
+            var actual = (InterfaceWithDefaultMethod) sut.proxy(new SpecimenType<InterfaceWithDefaultMethod>() {}, new HashMap<>());
 
             assertThat(actual.getTestObject()).isNotNull();
             assertThat(actual.getDefaultInt()).isEqualTo(42);
@@ -472,7 +500,7 @@ class InstanceFactoryTest {
         void fromAbstractClass() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            var actual = (AbstractClassWithConcreteMethod) sut.proxy(new SpecimenType<AbstractClassWithConcreteMethod>() {}, new HashMap<String, ISpecimen<?>>());
+            var actual = (AbstractClassWithConcreteMethod) sut.proxy(new SpecimenType<AbstractClassWithConcreteMethod>() {}, new HashMap<>());
 
             assertThat(actual.getTestObject()).isNotNull();
             assertThat(actual.getDefaultInt()).isEqualTo(42);

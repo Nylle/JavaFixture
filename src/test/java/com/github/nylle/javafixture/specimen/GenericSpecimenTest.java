@@ -6,9 +6,12 @@ import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.inheritance.GenericChild;
+import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -109,6 +112,15 @@ class GenericSpecimenTest {
     }
 
     @Test
+    void constructedGenericsAreNotCached() {
+        var first = new GenericSpecimen<>(new SpecimenType<Optional<Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var second = new GenericSpecimen<>(new SpecimenType<Optional<Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
+
+        assertThat(first).isNotEqualTo(second);
+
+    }
+
+    @Test
     void cannotSetNonExistingField() {
         var sut = new GenericSpecimen<>(new SpecimenType<TestObjectGeneric<String, Integer>>() {}, context, specimenFactory);
 
@@ -145,6 +157,42 @@ class GenericSpecimenTest {
         assertThat(actual.getTestObject().getValue()).isNotNull();
         assertThat(actual.getTestObject().getStrings()).isNotEmpty();
         assertThat(actual.getTestObject().getIntegers()).isNotEmpty();
+    }
+
+    @Test
+    void createdObjectsAreNotCached() {
+        var sut = new GenericSpecimen<>(new SpecimenType<WithTestObject<Integer>>() {}, context, specimenFactory);
+        var actual = sut.create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]);
+        var second = sut.create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]);
+
+        assertThat(actual).isNotEqualTo(second);
+    }
+
+    @DisplayName("objects are not cached, neither constructed nor populated")
+    @TestWithCases
+    @TestCase(bool1 = true)
+    @TestCase(bool1 = false)
+    void constructedObjectsAreNotCached(boolean useConstructor) {
+        var sut = new GenericSpecimen<>(new SpecimenType<WithTestObject<TestObjectWithConstructedField>>() {}, context, specimenFactory);
+
+        var actual = sut.create(new CustomizationContext(List.of(), Map.of(), useConstructor), new Annotation[0]);
+        var second = sut.create(new CustomizationContext(List.of(), Map.of(), useConstructor), new Annotation[0]);
+
+        assertThat(actual).isNotEqualTo(second);
+    }
+
+    @DisplayName("when generic type is an interface, we will fixture the non-default methods")
+    @Test
+    void interfacesAreFixtured() {
+        var sut = new GenericSpecimen<>(new SpecimenType<Comparable<Integer>>() {}, context, specimenFactory);
+
+        var actual = sut.create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]);
+        var second = sut.create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]);
+
+        assertThat(actual.compareTo(0))
+                .as("two different fixtured objects should have two different fixtured results")
+                .isNotEqualTo(second.compareTo(0));
+        assertThat(actual).isNotEqualTo(second);
     }
 
     @Nested

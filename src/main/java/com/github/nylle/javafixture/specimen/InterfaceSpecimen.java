@@ -40,11 +40,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
 
     @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
-        if (context.isCached(type)) {
-            return context.cached(type);
-        }
-
-        return (T) context.cached(type, instanceFactory.proxy(type));
+        return (T) instanceFactory.proxy(type);
     }
 }
 

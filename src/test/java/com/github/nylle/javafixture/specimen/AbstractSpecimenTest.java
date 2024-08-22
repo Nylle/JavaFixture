@@ -108,23 +108,27 @@ class AbstractSpecimenTest {
 
     @Test
     void createAbstractClassWithoutConstructor() {
-        var sut = new AbstractSpecimen<Charset>(SpecimenType.fromClass(Charset.class), context, specimenFactory);
+        SpecimenType<Charset> specimenType = SpecimenType.fromClass(Charset.class);
+        var sut = new AbstractSpecimen<>(specimenType, context, specimenFactory);
+        assertThat(context.isCached(specimenType)).isFalse();
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(Charset.class);
+        assertThat(context.isCached(specimenType)).isFalse();
     }
 
     @Test
-    void resultIsCached() {
+    void resultIsNotCached() {
 
         var original = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(noContext(), new Annotation[0]);
-        var cached = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(noContext(), new Annotation[0]);
+        var second = new AbstractSpecimen<TestAbstractClass>(SpecimenType.fromClass(TestAbstractClass.class), context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(TestAbstractClass.class);
-        assertThat(original).isSameAs(cached);
-        assertThat(original.toString()).isEqualTo(cached.toString());
-        assertThat(original.getString()).isSameAs(cached.getString());
+        assertThat(original).isNotEqualTo(second);
+        assertThat(original.hashCode()).isNotEqualTo(second.hashCode());
+        assertThat(original.toString()).isNotEqualTo(second.toString());
+        assertThat(original.getString()).isNotEqualTo(second.getString());
     }
 }
 

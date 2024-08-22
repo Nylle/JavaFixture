@@ -132,12 +132,12 @@ class CollectionSpecimenTest {
 
     @Test
     void createHashSetFromSetInterface() {
-        var sut = new CollectionSpecimen<>(new SpecimenType<Set<String>>() {}, context, specimenFactory);
+        var sut = new CollectionSpecimen<>(new SpecimenType<Set<Object>>() {}, context, specimenFactory);
 
         var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isInstanceOf(HashSet.class);
-        assertThat(actual.stream().allMatch(x -> x.getClass().equals(String.class))).isTrue();
+        assertThat(actual.stream().allMatch(x -> x.getClass().equals(Object.class))).isTrue();
         assertThat(actual.size()).isEqualTo(2);
     }
 
@@ -295,16 +295,16 @@ class CollectionSpecimenTest {
     }
 
     @Test
-    void resultIsCached() {
+    void resultIsNotCached() {
 
         var original = new CollectionSpecimen<>(new SpecimenType<List<String>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
-        var cached = new CollectionSpecimen<>(new SpecimenType<List<String>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
+        var second = new CollectionSpecimen<>(new SpecimenType<List<String>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
         assertThat(original).isInstanceOf(List.class);
-        assertThat(original.size()).isEqualTo(2);
-        assertThat(original).isSameAs(cached);
-        assertThat(original.get(0)).isEqualTo(cached.get(0));
-        assertThat(original.get(1)).isEqualTo(cached.get(1));
+        assertThat(original.size()).as("collection size should be two because of this test's context").isEqualTo(2);
+        assertThat(original).isNotEqualTo(second);
+        assertThat(original.get(0)).isNotEqualTo(second.get(0));
+        assertThat(original.get(1)).isNotEqualTo(second.get(1));
     }
 
     @Test
@@ -323,7 +323,7 @@ class CollectionSpecimenTest {
     }
 
     @Test
-    void nonPrimitiveElementsAreSameInstance() {
+    void nonPrimitiveElementsAreNotCached() {
 
         var sut = new CollectionSpecimen<>(new SpecimenType<List<TestObject>>() {}, context, specimenFactory);
 
@@ -333,7 +333,7 @@ class CollectionSpecimenTest {
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual.get(0)).isExactlyInstanceOf(TestObject.class);
         assertThat(actual.get(1)).isExactlyInstanceOf(TestObject.class);
-        assertThat(actual.get(0)).isSameAs(actual.get(1));
+        assertThat(actual.get(0)).isNotEqualTo(actual.get(1));
 
     }
 }

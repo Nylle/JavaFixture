@@ -67,7 +67,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
                 .filter(x -> keySpecimen != null && valueSpecimen != null)
                 .forEach(x -> map.put(keySpecimen.create(customizationContext, new Annotation[0]), valueSpecimen.create(customizationContext, new Annotation[0])));
 
-        return (T) map;
+        return context.remove(type);
     }
 
     private Map<K, V> createFromConcreteType(final SpecimenType<T> type) {

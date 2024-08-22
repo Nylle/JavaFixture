@@ -2,11 +2,9 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
-import com.github.nylle.javafixture.specimen.AbstractSpecimen;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
-import com.github.nylle.javafixture.specimen.ExperimentalAbstractSpecimen;
 import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
@@ -18,9 +16,7 @@ import com.github.nylle.javafixture.specimen.TimeSpecimen;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
 import com.github.nylle.javafixture.testobjects.TestPrimitive;
-import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithImplementation;
 import com.github.nylle.javafixture.testobjects.example.IContract;
-import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithImplementation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -85,25 +81,5 @@ class SpecimenFactoryTest {
         var sut = new SpecimenFactory(context);
 
         assertThat(sut.build(type)).isExactlyInstanceOf(PredefinedSpecimen.class);
-    }
-
-    @TestWithCases
-    @TestCase(bool1 = true, class2 = ExperimentalAbstractSpecimen.class)
-    @TestCase(bool1 = false, class2 = InterfaceSpecimen.class)
-    @DisplayName("for interface types only creates ExperimentalAbstractSpecimen if experimentalInterfacesEnabled is")
-    void interfaceImplementationsAreOnlySupportedIfExperimentalInterfacesAreEnabled(boolean experimental, Class<?> expected) {
-        var context = new Context(Configuration.configure().experimentalInterfaces(experimental));
-
-        assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(InterfaceWithImplementation.class))).isExactlyInstanceOf(expected);
-    }
-
-    @TestWithCases
-    @TestCase(bool1 = true, class2 = ExperimentalAbstractSpecimen.class)
-    @TestCase(bool1 = false, class2 = AbstractSpecimen.class)
-    @DisplayName("for abstract types only creates ExperimentalAbstractSpecimen if experimentalInterfacesEnabled is")
-    void abstractImplementationsAreOnlySupportedIfExperimentalInterfacesAreEnabled(boolean experimental, Class<?> expected) {
-        var context = new Context(Configuration.configure().experimentalInterfaces(experimental));
-
-        assertThat(new SpecimenFactory(context).build(SpecimenType.fromClass(AbstractClassWithImplementation.class))).isExactlyInstanceOf(expected);
     }
 }

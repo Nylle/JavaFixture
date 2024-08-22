@@ -4,7 +4,6 @@ import com.github.nylle.javafixture.specimen.AbstractSpecimen;
 import com.github.nylle.javafixture.specimen.ArraySpecimen;
 import com.github.nylle.javafixture.specimen.CollectionSpecimen;
 import com.github.nylle.javafixture.specimen.EnumSpecimen;
-import com.github.nylle.javafixture.specimen.ExperimentalAbstractSpecimen;
 import com.github.nylle.javafixture.specimen.GenericSpecimen;
 import com.github.nylle.javafixture.specimen.InterfaceSpecimen;
 import com.github.nylle.javafixture.specimen.MapSpecimen;
@@ -49,10 +48,6 @@ public class SpecimenFactory {
         }
 
         if (type.isParameterized() && (type.isInterface() || type.isAbstract())) {
-            if (context.getConfiguration().experimentalInterfaces()) {
-                return experimentalAbstract(type);
-            }
-
             return new GenericSpecimen<>(type, context, this);
         }
 
@@ -65,17 +60,10 @@ public class SpecimenFactory {
         }
 
         if (type.isInterface()) {
-            if (context.getConfiguration().experimentalInterfaces()) {
-                return experimentalAbstract(type);
-            }
-
             return new InterfaceSpecimen<>(type, context, this);
         }
 
         if (type.isAbstract()) {
-            if (context.getConfiguration().experimentalInterfaces()) {
-                return experimentalAbstract(type);
-            }
             return new AbstractSpecimen<>(type, context, this);
         }
 
@@ -84,10 +72,6 @@ public class SpecimenFactory {
         }
 
         return new ObjectSpecimen<>(type, context, this);
-    }
-
-    private <T> ISpecimen<T> experimentalAbstract(SpecimenType<T> interfaceType) {
-        return new ExperimentalAbstractSpecimen<>(interfaceType, new ClassPathScanner().findAllClassesFor(interfaceType), context, this);
     }
 }
 

@@ -1,8 +1,5 @@
 package com.github.nylle.javafixture;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -13,7 +10,6 @@ public class Configuration {
     private int minCollectionSize = 2;
     private int streamSize = 3;
     private boolean usePositiveNumbersOnly = false;
-    private boolean experimentalInterfaces = false;
 
     private Clock clock = Clock.fixed(Instant.now(), ZoneOffset.UTC);
 
@@ -28,7 +24,6 @@ public class Configuration {
      * </ul><p>
      */
     public Configuration() {
-        this.experimentalInterfaces = experimentalInterfacesIsEnabled();
     }
 
     /**
@@ -115,10 +110,6 @@ public class Configuration {
         return this.usePositiveNumbersOnly;
     }
 
-    public boolean experimentalInterfaces() {
-        return this.experimentalInterfaces;
-    }
-
     /**
      * @param streamSize the stream size when creating many objects at once
      * @return this {@code Configuration}
@@ -159,11 +150,6 @@ public class Configuration {
         return this;
     }
 
-    public Configuration experimentalInterfaces(boolean experimentalInterfaces) {
-        this.experimentalInterfaces = experimentalInterfaces;
-        return this;
-    }
-
     /**
      * Returns a new fixture with this configuration
      *
@@ -171,16 +157,5 @@ public class Configuration {
      */
     public Fixture fixture() {
         return new Fixture(this);
-    }
-
-    private boolean experimentalInterfacesIsEnabled() {
-        try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("javafixture/com.github.nylle.javafixture.experimetalInterfaces")) {
-            if (in == null) {
-                return false;
-            }
-            return new BufferedReader(new InputStreamReader(in)).lines().findFirst().map(x -> x.equals("enabled")).orElse(false);
-        } catch (Exception ex) {
-            return false;
-        }
     }
 }

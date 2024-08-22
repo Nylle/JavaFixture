@@ -17,8 +17,6 @@ import com.github.nylle.javafixture.testobjects.example.AccountManager;
 import com.github.nylle.javafixture.testobjects.example.Contract;
 import com.github.nylle.javafixture.testobjects.example.ContractCategory;
 import com.github.nylle.javafixture.testobjects.example.ContractPosition;
-import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationU;
-import com.github.nylle.javafixture.testobjects.interfaces.GenericInterfaceTUWithGenericImplementationUImpl;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithoutDefaultConstructor;
@@ -447,18 +445,6 @@ class FixtureTest {
         }
 
         @Test
-        void canCreateGenericObjectFromInterfaceWithMismatchingNumberOfTypeParameters() {
-            var fixture = new Fixture(Configuration.configure().experimentalInterfaces(true));
-
-            var result = fixture.create(new SpecimenType<GenericInterfaceTUWithGenericImplementationU<String, Integer>>() {});
-
-            assertThat(result).isInstanceOf(GenericInterfaceTUWithGenericImplementationUImpl.class);
-            assertThat(result.publicField).isInstanceOf(Integer.class);
-            assertThat(result.getT()).isInstanceOf(String.class);
-            assertThat(result.getU()).isInstanceOf(Integer.class);
-        }
-
-        @Test
         void canCreateMapsAndLists() {
             Fixture fixture = new Fixture(configuration);
 
@@ -520,8 +506,7 @@ class FixtureTest {
 
             assertThat(result).isNotNull();
             assertThat(result.size()).isEqualTo(4);
-            assertThat(result.get(0)).isPresent();
-            assertThat(result.get(0).get()).isEqualTo("existing");
+            assertThat(result.get(0)).contains("existing");
             assertThat(result.get(1)).isInstanceOf(Optional.class);
         }
 

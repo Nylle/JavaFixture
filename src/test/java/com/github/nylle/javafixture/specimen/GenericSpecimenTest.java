@@ -120,7 +120,7 @@ class GenericSpecimenTest {
         var first = new GenericSpecimen<>(new SpecimenType<Optional<Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
         var second = new GenericSpecimen<>(new SpecimenType<Optional<Integer>>() {}, context, specimenFactory).create(noContext(), new Annotation[0]);
 
-        assertThat(first).isNotEqualTo(second);
+        assertThat(first.orElse(1)).as("work around that we might have constructed two Optional.empty values").isNotEqualTo(second.orElse(2));
 
     }
 

@@ -50,6 +50,20 @@ public class SpecialSpecimen<T> implements ISpecimen<T> {
         return creators.containsKey(type.asClass());
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new SpecialSpecimen<>(type, context);
+            }
+        };
+    }
+
     @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         return (T) creators.get(type.asClass()).apply(context);
@@ -84,18 +98,5 @@ public class SpecialSpecimen<T> implements ISpecimen<T> {
                 return null;
             }
         };
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new SpecialSpecimen<>(type, context);
-        }
     }
 }

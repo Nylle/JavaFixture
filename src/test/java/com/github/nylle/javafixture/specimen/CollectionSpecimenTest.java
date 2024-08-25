@@ -363,19 +363,19 @@ class CollectionSpecimenTest {
         @TestCase(class1 = Collection.class, bool2 = true)
         @TestCase(class1 = List.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new CollectionSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(CollectionSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new CollectionSpecimen.Spec().create(SpecimenType.fromClass(List.class), context, specimenFactory))
+            assertThat(CollectionSpecimen.meta().create(SpecimenType.fromClass(List.class), context, specimenFactory))
                     .isInstanceOf(CollectionSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new CollectionSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .isThrownBy(() -> CollectionSpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
                     .withMessageContaining("type: java.lang.String");
         }
     }

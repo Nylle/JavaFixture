@@ -6,7 +6,7 @@ public interface ISpecimen<T> {
 
     T create(final CustomizationContext customizationContext, Annotation[] annotations);
 
-    interface ISpec {
+    interface IMeta {
 
         <T> boolean supports(SpecimenType<T> type);
 

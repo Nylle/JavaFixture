@@ -306,24 +306,24 @@ class GenericSpecimenTest {
         @TestCase(class1 = Collection.class)
         @TestCase(class1 = Optional.class)
         void supportsReturnsFalse(Class<?> type) {
-            assertThat(new GenericSpecimen.Spec().supports(SpecimenType.fromClass(type))).isFalse();
+            assertThat(GenericSpecimen.meta().supports(SpecimenType.fromClass(type))).isFalse();
         }
 
         @Test
         void supportsReturnsTrue() {
-            assertThat(new GenericSpecimen.Spec().supports(new SpecimenType<Optional<String>>(){})).isTrue();
+            assertThat(GenericSpecimen.meta().supports(new SpecimenType<Optional<String>>(){})).isTrue();
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new GenericSpecimen.Spec().create(new SpecimenType<Optional<String>>(){}, context, specimenFactory))
+            assertThat(GenericSpecimen.meta().create(new SpecimenType<Optional<String>>(){}, context, specimenFactory))
                     .isInstanceOf(GenericSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new GenericSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .isThrownBy(() -> GenericSpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
                     .withMessageContaining("type: java.lang.String");
         }
     }

@@ -75,6 +75,20 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         return false;
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new TimeSpecimen<>(type, context);
+            }
+        };
+    }
+
     @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (Temporal.class.isAssignableFrom(type.asClass())) {
@@ -118,18 +132,5 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         }
 
         throw new SpecimenException("Unsupported type: " + type.asClass());
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new TimeSpecimen<>(type, context);
-        }
     }
 }

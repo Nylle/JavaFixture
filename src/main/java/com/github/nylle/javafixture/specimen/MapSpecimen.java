@@ -58,6 +58,20 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         return type.isMap();
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new MapSpecimen<>(type, context, specimenFactory);
+            }
+        };
+    }
+
     @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
@@ -110,18 +124,5 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         }
 
         throw new SpecimenException("Unsupported type: " + type);
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new MapSpecimen<>(type, context, specimenFactory);
-        }
     }
 }

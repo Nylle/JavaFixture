@@ -41,6 +41,20 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
         return type.isArray();
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new ArraySpecimen<>(type, context, specimenFactory);
+            }
+        };
+    }
+
     @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
@@ -54,18 +68,5 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
         IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create(customizationContext, new Annotation[0])));
 
         return context.remove(type);
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new ArraySpecimen<>(type, context, specimenFactory);
-        }
     }
 }

@@ -16,17 +16,17 @@ import com.github.nylle.javafixture.specimen.TimeSpecimen;
 import java.util.List;
 
 public class SpecimenFactory {
-    private final static List<ISpecimen.ISpec> specimenSpecs = List.of(
-            new SpecialSpecimen.Spec(),
-            new PrimitiveSpecimen.Spec(),
-            new EnumSpecimen.Spec(),
-            new CollectionSpecimen.Spec(),
-            new MapSpecimen.Spec(),
-            new GenericSpecimen.Spec(),
-            new ArraySpecimen.Spec(),
-            new TimeSpecimen.Spec(),
-            new InterfaceSpecimen.Spec(),
-            new AbstractSpecimen.Spec()
+    private final static List<ISpecimen.IMeta> specimenCandidates = List.of(
+            SpecialSpecimen.meta(),
+            PrimitiveSpecimen.meta(),
+            EnumSpecimen.meta(),
+            CollectionSpecimen.meta(),
+            MapSpecimen.meta(),
+            GenericSpecimen.meta(),
+            ArraySpecimen.meta(),
+            TimeSpecimen.meta(),
+            InterfaceSpecimen.meta(),
+            AbstractSpecimen.meta()
     );
 
     private final Context context;
@@ -41,7 +41,7 @@ public class SpecimenFactory {
             return new PredefinedSpecimen<>(type, context);
         }
 
-        return specimenSpecs.stream()
+        return specimenCandidates.stream()
                 .filter(x -> x.supports(type))
                 .map(x -> x.create(type, context, this))
                 .findFirst()

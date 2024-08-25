@@ -104,19 +104,19 @@ class InterfaceSpecimenTest {
         @TestCase(class1 = AbstractClassWithAbstractImplementation.class, bool2 = false)
         @TestCase(class1 = InterfaceWithoutImplementation.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new InterfaceSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(InterfaceSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new InterfaceSpecimen.Spec().create(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory))
+            assertThat(InterfaceSpecimen.meta().create(SpecimenType.fromClass(InterfaceWithoutImplementation.class), context, specimenFactory))
                     .isInstanceOf(InterfaceSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new InterfaceSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .isThrownBy(() -> InterfaceSpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
                     .withMessageContaining("type: java.lang.String");
         }
     }

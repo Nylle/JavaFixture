@@ -253,19 +253,19 @@ class MapSpecimenTest {
         @TestCase(class1 = String.class, bool2 = false)
         @TestCase(class1 = Map.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new MapSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(MapSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new MapSpecimen.Spec().create(SpecimenType.fromClass(Map.class), context, specimenFactory))
+            assertThat(MapSpecimen.meta().create(SpecimenType.fromClass(Map.class), context, specimenFactory))
                     .isInstanceOf(MapSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new MapSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .isThrownBy(() -> MapSpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
                     .withMessageContaining("type: java.lang.String");
         }
     }

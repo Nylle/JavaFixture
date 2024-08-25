@@ -48,6 +48,20 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
         return type.isAbstract() && !type.isMap() && !type.isCollection();
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new AbstractSpecimen<>(type, context, specimenFactory);
+            }
+        };
+    }
+
     @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
@@ -68,19 +82,6 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
             return context.remove(type);
         } catch(SpecimenException ex) {
             return instanceFactory.manufacture(type, customizationContext, ex);
-        }
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new AbstractSpecimen<>(type, context, specimenFactory);
         }
     }
 }

@@ -121,21 +121,21 @@ class ArraySpecimenTest {
         @TestCase(class1 = String.class, bool2 = false)
         @TestCase(class1 = int[].class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new ArraySpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(ArraySpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @TestWithCases
         @TestCase(class1 = int[].class)
         @TestCase(class1 = Object[].class)
         void createReturnsNewSpecimen(Class<?> type) {
-            assertThat(new ArraySpecimen.Spec().create(SpecimenType.fromClass(type), context, specimenFactory))
+            assertThat(ArraySpecimen.meta().create(SpecimenType.fromClass(type), context, specimenFactory))
                     .isInstanceOf(ArraySpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new ArraySpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .isThrownBy(() -> ArraySpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
                     .withMessageContaining("type: java.lang.String");
         }
     }

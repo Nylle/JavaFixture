@@ -174,19 +174,19 @@ class AbstractSpecimenTest {
         @TestCase(class1 = String.class, bool2 = false)
         @TestCase(class1 = AbstractClassWithAbstractImplementation.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new AbstractSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(AbstractSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new AbstractSpecimen.Spec().create(SpecimenType.fromClass(AbstractClassWithAbstractImplementation.class), context, specimenFactory))
+            assertThat(AbstractSpecimen.meta().create(SpecimenType.fromClass(AbstractClassWithAbstractImplementation.class), context, specimenFactory))
                     .isInstanceOf(AbstractSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new AbstractSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .isThrownBy(() -> AbstractSpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
                     .withMessageContaining("type: java.lang.String");
         }
     }

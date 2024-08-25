@@ -42,22 +42,23 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
         return type.isInterface() && !type.isMap() && !type.isCollection();
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new InterfaceSpecimen<>(type, context, specimenFactory);
+            }
+        };
+    }
+
     @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         return (T) instanceFactory.proxy(type);
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new InterfaceSpecimen<>(type, context, specimenFactory);
-        }
     }
 }
 

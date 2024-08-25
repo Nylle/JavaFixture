@@ -65,19 +65,19 @@ class EnumSpecimenTest {
         @TestCase(class1 = String.class, bool2 = false)
         @TestCase(class1 = TestEnum.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new EnumSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(EnumSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new EnumSpecimen.Spec().create(SpecimenType.fromClass(TestEnum.class), null, null))
+            assertThat(EnumSpecimen.meta().create(SpecimenType.fromClass(TestEnum.class), null, null))
                     .isInstanceOf(EnumSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new EnumSpecimen.Spec().create(SpecimenType.fromClass(String.class), null, null))
+                    .isThrownBy(() -> EnumSpecimen.meta().create(SpecimenType.fromClass(String.class), null, null))
                     .withMessageContaining("type: java.lang.String");
         }
     }

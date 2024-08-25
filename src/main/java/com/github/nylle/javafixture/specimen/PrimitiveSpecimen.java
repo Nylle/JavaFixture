@@ -41,6 +41,20 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
         return type.isPrimitive() || type.isBoxed() || type.asClass() == String.class;
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new PrimitiveSpecimen<>(type, context);
+            }
+        };
+    }
+
     @Override
     public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (type.asClass().equals(String.class)) {
@@ -102,19 +116,6 @@ public class PrimitiveSpecimen<T> implements ISpecimen<T> {
             }
         }
         return constraints;
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new PrimitiveSpecimen<>(type, context);
-        }
     }
 }
 

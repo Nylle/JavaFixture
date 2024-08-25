@@ -52,6 +52,20 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
         return type.isCollection();
     }
 
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new CollectionSpecimen<>(type, context, specimenFactory);
+            }
+        };
+    }
+
     @Override
     public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
@@ -80,18 +94,5 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
                 .collect(toList());
 
         return (T) EnumSet.of(elements.get(0), (G[]) elements.stream().skip(1).toArray(size -> new Enum[size]));
-    }
-
-    public static class Spec implements ISpec {
-
-        @Override
-        public <T> boolean supports(SpecimenType<T> type) {
-            return supportsType(type);
-        }
-
-        @Override
-        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
-            return new CollectionSpecimen<>(type, context, specimenFactory);
-        }
     }
 }

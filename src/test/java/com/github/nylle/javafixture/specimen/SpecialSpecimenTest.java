@@ -154,7 +154,7 @@ public class SpecialSpecimenTest {
         @TestCase(class1 = File.class, bool2 = true)
         @TestCase(class1 = URI.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new SpecialSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(SpecialSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @TestWithCases
@@ -163,7 +163,7 @@ public class SpecialSpecimenTest {
         @TestCase(class1 = File.class)
         @TestCase(class1 = URI.class)
         void createReturnsNewSpecimen(Class<?> type) {
-            assertThat(new SpecialSpecimen.Spec().create(SpecimenType.fromClass(type), context, null))
+            assertThat(SpecialSpecimen.meta().create(SpecimenType.fromClass(type), context, null))
                     .isInstanceOf(SpecialSpecimen.class);
         }
 
@@ -172,7 +172,7 @@ public class SpecialSpecimenTest {
         @TestCase(class1 = Object.class)
         void createThrows(Class<?> type) {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new SpecialSpecimen.Spec().create(SpecimenType.fromClass(type), context, null))
+                    .isThrownBy(() -> SpecialSpecimen.meta().create(SpecimenType.fromClass(type), context, null))
                     .withMessageContaining("type: " + type.getName());
         }
     }

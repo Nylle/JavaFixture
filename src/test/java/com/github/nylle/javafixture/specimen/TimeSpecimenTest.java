@@ -165,7 +165,7 @@ class TimeSpecimenTest {
         @TestCase(class1 = ZoneOffset.class, bool2 = true)
         @TestCase(class1 = ZonedDateTime.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new TimeSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(TimeSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @TestWithCases
@@ -176,14 +176,14 @@ class TimeSpecimenTest {
         @TestCase(class1 = java.util.Date.class)
         @TestCase(class1 = java.sql.Date.class)
         void createReturnsNewSpecimen(Class<?> type) {
-            assertThat(new TimeSpecimen.Spec().create(SpecimenType.fromClass(type), context, null))
+            assertThat(TimeSpecimen.meta().create(SpecimenType.fromClass(type), context, null))
                     .isInstanceOf(TimeSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new TimeSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, null))
+                    .isThrownBy(() -> TimeSpecimen.meta().create(SpecimenType.fromClass(String.class), context, null))
                     .withMessageContaining("type: java.lang.String");
         }
     }

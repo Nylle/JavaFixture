@@ -151,19 +151,19 @@ class PrimitiveSpecimenTest {
         @TestCase(class1 = Integer.class, bool2 = true)
         @TestCase(class1 = boolean.class, bool2 = true)
         void supports(Class<?> type, boolean expected) {
-            assertThat(new PrimitiveSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+            assertThat(PrimitiveSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
         }
 
         @Test
         void createReturnsNewSpecimen() {
-            assertThat(new PrimitiveSpecimen.Spec().create(SpecimenType.fromClass(String.class), new Context(configure()), null))
+            assertThat(PrimitiveSpecimen.meta().create(SpecimenType.fromClass(String.class), new Context(configure()), null))
                     .isInstanceOf(PrimitiveSpecimen.class);
         }
 
         @Test
         void createThrows() {
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> new PrimitiveSpecimen.Spec().create(SpecimenType.fromClass(Object.class), new Context(configure()), null))
+                    .isThrownBy(() -> PrimitiveSpecimen.meta().create(SpecimenType.fromClass(Object.class), new Context(configure()), null))
                     .withMessageContaining("type: java.lang.Object");
         }
     }

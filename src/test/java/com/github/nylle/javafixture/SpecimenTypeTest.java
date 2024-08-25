@@ -14,21 +14,8 @@ import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithAl
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.MonthDay;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.chrono.JapaneseEra;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -227,54 +214,6 @@ class SpecimenTypeTest {
     void isAbstract() {
         assertThat(SpecimenType.fromClass(TestObject.class).isAbstract()).isFalse();
         assertThat(SpecimenType.fromClass(TestAbstractClass.class).isAbstract()).isTrue();
-    }
-
-    @Test
-    void isTimeType() {
-        assertThat(new SpecimenType<String>() {}.isTimeType()).isFalse(); // false
-        assertThat(new SpecimenType<Duration>() {}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<JapaneseEra>() {}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<MonthDay>() {}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<Period>() {}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<ZoneId>() {}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<ZoneOffset>() {}.isTimeType()).isTrue();
-        assertThat(new SpecimenType<ZonedDateTime>() {}.isTimeType()).isTrue();
-    }
-
-    @TestWithCases
-    @TestCase(class1 = String.class, bool2 = false)
-    @TestCase(class1 = Duration.class, bool2 = true)
-    @TestCase(class1 = JapaneseEra.class, bool2 = true)
-    @TestCase(class1 = MonthDay.class, bool2 = true)
-    @TestCase(class1 = Period.class, bool2 = true)
-    @TestCase(class1 = ZoneId.class, bool2 = true)
-    @TestCase(class1 = ZoneOffset.class, bool2 = true)
-    @TestCase(class1 = ZonedDateTime.class, bool2 = true)
-    @TestCase(class1 = Instant.class, bool2 = true)
-    @TestCase(class1 = LocalDate.class, bool2 = true)
-    @TestCase(class1 = java.util.Date.class, bool2 = true)
-    @TestCase(class1 = java.sql.Date.class, bool2 = true)
-    void isTimeTypeFromClass(Class<?> value, boolean expected) {
-        assertThat(SpecimenType.fromClass(value).isTimeType()).isEqualTo(expected);
-    }
-
-    @Test
-    void isSpecialType() {
-        assertThat(new SpecimenType<String>() {}.isSpecialType()).isFalse(); // false
-        assertThat(new SpecimenType<File>() {}.isSpecialType()).isTrue();
-        assertThat(new SpecimenType<URI>() {}.isSpecialType()).isTrue();
-        assertThat(new SpecimenType<BigInteger>() {}.isSpecialType()).isTrue();
-        assertThat(new SpecimenType<BigDecimal>() {}.isSpecialType()).isTrue();
-    }
-
-    @TestWithCases
-    @TestCase(class1 = String.class, bool2 = false)
-    @TestCase(class1 = File.class, bool2 = true)
-    @TestCase(class1 = URI.class, bool2 = true)
-    @TestCase(class1 = BigInteger.class, bool2 = true)
-    @TestCase(class1 = BigDecimal.class, bool2 = true)
-    void isSpecialTypeFromClass(Class<?> value, boolean expected) {
-        assertThat(SpecimenType.fromClass(value).isSpecialType()).isEqualTo(expected);
     }
 
     @Test

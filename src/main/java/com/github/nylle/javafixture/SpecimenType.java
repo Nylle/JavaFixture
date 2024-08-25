@@ -6,10 +6,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.time.ZoneId;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAmount;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -141,50 +137,6 @@ public class SpecimenType<T> extends TypeCapture<T> {
 
     public boolean isMap() {
         return Map.class.isAssignableFrom(asClass());
-    }
-
-    public boolean isTimeType() {
-        if (Temporal.class.isAssignableFrom(asClass())) {
-            return true;
-        }
-
-        if (TemporalAdjuster.class.isAssignableFrom(asClass())) {
-            return true;
-        }
-
-        if (TemporalAmount.class.isAssignableFrom(asClass())) {
-            return true;
-        }
-
-        if (asClass().equals(ZoneId.class)) {
-            return true;
-        }
-
-        if (asClass().equals(java.util.Date.class)) {
-            return true;
-        }
-
-        if (asClass().equals(java.sql.Date.class)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean isSpecialType() {
-        if (asClass().equals(java.math.BigInteger.class)) {
-            return true;
-        }
-        if (asClass().equals(java.math.BigDecimal.class)) {
-            return true;
-        }
-        if (asClass().equals(java.io.File.class)) {
-            return true;
-        }
-        if (asClass().equals(java.net.URI.class)) {
-            return true;
-        }
-        return false;
     }
 
     public boolean isPrimitive() {

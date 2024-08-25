@@ -12,6 +12,7 @@ import com.github.nylle.javafixture.testobjects.factorymethod.GenericClassWithFa
 import com.github.nylle.javafixture.testobjects.factorymethod.TestObjectWithNonPublicFactoryMethods;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithDefaultMethod;
 import com.github.nylle.javafixture.testobjects.withconstructor.ConstructorExceptionAndNoFactoryMethod;
+import com.github.nylle.javafixture.testobjects.withconstructor.ConstructorExceptionAndThrowingFactoryMethod;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithPrivateConstructor;
@@ -123,6 +124,22 @@ class InstanceFactoryTest {
             var result = sut.construct(new SpecimenType<ConstructorExceptionAndFactoryMethod>() {}, new CustomizationContext(List.of(), Map.of(), false));
 
             assertThat(result.getValue()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("will fallback to factory method and fail on exception")
+        void throwWhenFallbackFails() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.construct(new SpecimenType<ConstructorExceptionAndThrowingFactoryMethod>() {}, new CustomizationContext(List.of(), Map.of(), false)))
+                    .withMessageContaining("Cannot create instance of class")
+                    .havingCause()
+                    .isInstanceOf(InvocationTargetException.class)
+                    .havingCause()
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .withMessage("expected for tests")
+                    .withNoCause();
         }
 
         @Test

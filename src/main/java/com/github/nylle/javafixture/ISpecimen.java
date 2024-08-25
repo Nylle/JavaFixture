@@ -6,5 +6,11 @@ public interface ISpecimen<T> {
 
     T create(final CustomizationContext customizationContext, Annotation[] annotations);
 
+    interface ISpec {
+
+        <T> boolean supports(SpecimenType<T> type);
+
+        <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory);
+    }
 }
 

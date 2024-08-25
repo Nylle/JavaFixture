@@ -21,7 +21,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
     private ISpecimen<G> specimen;
     private final InstanceFactory instanceFactory;
 
-    public CollectionSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public CollectionSpecimen(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -35,7 +35,7 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!type.isCollection()) {
+        if (!supportsType(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -46,6 +46,10 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
             this.specimen = specimenFactory.build(type.getGenericTypeArgument(0));
         }
         this.instanceFactory = new InstanceFactory(specimenFactory);
+    }
+
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        return type.isCollection();
     }
 
     @Override
@@ -76,5 +80,18 @@ public class CollectionSpecimen<T, G> implements ISpecimen<T> {
                 .collect(toList());
 
         return (T) EnumSet.of(elements.get(0), (G[]) elements.stream().skip(1).toArray(size -> new Enum[size]));
+    }
+
+    public static class Spec implements ISpec {
+
+        @Override
+        public <T> boolean supports(SpecimenType<T> type) {
+            return supportsType(type);
+        }
+
+        @Override
+        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+            return new CollectionSpecimen<>(type, context, specimenFactory);
+        }
     }
 }

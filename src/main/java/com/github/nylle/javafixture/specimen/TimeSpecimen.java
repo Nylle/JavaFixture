@@ -4,6 +4,7 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.ISpecimen;
 import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
@@ -18,6 +19,8 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.JapaneseEra;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.util.Random;
 
 public class TimeSpecimen<T> implements ISpecimen<T> {
@@ -26,12 +29,12 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
     private final Random random;
     private final Context context;
 
-    public TimeSpecimen(final SpecimenType<T> type, final Context context) {
+    public TimeSpecimen(SpecimenType<T> type, Context context) {
         if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
 
-        if (!type.isTimeType()) {
+        if (!supportsType(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -42,6 +45,34 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         this.type = type;
         this.random = new Random();
         this.context = context;
+    }
+
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        if (Temporal.class.isAssignableFrom(type.asClass())) {
+            return true;
+        }
+
+        if (TemporalAdjuster.class.isAssignableFrom(type.asClass())) {
+            return true;
+        }
+
+        if (TemporalAmount.class.isAssignableFrom(type.asClass())) {
+            return true;
+        }
+
+        if (type.asClass().equals(ZoneId.class)) {
+            return true;
+        }
+
+        if (type.asClass().equals(java.util.Date.class)) {
+            return true;
+        }
+
+        if (type.asClass().equals(java.sql.Date.class)) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -87,5 +118,18 @@ public class TimeSpecimen<T> implements ISpecimen<T> {
         }
 
         throw new SpecimenException("Unsupported type: " + type.asClass());
+    }
+
+    public static class Spec implements ISpec {
+
+        @Override
+        public <T> boolean supports(SpecimenType<T> type) {
+            return supportsType(type);
+        }
+
+        @Override
+        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+            return new TimeSpecimen<>(type, context);
+        }
     }
 }

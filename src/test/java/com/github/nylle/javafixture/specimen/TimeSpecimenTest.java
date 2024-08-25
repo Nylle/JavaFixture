@@ -8,6 +8,7 @@ import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -32,11 +33,14 @@ import java.time.chrono.JapaneseDate;
 import java.time.chrono.JapaneseEra;
 import java.time.chrono.MinguoDate;
 import java.time.chrono.ThaiBuddhistDate;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
@@ -129,4 +133,58 @@ class TimeSpecimenTest {
         assertThat(actual).isEqualTo(Instant.MIN);
     }
 
+    @TestWithCases
+    @TestCase(class1 = String.class, bool2 = false)
+    @TestCase(class1 = Object.class, bool2 = false)
+    @TestCase(class1 = Temporal.class, bool2 = true)
+    @TestCase(class1 = TemporalAdjuster.class, bool2 = true)
+    @TestCase(class1 = TemporalAmount.class, bool2 = true)
+    @TestCase(class1 = ZoneId.class, bool2 = true)
+    @TestCase(class1 = java.util.Date.class, bool2 = true)
+    @TestCase(class1 = java.sql.Date.class, bool2 = true)
+    void supportsType(Class<?> type, boolean expected) {
+        assertThat(TimeSpecimen.supportsType(SpecimenType.fromClass(type))).isEqualTo(expected);
+    }
+
+    @Nested
+    class SpecTest {
+
+        @TestWithCases
+        @TestCase(class1 = String.class, bool2 = false)
+        @TestCase(class1 = Temporal.class, bool2 = true)
+        @TestCase(class1 = TemporalAdjuster.class, bool2 = true)
+        @TestCase(class1 = TemporalAmount.class, bool2 = true)
+        @TestCase(class1 = ZoneId.class, bool2 = true)
+        @TestCase(class1 = java.util.Date.class, bool2 = true)
+        @TestCase(class1 = java.sql.Date.class, bool2 = true)
+        @TestCase(class1 = Duration.class, bool2 = true)
+        @TestCase(class1 = JapaneseEra.class, bool2 = true)
+        @TestCase(class1 = MonthDay.class, bool2 = true)
+        @TestCase(class1 = Period.class, bool2 = true)
+        @TestCase(class1 = ZoneId.class, bool2 = true)
+        @TestCase(class1 = ZoneOffset.class, bool2 = true)
+        @TestCase(class1 = ZonedDateTime.class, bool2 = true)
+        void supports(Class<?> type, boolean expected) {
+            assertThat(new TimeSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+        }
+
+        @TestWithCases
+        @TestCase(class1 = Temporal.class)
+        @TestCase(class1 = TemporalAdjuster.class)
+        @TestCase(class1 = TemporalAmount.class)
+        @TestCase(class1 = ZoneId.class)
+        @TestCase(class1 = java.util.Date.class)
+        @TestCase(class1 = java.sql.Date.class)
+        void createReturnsNewSpecimen(Class<?> type) {
+            assertThat(new TimeSpecimen.Spec().create(SpecimenType.fromClass(type), context, null))
+                    .isInstanceOf(TimeSpecimen.class);
+        }
+
+        @Test
+        void createThrows() {
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> new TimeSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, null))
+                    .withMessageContaining("type: java.lang.String");
+        }
+    }
 }

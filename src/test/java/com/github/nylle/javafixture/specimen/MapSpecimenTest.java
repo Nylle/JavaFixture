@@ -4,9 +4,12 @@ import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
@@ -24,6 +27,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MapSpecimenTest {
@@ -36,32 +40,43 @@ class MapSpecimenTest {
         specimenFactory = new SpecimenFactory(context);
     }
 
-    @Test
-    void onlyMapTypes() {
-        assertThatThrownBy(() -> new MapSpecimen<>(SpecimenType.fromClass(List.class), context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: " + List.class.getName());
+    @Nested
+    class WhenConstructing {
+
+        @Test
+        void onlyMapTypes() {
+            assertThatThrownBy(() -> new MapSpecimen<>(SpecimenType.fromClass(List.class), context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: " + List.class.getName());
+        }
+
+        @Test
+        void typeIsRequired() {
+            assertThatThrownBy(() -> new MapSpecimen<>(null, context, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: null");
+        }
+
+        @Test
+        void contextIsRequired() {
+            assertThatThrownBy(() -> new MapSpecimen<>(SpecimenType.fromClass(Map.class), null, specimenFactory))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("context: null");
+        }
+
+        @Test
+        void specimenFactoryIsRequired() {
+            assertThatThrownBy(() -> new MapSpecimen<>(SpecimenType.fromClass(Map.class), context, null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("specimenFactory: null");
+        }
     }
 
-    @Test
-    void typeIsRequired() {
-        assertThatThrownBy(() -> new MapSpecimen<>(null, context, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: null");
-    }
-
-    @Test
-    void contextIsRequired() {
-        assertThatThrownBy(() -> new MapSpecimen<>(SpecimenType.fromClass(Map.class), null, specimenFactory))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("context: null");
-    }
-
-    @Test
-    void specimenFactoryIsRequired() {
-        assertThatThrownBy(() -> new MapSpecimen<>(SpecimenType.fromClass(Map.class), context, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("specimenFactory: null");
+    @TestWithCases
+    @TestCase(class1 = String.class, bool2 = false)
+    @TestCase(class1 = Map.class, bool2 = true)
+    void supportsType(Class<?> type, boolean expected) {
+        assertThat(MapSpecimen.supportsType(SpecimenType.fromClass(type))).isEqualTo(expected);
     }
 
     @Test
@@ -229,5 +244,29 @@ class MapSpecimenTest {
         assertThat(second.getValue()).isExactlyInstanceOf(TestObject.class);
 
         assertThat(first.getValue()).isSameAs(second.getValue());
+    }
+
+    @Nested
+    class SpecTest {
+
+        @TestWithCases
+        @TestCase(class1 = String.class, bool2 = false)
+        @TestCase(class1 = Map.class, bool2 = true)
+        void supports(Class<?> type, boolean expected) {
+            assertThat(new MapSpecimen.Spec().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+        }
+
+        @Test
+        void createReturnsNewSpecimen() {
+            assertThat(new MapSpecimen.Spec().create(SpecimenType.fromClass(Map.class), context, specimenFactory))
+                    .isInstanceOf(MapSpecimen.class);
+        }
+
+        @Test
+        void createThrows() {
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> new MapSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .withMessageContaining("type: java.lang.String");
+        }
     }
 }

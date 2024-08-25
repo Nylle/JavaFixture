@@ -31,16 +31,12 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("context: null");
         }
 
+        if (!supportsType(type)) {
+            throw new IllegalArgumentException("type: " + type.getName());
+        }
+
         if (specimenFactory == null) {
             throw new IllegalArgumentException("specimenFactory: null");
-        }
-
-        if (!type.isParameterized()) {
-            throw new IllegalArgumentException("type: " + type.getName());
-        }
-
-        if (type.isCollection() || type.isMap()) {
-            throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;
@@ -48,6 +44,10 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         this.specimenFactory = specimenFactory;
         this.instanceFactory = new InstanceFactory(specimenFactory);
         this.specimens = type.getTypeParameterNamesAndTypes(x -> specimenFactory.build(x));
+    }
+
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        return type.isParameterized() && !type.isCollection() && !type.isMap();
     }
 
     @Override
@@ -61,6 +61,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
         }
 
         if (type.isInterface()) {
+            //TODO: shouldn't this be covered by InterfaceSpecimen?
             return (T) instanceFactory.proxy(type, specimens);
         }
 
@@ -88,6 +89,19 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
             return instanceFactory.construct(type, customizationContext);
         }
         return context.remove(type);
+    }
+
+    public static class Spec implements ISpec {
+
+        @Override
+        public <T> boolean supports(SpecimenType<T> type) {
+            return supportsType(type);
+        }
+
+        @Override
+        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+            return new GenericSpecimen<>(type, context, specimenFactory);
+        }
     }
 }
 

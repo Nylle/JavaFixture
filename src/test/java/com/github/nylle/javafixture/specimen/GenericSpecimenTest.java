@@ -79,9 +79,37 @@ class GenericSpecimenTest {
 
         @Test
         void specimenFactoryIsRequired() {
-            assertThatThrownBy(() -> new GenericSpecimen<>(SpecimenType.fromClass(Optional.class), context, null))
+            assertThatThrownBy(() -> new GenericSpecimen<>(new SpecimenType<Optional<String>>(){}, context, null))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("specimenFactory: null");
+        }
+    }
+
+    @Nested
+    class SupportsType {
+
+        @Test
+        void returnsFalseForCollections() {
+            assertThat(GenericSpecimen.supportsType(new SpecimenType<Collection<String>>(){})).isFalse();
+        }
+
+        @Test
+        void returnsFalseForMaps() {
+            assertThat(GenericSpecimen.supportsType(new SpecimenType<Map<Integer, String>>(){})).isFalse();
+        }
+
+        @TestWithCases
+        @TestCase(class1 = String.class, bool2 = false)
+        @TestCase(class1 = Map.class, bool2 = false)
+        @TestCase(class1 = Collection.class, bool2 = false)
+        @TestCase(class1 = Optional.class, bool2 = true)
+        void returnsFalseForNonParametrizedTypes(Class<?> type) {
+            assertThat(GenericSpecimen.supportsType(SpecimenType.fromClass(type))).isFalse();
+        }
+
+        @Test
+        void returnsTrueForParametrizedTypes() {
+            assertThat(GenericSpecimen.supportsType(new SpecimenType<Optional<String>>(){})).isTrue();
         }
     }
 
@@ -266,6 +294,37 @@ class GenericSpecimenTest {
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of(), false), new Annotation[0]));
+        }
+    }
+
+    @Nested
+    class SpecTest {
+
+        @TestWithCases
+        @TestCase(class1 = Map.class)
+        @TestCase(class1 = String.class)
+        @TestCase(class1 = Collection.class)
+        @TestCase(class1 = Optional.class)
+        void supportsReturnsFalse(Class<?> type) {
+            assertThat(new GenericSpecimen.Spec().supports(SpecimenType.fromClass(type))).isFalse();
+        }
+
+        @Test
+        void supportsReturnsTrue() {
+            assertThat(new GenericSpecimen.Spec().supports(new SpecimenType<Optional<String>>(){})).isTrue();
+        }
+
+        @Test
+        void createReturnsNewSpecimen() {
+            assertThat(new GenericSpecimen.Spec().create(new SpecimenType<Optional<String>>(){}, context, specimenFactory))
+                    .isInstanceOf(GenericSpecimen.class);
+        }
+
+        @Test
+        void createThrows() {
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> new GenericSpecimen.Spec().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .withMessageContaining("type: java.lang.String");
         }
     }
 

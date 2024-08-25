@@ -20,7 +20,7 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
     private final SpecimenFactory specimenFactory;
     private final InstanceFactory instanceFactory;
 
-    public AbstractSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public AbstractSpecimen(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -34,7 +34,7 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!type.isAbstract() || type.isMap() || type.isCollection()) {
+        if (!supportsType(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -42,6 +42,10 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
         this.context = context;
         this.specimenFactory = specimenFactory;
         this.instanceFactory = new InstanceFactory(specimenFactory);
+    }
+
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        return type.isAbstract() && !type.isMap() && !type.isCollection();
     }
 
     @Override
@@ -64,6 +68,19 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
             return context.remove(type);
         } catch(SpecimenException ex) {
             return instanceFactory.manufacture(type, customizationContext, ex);
+        }
+    }
+
+    public static class Spec implements ISpec {
+
+        @Override
+        public <T> boolean supports(SpecimenType<T> type) {
+            return supportsType(type);
+        }
+
+        @Override
+        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+            return new AbstractSpecimen<>(type, context, specimenFactory);
         }
     }
 }

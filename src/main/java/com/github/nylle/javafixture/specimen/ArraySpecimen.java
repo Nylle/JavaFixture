@@ -15,7 +15,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
     private final Context context;
     private final SpecimenFactory specimenFactory;
 
-    public ArraySpecimen(final SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+    public ArraySpecimen(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
         if (type == null) {
             throw new IllegalArgumentException("type: null");
         }
@@ -28,7 +28,7 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!type.isArray()) {
+        if (!supportsType(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -37,8 +37,12 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
         this.specimenFactory = specimenFactory;
     }
 
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        return type.isArray();
+    }
+
     @Override
-    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
+    public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
         }
@@ -50,5 +54,18 @@ public class ArraySpecimen<T> implements ISpecimen<T> {
         IntStream.range(0, length).boxed().forEach(i -> Array.set(result, i, specimenFactory.build(SpecimenType.fromClass(type.getComponentType())).create(customizationContext, new Annotation[0])));
 
         return context.remove(type);
+    }
+
+    public static class Spec implements ISpec {
+
+        @Override
+        public <T> boolean supports(SpecimenType<T> type) {
+            return supportsType(type);
+        }
+
+        @Override
+        public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+            return new ArraySpecimen<>(type, context, specimenFactory);
+        }
     }
 }

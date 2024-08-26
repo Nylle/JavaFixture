@@ -1,7 +1,3 @@
-[![Tests](https://github.com/Nylle/JavaFixture/workflows/test/badge.svg?branch=master)](https://github.com/Nylle/JavaFixture/actions?query=workflow%3ATest)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.nylle/javafixture.svg?label=maven-central)](https://maven-badges.herokuapp.com/maven-central/com.github.nylle/javafixture)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
-
 # JavaFixture
 JavaFixture is the attempt to bring the incredibly easy usage of [Mark Seemann's AutoFixture for .NET](https://github.com/AutoFixture/AutoFixture) to the Java world.
 
@@ -26,6 +22,8 @@ The purpose of this project is to generate full object graphs for use in test su
     <scope>test</scope>
 </dependency>
 ```
+[Maven Central](https://search.maven.org/artifact/com.github.nylle/javafixture)
+
 ## Usage
 
 ### Create a Fixture

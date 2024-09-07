@@ -224,6 +224,16 @@ public class SpecimenType<T> extends TypeCapture<T> {
                 .collect(Collectors.toList());
     }
 
+    public List<Builder<T>> findBuilders() {
+        return Stream.of(asClass().getDeclaredMethods())
+                .filter(m -> Modifier.isStatic(m.getModifiers()))
+                .filter(m -> Modifier.isPublic(m.getModifiers()))
+                .filter(m -> !m.getReturnType().equals(asClass()))
+                .map(m -> Builder.create(m, this))
+                .filter(b -> b != null)
+                .collect(toList());
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

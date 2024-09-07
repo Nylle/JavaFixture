@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import com.github.nylle.javafixture.testobjects.ClassWithBuilder;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
 import com.github.nylle.javafixture.testobjects.TestEnum;
@@ -58,6 +59,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
+import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -365,6 +367,35 @@ class SpecimenTypeTest {
             assertThat(actual).hasSize(2);
             assertThat(actual.get("T")).isEqualTo(String.class);
             assertThat(actual.get("U")).isEqualTo(Optional.class);
+        }
+    }
+
+    @Nested
+    class FindBuilders {
+
+        @Test
+        void returnsListOfBuilders() {
+            var specimenFactory = new SpecimenFactory(new Context(new Configuration()));
+
+            var sut = new SpecimenType<ClassWithBuilder>(){};
+
+            var actual = sut.findBuilders();
+
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).invoke(specimenFactory, noContext())).isInstanceOf(ClassWithBuilder.class);
+        }
+
+        @TestWithCases
+        @TestCase(class1 = TestObject.class)
+        @TestCase(class1 = ITestGeneric.class)
+        @TestCase(class1 = TestEnum.class)
+        @TestCase(class1 = String.class)
+        void returnsEmptyListIfNoBuildersFound(Class<?> typeWithoutBuilder) {
+            var sut = SpecimenType.fromClass(typeWithoutBuilder);
+
+            var actual = sut.findBuilders();
+
+            assertThat(actual).isEmpty();
         }
     }
 

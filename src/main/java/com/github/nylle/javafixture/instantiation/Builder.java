@@ -1,4 +1,8 @@
-package com.github.nylle.javafixture;
+package com.github.nylle.javafixture.instantiation;
+
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -10,7 +14,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class Builder<T> {
+public class Builder<T> implements Instantiator<T> {
 
     private final Method buildMethod;
     private final Method builderMethod;
@@ -31,7 +35,11 @@ public class Builder<T> {
             var builder = builderMethod.invoke(null, new Object[]{});
 
             for (var method : findSetMethods()) {
-                method.invoke(builder, new Object[]{specimenFactory.build(SpecimenType.fromClass(method.getGenericParameterTypes()[0])).create(customizationContext, new Annotation[0])});
+                method.invoke(builder, new Object[]{
+                        specimenFactory
+                                .build(SpecimenType.fromClass(method.getGenericParameterTypes()[0]))
+                                .create(customizationContext, new Annotation[0])
+                });
             }
 
             return (T) buildMethod.invoke(builder, new Object[]{});

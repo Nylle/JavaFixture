@@ -1,5 +1,10 @@
-package com.github.nylle.javafixture;
+package com.github.nylle.javafixture.instantiation;
 
+import com.github.nylle.javafixture.Configuration;
+import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
+import com.github.nylle.javafixture.SpecimenFactory;
+import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.ClassWithBuilder;
 import org.junit.jupiter.api.Test;
 

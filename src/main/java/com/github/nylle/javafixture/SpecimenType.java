@@ -1,5 +1,7 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.instantiation.Builder;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

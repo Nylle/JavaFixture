@@ -1,6 +1,6 @@
 package com.github.nylle.javafixture;
 
-import com.github.nylle.javafixture.instantiation.Builder;
+import com.github.nylle.javafixture.instantiation.BuilderInstantiator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -226,12 +226,12 @@ public class SpecimenType<T> extends TypeCapture<T> {
                 .collect(Collectors.toList());
     }
 
-    public List<Builder<T>> findBuilders() {
+    public List<BuilderInstantiator<T>> findBuilders() {
         return Stream.of(asClass().getDeclaredMethods())
                 .filter(m -> Modifier.isStatic(m.getModifiers()))
                 .filter(m -> Modifier.isPublic(m.getModifiers()))
                 .filter(m -> !m.getReturnType().equals(asClass()))
-                .map(m -> Builder.create(m, this))
+                .map(m -> BuilderInstantiator.create(m, this))
                 .filter(b -> b != null)
                 .collect(toList());
     }

@@ -16,12 +16,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ConstructorTest {
+class ConstructorInstantiatorTest {
 
     @Test
     @DisplayName("returns instance")
     void canCreateInstanceFromConstructor() throws NoSuchMethodException {
-        var sut = Constructor.create(TestObjectWithGenericConstructor.class.getConstructor(String.class, Optional.class));
+        var sut = ConstructorInstantiator.create(TestObjectWithGenericConstructor.class.getConstructor(String.class, Optional.class));
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), false));
 
@@ -33,7 +33,7 @@ class ConstructorTest {
     @Test
     @DisplayName("fields not set by constructor are null")
     void fieldsNotSetByConstructorAreNull() throws NoSuchMethodException {
-        var sut = Constructor.create(TestObjectWithGenericConstructor.class.getConstructor(String.class, Optional.class));
+        var sut = ConstructorInstantiator.create(TestObjectWithGenericConstructor.class.getConstructor(String.class, Optional.class));
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), false));
 
@@ -44,7 +44,7 @@ class ConstructorTest {
     @Test
     @DisplayName("arguments can be customized")
     void argumentsCanBeCustomized() throws NoSuchMethodException {
-        var sut = Constructor.create(TestObject.class.getConstructor(String.class, List.class, Map.class));
+        var sut = ConstructorInstantiator.create(TestObject.class.getConstructor(String.class, List.class, Map.class));
 
         // use arg0, because .class files do not store formal parameter names by default
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of("arg0", "customized"), true));
@@ -55,7 +55,7 @@ class ConstructorTest {
     @Test
     @DisplayName("using constructor is used for all instances")
     void usingConstructorIsRecursive() throws NoSuchMethodException {
-        var sut = Constructor.create(TestObjectWithConstructedField.class.getConstructor(int.class, TestObjectWithGenericConstructor.class));
+        var sut = ConstructorInstantiator.create(TestObjectWithConstructedField.class.getConstructor(int.class, TestObjectWithGenericConstructor.class));
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), true));
 
@@ -67,7 +67,7 @@ class ConstructorTest {
     @Test
     @DisplayName("customized arguments are only used for the top level object (no nested objects)")
     void constructorArgumentsAreUsedOnce() throws NoSuchMethodException {
-        var sut = Constructor.create(TestObjectWithConstructedField.class.getConstructor(int.class, TestObjectWithGenericConstructor.class));
+        var sut = ConstructorInstantiator.create(TestObjectWithConstructedField.class.getConstructor(int.class, TestObjectWithGenericConstructor.class));
 
         // use arg0, because .class files do not store formal parameter names by default
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of("arg0", 2), true));
@@ -78,7 +78,7 @@ class ConstructorTest {
     @Test
     @DisplayName("customized arguments are used for exclusion, too")
     void ignoredConstructorArgsAreRespected() throws NoSuchMethodException {
-        var sut = Constructor.create(TestObjectWithConstructedField.class.getConstructor(int.class, TestObjectWithGenericConstructor.class));
+        var sut = ConstructorInstantiator.create(TestObjectWithConstructedField.class.getConstructor(int.class, TestObjectWithGenericConstructor.class));
 
         // use arg0, because .class files do not store formal parameter names by default
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of("arg0"), Map.of(), true));

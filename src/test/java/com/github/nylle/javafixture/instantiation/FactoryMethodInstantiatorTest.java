@@ -18,12 +18,12 @@ import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FactoryMethodTest {
+class FactoryMethodInstantiatorTest {
 
     @Test
     @DisplayName("returns instance of class using factory method without arguments")
     void factoryMethodWithoutArgument() throws NoSuchMethodException {
-        var sut = FactoryMethod.<FactoryMethodWithoutArgument>create(FactoryMethodWithoutArgument.class.getDeclaredMethod("factoryMethod"), fromClass(FactoryMethodWithoutArgument.class));
+        var sut = FactoryMethodInstantiator.<FactoryMethodWithoutArgument>create(FactoryMethodWithoutArgument.class.getDeclaredMethod("factoryMethod"), fromClass(FactoryMethodWithoutArgument.class));
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
@@ -33,7 +33,7 @@ class FactoryMethodTest {
     @Test
     @DisplayName("returns instance of class using factory method with arguments")
     void returnsInstanceOfClassUsingFactoryMethodWithArguments() throws NoSuchMethodException {
-        var sut = FactoryMethod.<FactoryMethodWithArgument>create(FactoryMethodWithArgument.class.getDeclaredMethod("factoryMethod", int.class), fromClass(FactoryMethodWithArgument.class));
+        var sut = FactoryMethodInstantiator.<FactoryMethodWithArgument>create(FactoryMethodWithArgument.class.getDeclaredMethod("factoryMethod", int.class), fromClass(FactoryMethodWithArgument.class));
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
@@ -43,7 +43,7 @@ class FactoryMethodTest {
     @Test
     @DisplayName("returns instance of class using factory method with generic argument")
     void factoryMethodWithGenericArgument() throws NoSuchMethodException {
-        var sut = FactoryMethod.create(FactoryMethodWithGenericArgument.class.getDeclaredMethod("factoryMethod", Object.class), new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {});
+        var sut = FactoryMethodInstantiator.create(FactoryMethodWithGenericArgument.class.getDeclaredMethod("factoryMethod", Object.class), new SpecimenType<FactoryMethodWithGenericArgument<Integer>>() {});
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
@@ -53,7 +53,7 @@ class FactoryMethodTest {
     @Test
     @DisplayName("returns instance of abstract class using factory method without arguments")
     void returnsInstanceOfAbstractClassUsingFactoryMethod() throws NoSuchMethodException {
-        var sut = FactoryMethod.create(Charset.class.getDeclaredMethod("defaultCharset"), new SpecimenType<Charset>() {});
+        var sut = FactoryMethodInstantiator.create(Charset.class.getDeclaredMethod("defaultCharset"), new SpecimenType<Charset>() {});
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
@@ -63,7 +63,7 @@ class FactoryMethodTest {
     @Test
     @DisplayName("returns instance of Optional using factory method with arguments")
     void createOptionalWithArgument() throws NoSuchMethodException {
-        var sut = FactoryMethod.create(Optional.class.getDeclaredMethod("of", Object.class), new SpecimenType<Optional<String>>() {});
+        var sut = FactoryMethodInstantiator.create(Optional.class.getDeclaredMethod("of", Object.class), new SpecimenType<Optional<String>>() {});
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
@@ -75,7 +75,7 @@ class FactoryMethodTest {
     @Test
     @DisplayName("returns instance of Optional using factory method without arguments")
     void createOptionalWithoutArgument() throws NoSuchMethodException {
-        var sut = FactoryMethod.create(Optional.class.getDeclaredMethod("empty"), new SpecimenType<Optional<String>>() {});
+        var sut = FactoryMethodInstantiator.create(Optional.class.getDeclaredMethod("empty"), new SpecimenType<Optional<String>>() {});
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
@@ -86,7 +86,7 @@ class FactoryMethodTest {
     @Test
     @DisplayName("returns instance of generic class using generic method without arguments")
     void genericNoArgumentFactoryMethod() throws NoSuchMethodException {
-        var sut = FactoryMethod.create(GenericClassWithFactoryMethodWithoutArgument.class.getDeclaredMethod("factoryMethod"), new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {});
+        var sut = FactoryMethodInstantiator.create(GenericClassWithFactoryMethodWithoutArgument.class.getDeclaredMethod("factoryMethod"), new SpecimenType<GenericClassWithFactoryMethodWithoutArgument<Integer>>() {});
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 

@@ -9,18 +9,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FactoryMethod<T> implements Instantiator<T> {
+public class FactoryMethodInstantiator<T> implements Instantiator<T> {
 
     private final Method factoryMethod;
     private final SpecimenType<T> targetType;
 
-    public FactoryMethod(Method factoryMethod, SpecimenType<T> targetType) {
+    public FactoryMethodInstantiator(Method factoryMethod, SpecimenType<T> targetType) {
         this.factoryMethod = factoryMethod;
         this.targetType = targetType;
     }
 
-    public static <T> FactoryMethod<T> create(Method factoryMethod, SpecimenType<T> targetType) {
-        return new FactoryMethod<>(factoryMethod, targetType);
+    public static <T> FactoryMethodInstantiator<T> create(Method factoryMethod, SpecimenType<T> targetType) {
+        return new FactoryMethodInstantiator<>(factoryMethod, targetType);
     }
 
     public T invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {

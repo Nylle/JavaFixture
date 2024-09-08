@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BuilderTest {
+class BuilderInstantiatorTest {
 
     @Test
     void invokeReturnsBuiltObjectWithAllMethodsCalled() throws NoSuchMethodException {
-        var sut = Builder.create(ClassWithBuilder.class.getMethod("builder"), SpecimenType.fromClass(ClassWithBuilder.class));
+        var sut = BuilderInstantiator.create(ClassWithBuilder.class.getMethod("builder"), SpecimenType.fromClass(ClassWithBuilder.class));
 
         var result = sut.invoke(new SpecimenFactory(new Context(new Configuration())), CustomizationContext.noContext());
 

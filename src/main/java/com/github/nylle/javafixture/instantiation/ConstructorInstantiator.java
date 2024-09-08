@@ -11,16 +11,16 @@ import java.util.Map;
 
 import static java.util.Arrays.stream;
 
-public class Constructor<T> implements Instantiator<T> {
+public class ConstructorInstantiator<T> implements Instantiator<T> {
 
     private final java.lang.reflect.Constructor<T> constructor;
 
-    private Constructor(java.lang.reflect.Constructor<T> constructor) {
+    private ConstructorInstantiator(java.lang.reflect.Constructor<T> constructor) {
         this.constructor = constructor;
     }
 
-    public static <T> Constructor<T> create(java.lang.reflect.Constructor<T> constructor) {
-        return new Constructor<>(constructor);
+    public static <T> ConstructorInstantiator<T> create(java.lang.reflect.Constructor<T> constructor) {
+        return new ConstructorInstantiator<>(constructor);
     }
 
     public T invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {

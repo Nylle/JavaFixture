@@ -14,19 +14,19 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class Builder<T> implements Instantiator<T> {
+public class BuilderInstantiator<T> implements Instantiator<T> {
 
     private final Method buildMethod;
     private final Method builderMethod;
 
-    private Builder(Method builderMethod, Method buildMethod) {
+    private BuilderInstantiator(Method builderMethod, Method buildMethod) {
         this.builderMethod = builderMethod;
         this.buildMethod = buildMethod;
     }
 
-    public static <T> Builder<T> create(Method builderMethodCandidate, SpecimenType<T> targetType) {
+    public static <T> BuilderInstantiator<T> create(Method builderMethodCandidate, SpecimenType<T> targetType) {
         return findBuildMethod(builderMethodCandidate.getReturnType(), targetType.asClass())
-                .map(x -> new Builder<T>(builderMethodCandidate, x))
+                .map(x -> new BuilderInstantiator<T>(builderMethodCandidate, x))
                 .orElse(null);
     }
 

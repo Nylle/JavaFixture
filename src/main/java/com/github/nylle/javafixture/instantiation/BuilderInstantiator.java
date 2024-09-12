@@ -8,8 +8,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -30,6 +33,13 @@ public class BuilderInstantiator<T> implements Instantiator<T> {
                 .orElse(null);
     }
 
+    private Map<BiFunction, Object> presetValues = new HashMap<>();
+
+    public BuilderInstantiator<T> with(BiFunction setter, Object value) {
+        presetValues.put(setter, value);
+        return this;
+    }
+
     public T invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
         try {
             var builder = builderMethod.invoke(null, new Object[]{});
@@ -41,6 +51,8 @@ public class BuilderInstantiator<T> implements Instantiator<T> {
                                 .create(customizationContext, new Annotation[0])
                 });
             }
+            // since we are using lambdas, the method name is not available here anymore
+            presetValues.entrySet().forEach(e -> e.getKey().apply(builder, e.getValue()));
 
             return (T) buildMethod.invoke(builder, new Object[]{});
         } catch (InvocationTargetException | IllegalAccessException ex) {

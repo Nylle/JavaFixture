@@ -35,7 +35,7 @@ public class BuilderInstantiator<T> implements Instantiator<T> {
 
     private Map<BiFunction, Object> presetValues = new HashMap<>();
 
-    public BuilderInstantiator<T> with(BiFunction setter, Object value) {
+    public <U,V> BuilderInstantiator<T> with(BiFunction<U,V,U> setter, V value) {
         presetValues.put(setter, value);
         return this;
     }

@@ -8,6 +8,7 @@ import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithA
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithGenericArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.FactoryMethodWithoutArgument;
 import com.github.nylle.javafixture.testobjects.factorymethod.GenericClassWithFactoryMethodWithoutArgument;
+import com.github.nylle.javafixture.testobjects.withconstructor.ConstructorExceptionAndThrowingFactoryMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -92,5 +93,15 @@ class FactoryMethodInstantiatorTest {
 
         assertThat(actual.getValue()).isNotNull();
         assertThat(actual.getValue().getValue()).isEqualTo(42);
+    }
+
+    @Test
+    @DisplayName("returns exception message from invocation when factory method fails")
+    void resolveTargetExceptionMessage() throws NoSuchMethodException {
+        var sut = FactoryMethodInstantiator.<FactoryMethodWithoutArgument>create(ConstructorExceptionAndThrowingFactoryMethod.class.getDeclaredMethod("factoryMethod"), fromClass(ConstructorExceptionAndThrowingFactoryMethod.class));
+
+        var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
+
+        assertThat(actual.getMessage()).isEqualTo("factory method exception expected for tests");
     }
 }

@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public class FactoryMethodInstantiator<T> implements Instantiator<T> {
                 arguments.add(specimen.create(customizationContext, new Annotation[0]));
             }
             return Result.of((T) factoryMethod.invoke(null, arguments.toArray()));
+        } catch (InvocationTargetException ex) {
+            return Result.empty(ex.getTargetException().getMessage());
         } catch (Exception ex) {
             return Result.empty(ex.getMessage());
         }

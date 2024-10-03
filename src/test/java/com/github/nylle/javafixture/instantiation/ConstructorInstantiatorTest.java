@@ -88,7 +88,8 @@ class ConstructorInstantiatorTest {
     }
 
     @Test
-    void xxx() throws NoSuchMethodException {
+    @DisplayName("returns exception message from invocation when constructor fails")
+    void resolveTargetExceptionMessage() throws NoSuchMethodException {
         var sut = ConstructorInstantiator.create(ConstructorExceptionAndNoFactoryMethod.class.getConstructor());
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), true));

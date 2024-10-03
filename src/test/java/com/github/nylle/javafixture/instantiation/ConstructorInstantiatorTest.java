@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.testobjects.TestObject;
+import com.github.nylle.javafixture.testobjects.withconstructor.ConstructorExceptionAndNoFactoryMethod;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import org.junit.jupiter.api.DisplayName;
@@ -25,9 +26,9 @@ class ConstructorInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), false));
 
-        assertThat(actual).isInstanceOf(TestObjectWithGenericConstructor.class);
-        assertThat(actual.getValue()).isInstanceOf(String.class);
-        assertThat(actual.getInteger()).isInstanceOf(Optional.class);
+        assertThat(actual.getValue()).isInstanceOf(TestObjectWithGenericConstructor.class);
+        assertThat(actual.getValue().getValue()).isInstanceOf(String.class);
+        assertThat(actual.getValue().getInteger()).isInstanceOf(Optional.class);
     }
 
     @Test
@@ -37,8 +38,8 @@ class ConstructorInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), false));
 
-        assertThat(actual).isInstanceOf(TestObjectWithGenericConstructor.class);
-        assertThat(actual.getPrivateField()).isNull();
+        assertThat(actual.getValue()).isInstanceOf(TestObjectWithGenericConstructor.class);
+        assertThat(actual.getValue().getPrivateField()).isNull();
     }
 
     @Test
@@ -49,7 +50,7 @@ class ConstructorInstantiatorTest {
         // use arg0, because .class files do not store formal parameter names by default
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of("arg0", "customized"), true));
 
-        assertThat(actual.getValue()).isEqualTo("customized");
+        assertThat(actual.getValue().getValue()).isEqualTo("customized");
     }
 
     @Test
@@ -59,9 +60,9 @@ class ConstructorInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), true));
 
-        assertThat(actual).isInstanceOf(TestObjectWithConstructedField.class);
-        assertThat(actual.getTestObjectWithGenericConstructor().getPrivateField()).isNull();
-        assertThat(actual.getNotSetByConstructor()).isNull();
+        assertThat(actual.getValue()).isInstanceOf(TestObjectWithConstructedField.class);
+        assertThat(actual.getValue().getTestObjectWithGenericConstructor().getPrivateField()).isNull();
+        assertThat(actual.getValue().getNotSetByConstructor()).isNull();
     }
 
     @Test
@@ -72,7 +73,7 @@ class ConstructorInstantiatorTest {
         // use arg0, because .class files do not store formal parameter names by default
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of("arg0", 2), true));
 
-        assertThat(actual.getSetByConstructor()).isEqualTo(2);
+        assertThat(actual.getValue().getSetByConstructor()).isEqualTo(2);
     }
 
     @Test
@@ -83,6 +84,16 @@ class ConstructorInstantiatorTest {
         // use arg0, because .class files do not store formal parameter names by default
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of("arg0"), Map.of(), true));
 
-        assertThat(actual.getSetByConstructor()).isEqualTo(0);
+        assertThat(actual.getValue().getSetByConstructor()).isEqualTo(0);
+    }
+
+    @Test
+    void xxx() throws NoSuchMethodException {
+        var sut = ConstructorInstantiator.create(ConstructorExceptionAndNoFactoryMethod.class.getConstructor());
+
+        var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), new CustomizationContext(List.of(), Map.of(), true));
+
+        assertThat(actual.isEmpty()).isTrue();
+        assertThat(actual.getMessage()).isEqualTo("expected for tests");
     }
 }

@@ -27,7 +27,7 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual.getValue()).isEqualTo(42);
+        assertThat(actual.getValue().getValue()).isEqualTo(42);
     }
 
     @Test
@@ -37,7 +37,7 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual.getValue()).isNotNull();
+        assertThat(actual.getValue().getValue()).isNotNull();
     }
 
     @Test
@@ -47,7 +47,7 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual.getValue()).isNotNull();
+        assertThat(actual.getValue().getValue()).isNotNull();
     }
 
     @Test
@@ -57,7 +57,7 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual).isInstanceOf(Charset.class);
+        assertThat(actual.getValue()).isInstanceOf(Charset.class);
     }
 
     @Test
@@ -67,9 +67,9 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual).isInstanceOf(Optional.class);
-        assertThat(actual).isNotEmpty();
-        assertThat(actual.get()).isInstanceOf(String.class);
+        assertThat(actual.getValue()).isInstanceOf(Optional.class);
+        assertThat(actual.getValue()).isNotEmpty();
+        assertThat(actual.getValue().get()).isInstanceOf(String.class);
     }
 
     @Test
@@ -79,8 +79,8 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual).isInstanceOf(Optional.class);
-        assertThat(actual).isEmpty();
+        assertThat(actual.getValue()).isInstanceOf(Optional.class);
+        assertThat(actual.getValue()).isEmpty();
     }
 
     @Test
@@ -90,7 +90,7 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual).isNotNull();
-        assertThat(actual.getValue()).isEqualTo(42);
+        assertThat(actual.getValue()).isNotNull();
+        assertThat(actual.getValue().getValue()).isEqualTo(42);
     }
 }

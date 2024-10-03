@@ -23,20 +23,18 @@ public class FactoryMethodInstantiator<T> implements Instantiator<T> {
         return new FactoryMethodInstantiator<>(factoryMethod, targetType);
     }
 
-    public T invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
+    public Result<T> invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
         try {
             List<Object> arguments = new ArrayList<>();
             for (int i = 0; i < factoryMethod.getParameterCount(); i++) {
-                var genericParameterType = factoryMethod.getGenericParameterTypes()[i];
                 var specimen = specimenFactory.build(targetType.isParameterized()
                         ? targetType.getGenericTypeArgument(i)
-                        : SpecimenType.fromClass(genericParameterType));
-                var o = specimen.create(customizationContext, new Annotation[0]);
-                arguments.add(o);
+                        : SpecimenType.fromClass(factoryMethod.getGenericParameterTypes()[i]));
+                arguments.add(specimen.create(customizationContext, new Annotation[0]));
             }
-            return (T) factoryMethod.invoke(null, arguments.toArray());
+            return Result.of((T) factoryMethod.invoke(null, arguments.toArray()));
         } catch (Exception ex) {
-            return null;
+            return Result.empty(ex.getMessage());
         }
     }
 }

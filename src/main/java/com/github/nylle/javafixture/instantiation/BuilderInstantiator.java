@@ -30,7 +30,7 @@ public class BuilderInstantiator<T> implements Instantiator<T> {
                 .orElse(null);
     }
 
-    public T invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
+    public Result<T> invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
         try {
             var builder = builderMethod.invoke(null, new Object[]{});
 
@@ -42,9 +42,9 @@ public class BuilderInstantiator<T> implements Instantiator<T> {
                 });
             }
 
-            return (T) buildMethod.invoke(builder, new Object[]{});
+            return Result.of((T) buildMethod.invoke(builder, new Object[]{}));
         } catch (InvocationTargetException | IllegalAccessException ex) {
-            return null;
+            return Result.empty(ex.getMessage());
         }
     }
 

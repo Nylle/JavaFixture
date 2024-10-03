@@ -18,9 +18,9 @@ class BuilderInstantiatorTest {
 
         var result = sut.invoke(new SpecimenFactory(new Context(new Configuration())), CustomizationContext.noContext());
 
-        assertThat(result).isInstanceOf(ClassWithBuilder.class);
+        assertThat(result.getValue()).isInstanceOf(ClassWithBuilder.class);
 
-        var actual = (ClassWithBuilder) result;
+        var actual = (ClassWithBuilder) result.getValue();
 
         assertThat(actual.getNumber()).isNotNull();
         assertThat(actual.getString()).isNotNull();

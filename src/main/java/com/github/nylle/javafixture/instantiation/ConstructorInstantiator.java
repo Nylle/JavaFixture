@@ -5,6 +5,7 @@ import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Map;
@@ -23,13 +24,15 @@ public class ConstructorInstantiator<T> implements Instantiator<T> {
         return new ConstructorInstantiator<>(constructor);
     }
 
-    public T invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
+    public Result<T> invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
         try {
-            return constructor.newInstance(stream(constructor.getParameters())
+            return Result.of(constructor.newInstance(stream(constructor.getParameters())
                     .map(p -> createParameter(p, specimenFactory, customizationContext))
-                    .toArray());
-        } catch(Exception ex) {
-            return null;
+                    .toArray()));
+        } catch (InvocationTargetException ex) {
+            return Result.empty(ex.getTargetException().getMessage());
+        } catch (Exception ex) {
+            return Result.empty(ex.getMessage());
         }
     }
 

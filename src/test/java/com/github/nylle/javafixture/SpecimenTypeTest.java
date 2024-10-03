@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import com.github.nylle.javafixture.instantiation.BuilderInstantiator;
 import com.github.nylle.javafixture.testobjects.ClassWithBuilder;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
@@ -59,7 +60,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
-import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -375,14 +375,12 @@ class SpecimenTypeTest {
 
         @Test
         void returnsListOfBuilders() {
-            var specimenFactory = new SpecimenFactory(new Context(new Configuration()));
-
             var sut = new SpecimenType<ClassWithBuilder>(){};
 
             var actual = sut.findBuilders();
 
             assertThat(actual).hasSize(1);
-            assertThat(actual.get(0).invoke(specimenFactory, noContext())).isInstanceOf(ClassWithBuilder.class);
+            assertThat(actual.get(0)).isInstanceOf(BuilderInstantiator.class);
         }
 
         @TestWithCases

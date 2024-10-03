@@ -50,17 +50,10 @@ public class UsecaseTest {
 
     private <T> T instanceFactory(SpecimenType<T> type, CustomizationContext customizationContext, SpecimenFactory specimenFactory) {
 
-        var result = type.getDeclaredConstructors().stream()
-                .map(x -> ConstructorInstantiator.create(x))
-                .map(x -> x.invoke(specimenFactory, customizationContext))
-                .collect(Collectors.toList());
+        var result = ConstructorInstantiator.create(type).invokeList(specimenFactory, customizationContext);
 
         if (result.stream().allMatch(x -> x.isEmpty())) {
-            var result2 = type.getFactoryMethods().stream()
-                    .map(x -> FactoryMethodInstantiator.create(x, type))
-                    .map(x -> x.invoke(specimenFactory, customizationContext))
-                    .collect(Collectors.toList());
-
+            var result2 = FactoryMethodInstantiator.create(type).invokeList(specimenFactory, customizationContext);
             if (result2.stream().anyMatch(x -> x.isPresent())) {
                 return result2.stream().filter(x -> x.isPresent()).findFirst().get().getValue();
             }

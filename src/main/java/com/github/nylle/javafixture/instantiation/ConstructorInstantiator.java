@@ -5,26 +5,51 @@ import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
 public class ConstructorInstantiator<T> implements Instantiator<T> {
 
-    private final java.lang.reflect.Constructor<T> constructor;
+    private java.lang.reflect.Constructor<T> constructor;
+    private List<java.lang.reflect.Constructor<T>> constructors;
 
-    private ConstructorInstantiator(java.lang.reflect.Constructor<T> constructor) {
-        this.constructor = constructor;
+    private ConstructorInstantiator(List<java.lang.reflect.Constructor<T>> constructors) {
+        this.constructors = constructors;
     }
 
     public static <T> ConstructorInstantiator<T> create(java.lang.reflect.Constructor<T> constructor) {
-        return new ConstructorInstantiator<>(constructor);
+        return new ConstructorInstantiator<>(List.of(constructor));
+    }
+
+    public static <T> ConstructorInstantiator<T> create(SpecimenType<T> type) {
+        return new ConstructorInstantiator<>(type.getDeclaredConstructors());
     }
 
     public Result<T> invoke(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
+
+        var results = constructors.stream()
+                .map(x -> invokeOne(x, specimenFactory, customizationContext))
+                .collect(Collectors.toList());
+
+        return results.get(0);
+    }
+
+    public List<Result<T>> invokeList(SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
+
+        var results = constructors.stream()
+                .map(x -> invokeOne(x, specimenFactory, customizationContext))
+                .collect(Collectors.toList());
+
+        return results;
+    }
+
+    private Result<T> invokeOne(Constructor<T> constructor, SpecimenFactory specimenFactory, CustomizationContext customizationContext) {
         try {
             return Result.of(constructor.newInstance(stream(constructor.getParameters())
                     .map(p -> createParameter(p, specimenFactory, customizationContext))

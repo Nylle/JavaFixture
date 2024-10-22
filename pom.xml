@@ -24,8 +24,9 @@
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <junit-jupiter-engine.version>5.5.1</junit-jupiter-engine.version>
-        <mockito.version>5.11.0</mockito.version>
-        <assertj-core.version>3.25.1</assertj-core.version>
+        <mockito.version>5.14.2</mockito.version>
+        <assertj-core.version>3.26.3</assertj-core.version>
+        <argLine/>
     </properties>
 
     <dependencies>
@@ -119,8 +120,22 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>3.5.1</version>
+                <configuration>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>

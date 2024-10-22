@@ -102,6 +102,6 @@ class FactoryMethodInstantiatorTest {
 
         var actual = sut.invoke(new SpecimenFactory(new Context(Configuration.configure())), noContext());
 
-        assertThat(actual.getMessage()).isEqualTo("factory method exception expected for tests");
+        assertThat(actual.getMessage()).isEqualTo("expected for tests");
     }
 }

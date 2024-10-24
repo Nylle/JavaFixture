@@ -15,7 +15,7 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
     private final Context context;
     private final InstanceFactory instanceFactory;
 
-    public InterfaceSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public InterfaceSpecimen(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -29,13 +29,31 @@ public class InterfaceSpecimen<T> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!type.isInterface() || type.isMap() || type.isCollection()) {
+        if (!supportsType(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
         this.type = type;
         this.context = context;
         this.instanceFactory = new InstanceFactory(specimenFactory);
+    }
+
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        return type.isInterface() && !type.isMap() && !type.isCollection();
+    }
+
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new InterfaceSpecimen<>(type, context, specimenFactory);
+            }
+        };
     }
 
     @Override

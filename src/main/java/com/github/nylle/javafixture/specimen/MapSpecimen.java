@@ -27,7 +27,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
     private ISpecimen<K> keySpecimen;
     private ISpecimen<V> valueSpecimen;
 
-    public MapSpecimen(final SpecimenType<T> type, final Context context, final SpecimenFactory specimenFactory) {
+    public MapSpecimen(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
 
         if (type == null) {
             throw new IllegalArgumentException("type: null");
@@ -41,7 +41,7 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
             throw new IllegalArgumentException("specimenFactory: null");
         }
 
-        if (!type.isMap()) {
+        if (!supportsType(type)) {
             throw new IllegalArgumentException("type: " + type.getName());
         }
 
@@ -54,8 +54,26 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
         }
     }
 
+    public static <T> boolean supportsType(SpecimenType<T> type) {
+        return type.isMap();
+    }
+
+    public static IMeta meta() {
+        return new IMeta() {
+            @Override
+            public <T> boolean supports(SpecimenType<T> type) {
+                return supportsType(type);
+            }
+
+            @Override
+            public <T> ISpecimen<T> create(SpecimenType<T> type, Context context, SpecimenFactory specimenFactory) {
+                return new MapSpecimen<>(type, context, specimenFactory);
+            }
+        };
+    }
+
     @Override
-    public T create(final CustomizationContext customizationContext, Annotation[] annotations) {
+    public T create(CustomizationContext customizationContext, Annotation[] annotations) {
         if (context.isCached(type)) {
             return context.cached(type);
         }
@@ -107,5 +125,4 @@ public class MapSpecimen<T, K, V> implements ISpecimen<T> {
 
         throw new SpecimenException("Unsupported type: " + type);
     }
-
 }

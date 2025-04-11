@@ -194,10 +194,12 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- Prevent `gpg` from using pinentry programs -->
                                     <gpgArguments>
+                                        <!-- Prevent `gpg` from using pinentry programs -->
                                         <arg>--pinentry-mode</arg>
                                         <arg>loopback</arg>
+                                        <!-- Prevent error `gpg: Sorry, no terminal at all requested - can't get input` -->
+                                        <arg>--batch</arg>
                                     </gpgArguments>
                                 </configuration>
                             </execution>

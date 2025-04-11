@@ -27,9 +27,9 @@ jobs:
           java-version: 11
 
       - name: Release Maven package
-        uses: samuelmeuli/action-maven-publish@v1
+        uses: WasiqB/maven-publish-action@v1
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          nexus_username: ${{ secrets.SONATYPE_USERNAME }}
-          nexus_password: ${{ secrets.SONATYPE_PASSWORD }}
+          nexus_username: ${{ secrets.NEXUS_USERNAME }}
+          nexus_password: ${{ secrets.NEXUS_PASSWORD }}

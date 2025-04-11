@@ -61,6 +61,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
         var result = context.cached(type, instanceFactory.instantiate(type));
         var reflector = new Reflector<>(result).validateCustomization(customizationContext, type);
         try {
+
             reflector.getDeclaredFields()
                     .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
                     .forEach(field -> reflector.setField(field,
@@ -68,7 +69,8 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                                     field.getName(),
                                     Map.<String, ISpecimen<?>>of().getOrDefault(
                                             field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of(), false), field.getAnnotations()))));
+                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType())))
+                                            .create(new CustomizationContext(List.of(), Map.of(), false), reflector.getFieldAnnotations(field)))));
         } catch (SpecimenException ex) {
             return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }

@@ -1,8 +1,13 @@
 package com.github.nylle.javafixture;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -63,6 +68,26 @@ public class Reflector<T> {
                         .map(superclass -> getDeclaredFields(superclass))
                         .orElse(Stream.of()));
     }
+
+    public Annotation[] getFieldAnnotations(Field field) {
+        try {
+            return getFieldAnnotations(field, clazz).toArray(Annotation[]::new);
+        } catch (IntrospectionException e) {
+            return field.getAnnotations();
+        }
+    }
+
+    public Stream<Annotation> getFieldAnnotations(Field field, Class<?> type) throws IntrospectionException {
+
+        return Stream.concat(Arrays.stream(Introspector.getBeanInfo(type).getPropertyDescriptors())
+                .filter(property -> !Modifier.isStatic(field.getModifiers()))
+                .filter(property -> property.getName().equals(field.getName()))
+                .flatMap(propertyDescriptor -> Stream.of(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod())
+                        .filter(Objects::nonNull)
+                        .flatMap(method -> Stream.of(method.getAnnotations()))
+                ), Arrays.stream(field.getAnnotations()));
+    }
+
 
     public void setField(Field field, Object value) {
         try {

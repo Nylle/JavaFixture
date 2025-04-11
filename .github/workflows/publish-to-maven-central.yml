@@ -26,14 +26,10 @@ jobs:
         with:
           java-version: 11
 
-      - name: Generate settings.xml
-        uses: whelk-io/maven-settings-xml-action@v22
-        with:
-          servers: '[{ "id": "central", "username": "${{ secrets.NEXUS_USERNAME }}", "password": "${{ secrets.NEXUS_PASSWORD }}" }]'
-
       - name: Release Maven package
         uses: WasiqB/maven-publish-action@v1
         with:
+          server_id: central
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
           nexus_username: ${{ secrets.NEXUS_USERNAME }}

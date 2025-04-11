@@ -1,20 +1,30 @@
 package com.github.nylle.javafixture;
 
+import com.github.nylle.javafixture.testobjects.TestObjectWithJakartaValidationAnnotations;
+import com.github.nylle.javafixture.testobjects.TestObjectWithJakartaValidationAnnotationsOnMethod;
 import com.github.nylle.javafixture.testobjects.inheritance.GenericChild;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import jakarta.validation.constraints.Size;
+
+import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ReflectorTest {
 
@@ -120,4 +130,46 @@ class ReflectorTest {
         }
     }
 
+    @Nested
+    class GetFieldAnnotations {
+
+        @Test
+        void returnsSizeAnnotationOnPrivateField() {
+            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotations());
+
+            var field = sut.getDeclaredFields().filter(x -> x.getName().equals("withMinMaxAnnotation")).findFirst().get();
+
+            var actual = Arrays.stream(sut.getFieldAnnotations(field)).collect(Collectors.toList());
+
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).annotationType()).isEqualTo(Size.class);
+        }
+
+        @Test
+        void returnsSizeAnnotationOnGetter() {
+            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotationsOnMethod());
+
+            var field = sut.getDeclaredFields().filter(x -> x.getName().equals("withMinMaxAnnotation")).findFirst().get();
+
+            var actual = Arrays.stream(sut.getFieldAnnotations(field)).collect(Collectors.toList());
+
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).annotationType()).isEqualTo(Size.class);
+        }
+
+        @Test
+        void returnsSizeAnnotationOnFieldIfGetterThrowsIntrospectionException() {
+            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotations());
+            var expected = sut.getDeclaredFields().filter(x -> x.getName().equals("withMinMaxAnnotation")).findFirst().get().getAnnotations();
+
+            var throwingField = mock(Field.class);
+            when(throwingField.getModifiers()).thenAnswer(x -> { throw new IntrospectionException("expected for test"); });
+            when(throwingField.getAnnotations()).thenReturn(expected);
+
+            var actual = Arrays.stream(sut.getFieldAnnotations(throwingField)).collect(Collectors.toList());
+
+            assertThat(actual).hasSize(1);
+            assertThat(actual.get(0).annotationType()).isEqualTo(Size.class);
+        }
+    }
 }

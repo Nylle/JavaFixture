@@ -61,33 +61,18 @@ public class Reflector<T> {
         return getDeclaredFields(clazz);
     }
 
-    private Stream<Field> getDeclaredFields(Class<?> type) {
-        return Stream.concat(
-                Stream.of(type.getDeclaredFields()).filter(field -> !Modifier.isStatic(field.getModifiers())),
-                Optional.ofNullable(type.getSuperclass())
-                        .map(superclass -> getDeclaredFields(superclass))
-                        .orElse(Stream.of()));
-    }
-
     public Annotation[] getFieldAnnotations(Field field) {
         try {
-            return getFieldAnnotations(field, clazz).toArray(Annotation[]::new);
+            return Stream.concat(Arrays.stream(Introspector.getBeanInfo(clazz).getPropertyDescriptors())
+                    .filter(property -> !Modifier.isStatic(field.getModifiers()))
+                    .filter(property -> property.getName().equals(field.getName()))
+                    .flatMap(propertyDescriptor -> Stream.of(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod())
+                            .filter(x -> Objects.nonNull(x))
+                            .flatMap(method -> Stream.of(method.getAnnotations()))), Arrays.stream(field.getAnnotations())).toArray(x -> new Annotation[x]);
         } catch (IntrospectionException e) {
             return field.getAnnotations();
         }
     }
-
-    public Stream<Annotation> getFieldAnnotations(Field field, Class<?> type) throws IntrospectionException {
-
-        return Stream.concat(Arrays.stream(Introspector.getBeanInfo(type).getPropertyDescriptors())
-                .filter(property -> !Modifier.isStatic(field.getModifiers()))
-                .filter(property -> property.getName().equals(field.getName()))
-                .flatMap(propertyDescriptor -> Stream.of(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod())
-                        .filter(Objects::nonNull)
-                        .flatMap(method -> Stream.of(method.getAnnotations()))
-                ), Arrays.stream(field.getAnnotations()));
-    }
-
 
     public void setField(Field field, Object value) {
         try {
@@ -98,5 +83,13 @@ public class Reflector<T> {
         } catch (IllegalAccessException | InaccessibleObjectException e) {
             throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), clazz.getName()), e);
         }
+    }
+
+    private Stream<Field> getDeclaredFields(Class<?> type) {
+        return Stream.concat(
+                Stream.of(type.getDeclaredFields()).filter(field -> !Modifier.isStatic(field.getModifiers())),
+                Optional.ofNullable(type.getSuperclass())
+                        .map(superclass -> getDeclaredFields(superclass))
+                        .orElse(Stream.of()));
     }
 }

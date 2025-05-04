@@ -4,6 +4,8 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SpecialSpecimenTest {
@@ -54,7 +57,17 @@ public class SpecialSpecimenTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("context: null");
         }
+    }
 
+    @TestWithCases
+    @TestCase(class1 = String.class, bool2 = false)
+    @TestCase(class1 = Object.class, bool2 = false)
+    @TestCase(class1 = BigInteger.class, bool2 = true)
+    @TestCase(class1 = BigDecimal.class, bool2 = true)
+    @TestCase(class1 = File.class, bool2 = true)
+    @TestCase(class1 = URI.class, bool2 = true)
+    void supportsType(Class<?> type, boolean expected) {
+        assertThat(SpecialSpecimen.supportsType(SpecimenType.fromClass(type))).isEqualTo(expected);
     }
 
     @Test
@@ -77,7 +90,6 @@ public class SpecialSpecimenTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getAbsolutePath()).isNotEmpty();
     }
-
 
     @Test
     @DisplayName("create URI creates URI with host, scheme and random path")
@@ -129,5 +141,39 @@ public class SpecialSpecimenTest {
         var actual = sut.create(noContext(), new Annotation[0]);
 
         assertThat(actual).isNotNegative();
+    }
+
+    @Nested
+    class SpecTest {
+
+        @TestWithCases
+        @TestCase(class1 = String.class, bool2 = false)
+        @TestCase(class1 = Object.class, bool2 = false)
+        @TestCase(class1 = BigInteger.class, bool2 = true)
+        @TestCase(class1 = BigDecimal.class, bool2 = true)
+        @TestCase(class1 = File.class, bool2 = true)
+        @TestCase(class1 = URI.class, bool2 = true)
+        void supports(Class<?> type, boolean expected) {
+            assertThat(SpecialSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+        }
+
+        @TestWithCases
+        @TestCase(class1 = BigInteger.class)
+        @TestCase(class1 = BigDecimal.class)
+        @TestCase(class1 = File.class)
+        @TestCase(class1 = URI.class)
+        void createReturnsNewSpecimen(Class<?> type) {
+            assertThat(SpecialSpecimen.meta().create(SpecimenType.fromClass(type), context, null))
+                    .isInstanceOf(SpecialSpecimen.class);
+        }
+
+        @TestWithCases
+        @TestCase(class1 = String.class)
+        @TestCase(class1 = Object.class)
+        void createThrows(Class<?> type) {
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> SpecialSpecimen.meta().create(SpecimenType.fromClass(type), context, null))
+                    .withMessageContaining("type: " + type.getName());
+        }
     }
 }

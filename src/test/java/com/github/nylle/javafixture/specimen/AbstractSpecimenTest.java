@@ -5,7 +5,10 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.testcases.TestCase;
+import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
+import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithAbstractImplementation;
 import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConcreteMethod;
 import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConstructorException;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
@@ -155,6 +158,37 @@ class AbstractSpecimenTest {
         assertThat(original.hashCode()).isNotEqualTo(second.hashCode());
         assertThat(original.toString()).isNotEqualTo(second.toString());
         assertThat(original.getString()).isNotEqualTo(second.getString());
+    }
+
+    @TestWithCases
+    @TestCase(class1 = String.class, bool2 = false)
+    @TestCase(class1 = AbstractClassWithAbstractImplementation.class, bool2 = true)
+    void supportsType(Class<?> type, boolean expected) {
+        assertThat(AbstractSpecimen.supportsType(SpecimenType.fromClass(type))).isEqualTo(expected);
+    }
+
+    @Nested
+    class SpecTest {
+
+        @TestWithCases
+        @TestCase(class1 = String.class, bool2 = false)
+        @TestCase(class1 = AbstractClassWithAbstractImplementation.class, bool2 = true)
+        void supports(Class<?> type, boolean expected) {
+            assertThat(AbstractSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+        }
+
+        @Test
+        void createReturnsNewSpecimen() {
+            assertThat(AbstractSpecimen.meta().create(SpecimenType.fromClass(AbstractClassWithAbstractImplementation.class), context, specimenFactory))
+                    .isInstanceOf(AbstractSpecimen.class);
+        }
+
+        @Test
+        void createThrows() {
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> AbstractSpecimen.meta().create(SpecimenType.fromClass(String.class), context, specimenFactory))
+                    .withMessageContaining("type: java.lang.String");
+        }
     }
 }
 

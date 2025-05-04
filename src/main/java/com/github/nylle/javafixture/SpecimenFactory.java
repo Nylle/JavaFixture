@@ -13,7 +13,21 @@ import com.github.nylle.javafixture.specimen.PrimitiveSpecimen;
 import com.github.nylle.javafixture.specimen.SpecialSpecimen;
 import com.github.nylle.javafixture.specimen.TimeSpecimen;
 
+import java.util.List;
+
 public class SpecimenFactory {
+    private final static List<ISpecimen.IMeta> specimenCandidates = List.of(
+            SpecialSpecimen.meta(),
+            PrimitiveSpecimen.meta(),
+            EnumSpecimen.meta(),
+            CollectionSpecimen.meta(),
+            MapSpecimen.meta(),
+            GenericSpecimen.meta(),
+            ArraySpecimen.meta(),
+            TimeSpecimen.meta(),
+            InterfaceSpecimen.meta(),
+            AbstractSpecimen.meta()
+    );
 
     private final Context context;
 
@@ -21,57 +35,17 @@ public class SpecimenFactory {
         this.context = context;
     }
 
-    public <T> ISpecimen<T> build(final SpecimenType<T> type) {
+    public <T> ISpecimen<T> build(SpecimenType<T> type) {
 
         if (context.isCached(type)) {
             return new PredefinedSpecimen<>(type, context);
         }
 
-        if (type.isPrimitive() || type.isBoxed() || type.asClass() == String.class) {
-            return new PrimitiveSpecimen<>(type, context);
-        }
-
-        if (type.isEnum()) {
-            return new EnumSpecimen<>(type);
-        }
-
-        if (type.isCollection()) {
-            return new CollectionSpecimen<>(type, context, this);
-        }
-
-        if (type.isMap()) {
-            return new MapSpecimen<>(type, context, this);
-        }
-
-        if (type.isParameterized() && !type.isInterface() && !type.isAbstract()) {
-            return new GenericSpecimen<>(type, context, this);
-        }
-
-        if (type.isParameterized() && (type.isInterface() || type.isAbstract())) {
-            return new GenericSpecimen<>(type, context, this);
-        }
-
-        if (type.isArray()) {
-            return new ArraySpecimen<>(type, context, this);
-        }
-
-        if (type.isTimeType()) {
-            return new TimeSpecimen<>(type, context);
-        }
-
-        if (type.isInterface()) {
-            return new InterfaceSpecimen<>(type, context, this);
-        }
-
-        if (type.isAbstract()) {
-            return new AbstractSpecimen<>(type, context, this);
-        }
-
-        if (type.isSpecialType()) {
-            return new SpecialSpecimen<>(type, context);
-        }
-
-        return new ObjectSpecimen<>(type, context, this);
+        return specimenCandidates.stream()
+                .filter(x -> x.supports(type))
+                .map(x -> x.create(type, context, this))
+                .findFirst()
+                .orElseGet(() -> new ObjectSpecimen<>(type, context, this));
     }
 }
 

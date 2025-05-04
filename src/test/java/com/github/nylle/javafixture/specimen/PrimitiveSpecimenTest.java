@@ -4,6 +4,7 @@ import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
 import com.github.nylle.javafixture.annotations.testcases.TestWithCases;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
@@ -12,29 +13,34 @@ import static com.github.nylle.javafixture.Configuration.configure;
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PrimitiveSpecimenTest {
 
-    @Test
-    void contextIsRequired() {
-        assertThatThrownBy(() -> new PrimitiveSpecimen<>(SpecimenType.fromClass(Integer.class), null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("context: null");
-    }
+    @Nested
+    class WhenConstructing {
 
-    @Test
-    void typeIsRequired() {
-        assertThatThrownBy(() -> new PrimitiveSpecimen<>(null, new Context(configure())))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: null");
-    }
+        @Test
+        void contextIsRequired() {
+            assertThatThrownBy(() -> new PrimitiveSpecimen<>(SpecimenType.fromClass(Integer.class), null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("context: null");
+        }
 
-    @Test
-    void onlyPrimitiveTypes() {
-        assertThatThrownBy(() -> new PrimitiveSpecimen<>(fromClass(Object.class), new Context(configure())))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("type: " + Object.class.getName());
+        @Test
+        void typeIsRequired() {
+            assertThatThrownBy(() -> new PrimitiveSpecimen<>(null, new Context(configure())))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: null");
+        }
+
+        @Test
+        void onlyPrimitiveTypes() {
+            assertThatThrownBy(() -> new PrimitiveSpecimen<>(fromClass(Object.class), new Context(configure())))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("type: " + Object.class.getName());
+        }
     }
 
     @Test
@@ -127,4 +133,38 @@ class PrimitiveSpecimenTest {
         assertThat(actual).isBetween(min, max);
     }
 
+    @TestWithCases
+    @TestCase(class1 = Object.class, bool2 = false)
+    @TestCase(class1 = String.class, bool2 = true)
+    @TestCase(class1 = Integer.class, bool2 = true)
+    @TestCase(class1 = boolean.class, bool2 = true)
+    void supportsType(Class<?> type, boolean expected) {
+        assertThat(PrimitiveSpecimen.supportsType(SpecimenType.fromClass(type))).isEqualTo(expected);
+    }
+
+    @Nested
+    class SpecTest {
+
+        @TestWithCases
+        @TestCase(class1 = Object.class, bool2 = false)
+        @TestCase(class1 = String.class, bool2 = true)
+        @TestCase(class1 = Integer.class, bool2 = true)
+        @TestCase(class1 = boolean.class, bool2 = true)
+        void supports(Class<?> type, boolean expected) {
+            assertThat(PrimitiveSpecimen.meta().supports(SpecimenType.fromClass(type))).isEqualTo(expected);
+        }
+
+        @Test
+        void createReturnsNewSpecimen() {
+            assertThat(PrimitiveSpecimen.meta().create(SpecimenType.fromClass(String.class), new Context(configure()), null))
+                    .isInstanceOf(PrimitiveSpecimen.class);
+        }
+
+        @Test
+        void createThrows() {
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> PrimitiveSpecimen.meta().create(SpecimenType.fromClass(Object.class), new Context(configure()), null))
+                    .withMessageContaining("type: java.lang.Object");
+        }
+    }
 }

@@ -12,10 +12,27 @@ import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -138,7 +155,30 @@ public class SpecimenType<T> extends TypeCapture<T> {
     }
 
     public boolean isCollection() {
-        return Collection.class.isAssignableFrom(asClass());
+        if(!isInterface() && !isAbstract()) {
+            return Collection.class.isAssignableFrom(asClass());
+        }
+
+        return Stream.of(Collection.class,
+                        List.class,
+                        NavigableSet.class,
+                        SortedSet.class,
+                        Set.class,
+                        EnumSet.class,
+                        Deque.class,
+                        BlockingDeque.class,
+                        Queue.class,
+                        BlockingQueue.class,
+                        TransferQueue.class,
+                        ArrayList.class,
+                        HashSet.class,
+                        TreeSet.class,
+                        ArrayDeque.class,
+                        LinkedBlockingDeque.class,
+                        LinkedList.class,
+                        LinkedBlockingQueue.class,
+                        LinkedTransferQueue.class)
+                .anyMatch(x -> asClass().isAssignableFrom(x));
     }
 
     public boolean isMap() {

@@ -2,6 +2,7 @@ package com.github.nylle.javafixture;
 
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.ITestGenericInside;
+import com.github.nylle.javafixture.testobjects.TestCollectionExtension;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
@@ -25,6 +26,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import javassist.util.proxy.Proxy;
 
 import java.io.File;
 import java.time.Instant;
@@ -568,6 +571,16 @@ class FixtureTest {
 
         assertThatCode(() -> flattenRecursively(result).collect(toList()))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void createSubclassOfCollectionAsProxyBecauseFixtureCannotCreateAnInstanceOfANonVanillaCollection() {
+        var sut = new Fixture(configuration);
+
+        var result = sut.create(new SpecimenType<TestCollectionExtension<String>>() {});
+
+        assertThat(result).isInstanceOf(TestCollectionExtension.class);
+        assertThat(Proxy.class.isAssignableFrom(result.getClass())).isTrue();
     }
 
     private Stream<Throwable> flattenRecursively(Throwable throwable) {

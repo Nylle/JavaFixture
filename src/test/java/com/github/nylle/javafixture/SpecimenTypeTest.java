@@ -6,6 +6,7 @@ import com.github.nylle.javafixture.instantiation.BuilderInstantiator;
 import com.github.nylle.javafixture.testobjects.ClassWithBuilder;
 import com.github.nylle.javafixture.testobjects.ITestGeneric;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
+import com.github.nylle.javafixture.testobjects.TestCollectionExtension;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.TestObjectGeneric;
@@ -111,6 +112,7 @@ class SpecimenTypeTest {
         assertThat(new SpecimenType<LinkedList<String>>() {}.isCollection()).isTrue();
         assertThat(new SpecimenType<LinkedBlockingQueue<String>>() {}.isCollection()).isTrue();
         assertThat(new SpecimenType<LinkedTransferQueue<String>>() {}.isCollection()).isTrue();
+        assertThat(new SpecimenType<TestCollectionExtension<String>>() {}.isCollection()).isFalse();
     }
 
     @TestWithCases

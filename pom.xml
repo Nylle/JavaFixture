@@ -24,8 +24,8 @@
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <junit-jupiter-engine.version>5.5.1</junit-jupiter-engine.version>
-        <mockito.version>5.17.0</mockito.version>
-        <assertj-core.version>3.27.3</assertj-core.version>
+        <mockito.version>5.20.0</mockito.version>
+        <assertj-core.version>3.27.6</assertj-core.version>
         <argLine/>
     </properties>
 
@@ -92,8 +92,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <version>6.2.1.Final</version>
+            <groupId>org.hibernate.validator</groupId>
+            <version>8.0.1.Final</version>
             <artifactId>hibernate-validator</artifactId>
             <scope>test</scope>
         </dependency>

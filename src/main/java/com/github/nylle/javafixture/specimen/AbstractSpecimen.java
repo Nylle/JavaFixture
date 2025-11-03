@@ -58,9 +58,9 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
                     .forEach(field -> reflector.setField(field,
                             customizationContext.getCustomFields().getOrDefault(
                                     field.getName(),
-                                    Map.<String, ISpecimen<?>>of().getOrDefault(
-                                            field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of(), false), field.getAnnotations()))));
+                                    specimenFactory
+                                            .build(SpecimenType.fromClass(field.getGenericType()))
+                                            .create(new CustomizationContext(List.of(), Map.of(), false), field.getAnnotations()))));
             return context.remove(type);
         } catch(SpecimenException ex) {
             return instanceFactory.manufacture(type, customizationContext, ex);

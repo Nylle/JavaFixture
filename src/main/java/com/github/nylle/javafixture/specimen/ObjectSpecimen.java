@@ -66,9 +66,9 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                     .forEach(field -> reflector.setField(field,
                             customizationContext.getCustomFields().getOrDefault(
                                     field.getName(),
-                                    Map.<String, ISpecimen<?>>of().getOrDefault(
-                                            field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getGenericType()))).create(new CustomizationContext(List.of(), Map.of(), false), reflector.getFieldAnnotations(field)))));
+                                    specimenFactory
+                                            .build(SpecimenType.fromClass(field.getGenericType()))
+                                            .create(new CustomizationContext(List.of(), Map.of(), false), reflector.getFieldAnnotations(field)))));
         } catch (SpecimenException ex) {
             return context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }

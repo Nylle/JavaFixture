@@ -38,7 +38,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>());
 
-            var validCustomisation = new CustomizationContext(List.of(), Map.of("baseField", "foo"), false);
+            var validCustomisation = new CustomizationContext(List.of(), Map.of("baseField.subField", "foo"), false);
 
             assertThatCode(() -> sut.validateCustomization(validCustomisation, new SpecimenType<>() {}))
                     .doesNotThrowAnyException();
@@ -50,7 +50,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>());
 
-            var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"), false);
+            var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField.subField", "foo"), false);
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
@@ -64,7 +64,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>());
 
-            Map<String, Object> customization = Map.of("fieldIn2Classes", 100.0);
+            Map<String, Object> customization = Map.of("fieldIn2Classes.subField", 100.0);
 
             var invalidCustomisation = new CustomizationContext(List.of(), customization, false);
 
@@ -82,7 +82,7 @@ class ReflectorTest {
 
             var sut = new Reflector<>(new GenericChild<String>());
 
-            var omitting = List.of("fieldIn2Classes");
+            var omitting = List.of("fieldIn2Classes.subField");
 
             var invalidCustomisation = new CustomizationContext(omitting, Map.of(), false);
 
@@ -98,7 +98,8 @@ class ReflectorTest {
     @Nested
     @DisplayName("when setting a field via reflection")
     class SetField {
-        @DisplayName("an IllegalAccessException is turned to a SpecimenException")
+
+        @DisplayName("an IllegalAccessException is turned into a SpecimenException")
         @Test
         void catchIllegalAccessException() throws Exception {
             var mockedField = Mockito.mock(Field.class);
@@ -109,7 +110,7 @@ class ReflectorTest {
                     .isThrownBy(() -> sut.setField(mockedField, ""));
         }
 
-        @DisplayName("an IllegalAccessException is turned to a SpecimenException")
+        @DisplayName("a SecurityException is turned into a SpecimenException")
         @Test
         void catchSecurityException() {
             var mockedField = Mockito.mock(Field.class);
@@ -119,7 +120,7 @@ class ReflectorTest {
                     .isThrownBy(() -> sut.setField(mockedField, ""));
         }
 
-        @DisplayName("an InaccessibleObjectException is turned to a SpecimenException")
+        @DisplayName("an InaccessibleObjectException is turned into a SpecimenException")
         @Test
         void catchInaccessibleObjectException() {
             var mockedField = Mockito.mock(Field.class);

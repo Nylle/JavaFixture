@@ -2,10 +2,13 @@ package com.github.nylle.javafixture.specimen;
 
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
+import com.github.nylle.javafixture.CustomizationContext;
 import com.github.nylle.javafixture.SpecimenException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.annotations.fixture.TestWithFixture;
 import com.github.nylle.javafixture.testobjects.TestAbstractClass;
+import com.github.nylle.javafixture.testobjects.TestObject;
 import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConcreteMethod;
 import com.github.nylle.javafixture.testobjects.abstractclasses.AbstractClassWithConstructorException;
 import com.github.nylle.javafixture.testobjects.interfaces.InterfaceWithoutImplementation;
@@ -155,6 +158,57 @@ class AbstractSpecimenTest {
         assertThat(original.hashCode()).isNotEqualTo(second.hashCode());
         assertThat(original.toString()).isNotEqualTo(second.toString());
         assertThat(original.getString()).isNotEqualTo(second.getString());
+    }
+
+    @TestWithFixture
+    void canCustomizeFieldInNestedObject(String expected) {
+        var sut = new AbstractSpecimen<WithTestAbstractClass>(SpecimenType.fromClass(WithTestAbstractClass.class), context, specimenFactory);
+        var customizationContext = new CustomizationContext(
+                List.of(),
+                Map.of("testObject.value", expected, "testAbstractClass.string", expected),
+                false);
+
+        var actual = sut.create(customizationContext, new Annotation[0]);
+
+        assertThat(actual.getTestObject()).isNotNull();
+        assertThat(actual.getTestObject().getValue()).isEqualTo(expected);
+        assertThat(actual.getTestObject().getIntegers()).isNotNull();
+        assertThat(actual.getTestObject().getStrings()).isNotEmpty();
+
+        assertThat(actual.getTestAbstractClass()).isNotNull();
+        assertThat(actual.getTestAbstractClass().getString()).isEqualTo(expected);
+    }
+
+    @Test
+    void canOmitFieldInNestedObject() {
+        var sut = new AbstractSpecimen<WithTestAbstractClass>(SpecimenType.fromClass(WithTestAbstractClass.class), context, specimenFactory);
+        var customizationContext = new CustomizationContext(
+                List.of("testObject.value", "testAbstractClass.string"),
+                Map.of(),
+                false);
+
+        var actual = sut.create(customizationContext, new Annotation[0]);
+
+        assertThat(actual.getTestObject()).isNotNull();
+        assertThat(actual.getTestObject().getValue()).isNull();
+        assertThat(actual.getTestObject().getIntegers()).isNotNull();
+        assertThat(actual.getTestObject().getStrings()).isNotEmpty();
+
+        assertThat(actual.getTestAbstractClass()).isNotNull();
+        assertThat(actual.getTestAbstractClass().getString()).isNull();
+    }
+
+    public abstract static class WithTestAbstractClass {
+        private TestAbstractClass testAbstractClass;
+        private TestObject testObject;
+
+        public TestAbstractClass getTestAbstractClass() {
+            return testAbstractClass;
+        }
+
+        public TestObject getTestObject() {
+            return testObject;
+        }
     }
 }
 

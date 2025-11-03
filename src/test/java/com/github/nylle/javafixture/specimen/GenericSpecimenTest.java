@@ -164,6 +164,20 @@ class GenericSpecimenTest {
     }
 
     @Test
+    void canCustomizeFieldInNestedObject() {
+        var sut = new GenericSpecimen<>(new SpecimenType<WithTestObject<Integer>>() {}, context, specimenFactory);
+
+        var customizationContext = new CustomizationContext(List.of("testObject.integers"), Map.of("testObject.value", "42"), false);
+
+        var actual = sut.create(customizationContext, new Annotation[0]);
+
+        assertThat(actual.getTestObject()).isNotNull();
+        assertThat(actual.getTestObject().getValue()).isEqualTo("42");
+        assertThat(actual.getTestObject().getIntegers()).isNull();
+        assertThat(actual.getTestObject().getStrings()).isNotEmpty();
+    }
+
+    @Test
     void createdObjectsAreNotCached() {
         var sut = new GenericSpecimen<>(new SpecimenType<WithTestObject<Integer>>() {}, context, specimenFactory);
         var actual = sut.create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]);

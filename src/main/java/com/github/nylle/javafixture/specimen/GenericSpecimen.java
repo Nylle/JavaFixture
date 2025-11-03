@@ -10,7 +10,6 @@ import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
 import java.util.Map;
 
 public class GenericSpecimen<T> implements ISpecimen<T> {
@@ -82,7 +81,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
                                     field.getName(),
                                     specimens.getOrDefault(
                                             field.getGenericType().getTypeName(),
-                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(new CustomizationContext(List.of(), Map.of(), false), new Annotation[0]))));
+                                            specimenFactory.build(SpecimenType.fromClass(field.getType()))).create(customizationContext.newForField(field.getName()), new Annotation[0]))));
         } catch (SpecimenException ex) {
             context.remove(type);
             return instanceFactory.construct(type, customizationContext);

@@ -162,6 +162,17 @@ class ObjectSpecimenTest {
         assertThat(actual.getTestObject().getIntegers()).isNotEmpty();
     }
 
+    @Test
+    void canCustomizeFieldInNestedObject() {
+        var sut = new ObjectSpecimen<WithTestObject>(SpecimenType.fromClass(WithTestObject.class), context, specimenFactory);
+        var customizationContext = new CustomizationContext(List.of("testObject.integers"), Map.of("testObject.value", "42"), false);
+        var actual = sut.create(customizationContext, new Annotation[0]);
+        assertThat(actual.getTestObject()).isNotNull();
+        assertThat(actual.getTestObject().getValue()).isEqualTo("42");
+        assertThat(actual.getTestObject().getIntegers()).isNull();
+        assertThat(actual.getTestObject().getStrings()).isNotEmpty();
+    }
+
     @Nested
     @DisplayName("when specimen has superclass")
     class WhenInheritance {

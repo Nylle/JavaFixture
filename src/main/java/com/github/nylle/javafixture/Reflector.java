@@ -33,6 +33,7 @@ public class Reflector<T> {
         var declaredFields = getDeclaredFields(clazz).map(field -> field.getName()).collect(toList());
 
         var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+                .map(entry -> entry.replaceAll("\\..+", ""))
                 .filter(entry -> !declaredFields.contains(entry))
                 .findFirst();
 
@@ -45,7 +46,9 @@ public class Reflector<T> {
                 .entrySet()
                 .stream()
                 .filter(x -> x.getValue().size() > 1)
-                .filter(x -> Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream()).anyMatch(y -> y.equals(x.getKey())))
+                .filter(x -> Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+                        .map(entry -> entry.replaceAll("\\..+", ""))
+                        .anyMatch(y -> y.equals(x.getKey())))
                 .findFirst();
 
         if (duplicateField.isPresent()) {

@@ -16,6 +16,7 @@ import com.github.nylle.javafixture.testobjects.withconstructor.ConstructorExcep
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithConstructedField;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithGenericConstructor;
 import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithPrivateConstructor;
+import com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,11 +50,60 @@ import static com.github.nylle.javafixture.SpecimenType.fromClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+/*
+  We use "arg0" as constructor argument-names, because .class files do not store formal parameter names by default.
+  For records (Java 17+) proper names should work.
+ */
 class InstanceFactoryTest {
 
     @Nested
     @DisplayName("when using constructor")
     class UsingConstructor {
+
+        @Test
+        @DisplayName("throws exception for invalid customization")
+        void throwsExceptionForInvalidCustomization() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var type = new SpecimenType<TestObjectWithTwoConstructors>(){};
+            var context = new CustomizationContext(List.of("arg0.nested", "missingExclusion"), Map.of(
+                    "arg1.nested", new Object(),
+                    "missingCustomization", new Object()), false);
+
+            assertThatExceptionOfType(SpecimenException.class)
+                    .isThrownBy(() -> sut.construct(type, context))
+                    .withMessageContaining("Cannot customize fields because no suitable constructor was found. Candidates are:\n")
+                    .withMessageContaining("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0,arg1) (Missing fields: [missingCustomization, missingExclusion])\n")
+                    .withMessageContaining("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0) (Missing fields: [missingCustomization, arg1, missingExclusion])");
+        }
+
+        @Test
+        @DisplayName("instance is created from suitable constructor for customized field")
+        void canCreateInstanceFromSuitableConstructorForCustomizedField() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var context = new CustomizationContext(List.of(), Map.of("arg1", "other"), false);
+
+            TestObjectWithTwoConstructors result = sut.construct(fromClass(TestObjectWithTwoConstructors.class), context);
+
+            assertThat(result).isInstanceOf(TestObjectWithTwoConstructors.class);
+            assertThat(result.getValue()).isInstanceOf(String.class).isNotNull().isNotEqualTo("other");
+            assertThat(result.getOther()).isEqualTo("other");
+        }
+
+        @Test
+        @DisplayName("instance is created from suitable constructor for omitted field")
+        void canCreateInstanceFromSuitableConstructorForOmittedField() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var context = new CustomizationContext(List.of("arg1"), Map.of(), false);
+
+            TestObjectWithTwoConstructors result = sut.construct(fromClass(TestObjectWithTwoConstructors.class), context);
+
+            assertThat(result).isInstanceOf(TestObjectWithTwoConstructors.class);
+            assertThat(result.getValue()).isInstanceOf(String.class).isNotNull();
+            assertThat(result.getOther()).isNull();
+        }
 
         @Test
         @DisplayName("instance is created from random constructor")
@@ -163,7 +213,6 @@ class InstanceFactoryTest {
         void argumentsCanBeCustomized() {
             var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
 
-            // use arg0, because .class files do not store formal parameter names by default
             var customizationContext = new CustomizationContext(List.of(), Map.of("arg0", "customized"), true);
             TestObject result = sut.construct(fromClass(TestObject.class), customizationContext);
 

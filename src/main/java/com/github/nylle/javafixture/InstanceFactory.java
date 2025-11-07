@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -32,9 +33,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class InstanceFactory {
 
@@ -58,9 +62,8 @@ public class InstanceFactory {
     }
 
     public <T> T construct(SpecimenType<T> type, CustomizationContext customizationContext) {
-        return random.shuffled(type.getDeclaredConstructors())
+        return random.shuffled(findValidConstructors(type, customizationContext))
                 .stream()
-                .filter(x -> Modifier.isPublic(x.getModifiers()))
                 .findFirst()
                 .map(x -> construct(type, x, customizationContext))
                 .orElseGet(() -> manufacture(type, customizationContext, new SpecimenException("No public constructor found")));
@@ -222,5 +225,43 @@ public class InstanceFactory {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new SpecimenException("Unable to create collection of type " + type.getName(), e);
         }
+    }
+
+    private static <T> List<Constructor<T>> findValidConstructors(SpecimenType<T> type, CustomizationContext customizationContext) {
+        var publicConstructors = type.getDeclaredConstructors().stream().filter(x -> Modifier.isPublic(x.getModifiers())).collect(toList());
+
+        if (publicConstructors.isEmpty()) {
+            return publicConstructors;
+        }
+
+        if (customizationContext.getCustomFields().isEmpty() && customizationContext.getIgnoredFields().isEmpty()) {
+            return publicConstructors;
+        }
+
+        var candidates = publicConstructors.stream()
+                .map(constructor -> {
+                    var parameterNames = stream(constructor.getParameters()).map(x -> x.getName()).collect(toList());
+                    var missingParameters = customizationContext.findAllCustomizedFieldNames()
+                            .map(entry -> entry.replaceAll("\\..+", ""))
+                            .filter(entry -> !parameterNames.contains(entry))
+                            .collect(toList());
+                    return Map.<Constructor<T>, List<String>>entry(constructor, missingParameters);
+                })
+                .collect(toList());
+
+
+        var result = candidates.stream().filter(x -> x.getValue().isEmpty()).map(x -> x.getKey()).collect(toList());
+
+        if (result.isEmpty()) {
+            throw new SpecimenException(Stream.concat(
+                            Stream.of("Cannot customize fields because no suitable constructor was found. Candidates are:"),
+                            candidates.stream().map(x -> String.format("  %s(%s) (Missing fields: %s)",
+                                    x.getKey().getName(),
+                                    Arrays.stream(x.getKey().getParameters()).map(p -> p.getName()).collect(joining(",")),
+                                    new HashSet<>(x.getValue()))))
+                    .collect(joining(format("%n"))));
+        }
+
+        return result;
     }
 }

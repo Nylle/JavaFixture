@@ -131,7 +131,7 @@ public class InstanceFactory {
         }
         return specimenFactory
                 .build(SpecimenType.fromClass(parameter.getParameterizedType()))
-                .create(new CustomizationContext(List.of(), Map.of(), customizationContext.useRandomConstructor()), new Annotation[0]);
+                .create(customizationContext.newForField(parameter.getName()), new Annotation[0]);
     }
 
     private <T> Object createProxyForInterface(SpecimenType<T> type, Map<String, ISpecimen<?>> specimens) {

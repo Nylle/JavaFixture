@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CustomizationContext {
     private final List<String> ignoredFields;
@@ -39,6 +40,10 @@ public class CustomizationContext {
         return useRandomConstructor;
     }
 
+    public Stream<String> findAllCustomizedFieldNames() {
+        return Stream.concat(customFields.keySet().stream(), ignoredFields.stream());
+    }
+
     public CustomizationContext newForField(String name) {
         return new CustomizationContext(
                 ignoredFields.stream()
@@ -49,6 +54,6 @@ public class CustomizationContext {
                         .filter(x -> x.getKey().startsWith(name + "."))
                         .map(x -> Map.entry(x.getKey().substring(name.length() + 1), x.getValue()))
                         .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue())),
-                false);
+                useRandomConstructor);
     }
 }

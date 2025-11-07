@@ -28,7 +28,7 @@ public class Reflector<T> {
     public Reflector<T> validateCustomization(CustomizationContext customizationContext) {
         var declaredFields = getDeclaredFields(type.asClass()).map(field -> field.getName()).collect(toList());
 
-        var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+        var missingDeclaredField = customizationContext.findAllCustomizedFieldNames()
                 .map(entry -> entry.replaceAll("\\..+", ""))
                 .filter(entry -> !declaredFields.contains(entry))
                 .findFirst();
@@ -42,7 +42,7 @@ public class Reflector<T> {
                 .entrySet()
                 .stream()
                 .filter(x -> x.getValue().size() > 1)
-                .filter(x -> Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
+                .filter(x -> customizationContext.findAllCustomizedFieldNames()
                         .map(entry -> entry.replaceAll("\\..+", ""))
                         .anyMatch(y -> y.equals(x.getKey())))
                 .findFirst();

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -67,12 +68,21 @@ class CustomizationContextTest {
         @TestWithCases
         @TestCase(bool1 = true)
         @TestCase(bool1 = false)
-        void useRandomConstructorIsAlwaysFalse(boolean useRandomConstructor, @com.github.nylle.javafixture.annotations.testcases.Fixture String fieldName) {
+        void useRandomConstructorIsMaintained(boolean useRandomConstructor, @com.github.nylle.javafixture.annotations.testcases.Fixture String fieldName) {
             var sut = new CustomizationContext(List.of(), Map.of(), useRandomConstructor);
 
             var actual = sut.newForField(fieldName);
 
-            assertThat(actual.useRandomConstructor()).isFalse();
+            assertThat(actual.useRandomConstructor()).isEqualTo(useRandomConstructor);
         }
+    }
+
+    @Test
+    void findAllCustomizedFieldNames() {
+        var sut = new CustomizationContext(List.of("remove"), Map.of("change", new Object()), false);
+
+        var actual = sut.findAllCustomizedFieldNames().collect(Collectors.toList());
+
+        assertThat(actual).containsExactlyInAnyOrder("remove", "change");
     }
 }

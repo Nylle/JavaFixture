@@ -36,11 +36,11 @@ class ReflectorTest {
         @DisplayName("with existing fields, nothing happens")
         void validCustomization() {
 
-            var sut = new Reflector<>(new GenericChild<String>());
+            var sut = new Reflector<>(new GenericChild<String>(), new SpecimenType<>(){});
 
             var validCustomisation = new CustomizationContext(List.of(), Map.of("baseField.subField", "foo"), false);
 
-            assertThatCode(() -> sut.validateCustomization(validCustomisation, new SpecimenType<>() {}))
+            assertThatCode(() -> sut.validateCustomization(validCustomisation))
                     .doesNotThrowAnyException();
         }
 
@@ -48,12 +48,12 @@ class ReflectorTest {
         @DisplayName("with any missing fields, an exception is thrown")
         void invalidCustomization() {
 
-            var sut = new Reflector<>(new GenericChild<String>());
+            var sut = new Reflector<>(new GenericChild<String>(), new SpecimenType<>() {});
 
             var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField.subField", "foo"), false);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation))
                     .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.inheritance.GenericChild<java.lang.String>'.")
                     .withNoCause();
         }
@@ -62,14 +62,14 @@ class ReflectorTest {
         @DisplayName("to set duplicate fields, an exception is thrown")
         void customizingDuplicateFields() {
 
-            var sut = new Reflector<>(new GenericChild<String>());
+            var sut = new Reflector<>(new GenericChild<String>(), new SpecimenType<>(){});
 
             Map<String, Object> customization = Map.of("fieldIn2Classes.subField", 100.0);
 
             var invalidCustomisation = new CustomizationContext(List.of(), customization, false);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation))
                     .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
                     .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
                     .withMessageContaining("private java.lang.Integer com.github.nylle.javafixture.testobjects.inheritance.GenericBase.fieldIn2Classes")
@@ -80,14 +80,14 @@ class ReflectorTest {
         @DisplayName("to omit duplicate fields, an exception is thrown")
         void omittingDuplicateFields() {
 
-            var sut = new Reflector<>(new GenericChild<String>());
+            var sut = new Reflector<>(new GenericChild<String>(), new SpecimenType<>(){});
 
             var omitting = List.of("fieldIn2Classes.subField");
 
             var invalidCustomisation = new CustomizationContext(omitting, Map.of(), false);
 
             assertThatExceptionOfType(SpecimenException.class)
-                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation, new SpecimenType<>() {}))
+                    .isThrownBy(() -> sut.validateCustomization(invalidCustomisation))
                     .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
                     .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
                     .withMessageContaining("private java.lang.Integer com.github.nylle.javafixture.testobjects.inheritance.GenericBase.fieldIn2Classes")
@@ -103,7 +103,7 @@ class ReflectorTest {
         @Test
         void catchIllegalAccessException() throws Exception {
             var mockedField = Mockito.mock(Field.class);
-            var sut = new Reflector<>("");
+            var sut = new Reflector<>("", new SpecimenType<>(){});
             doThrow(new IllegalAccessException("expected")).when(mockedField).set(any(), any());
 
             assertThatExceptionOfType(SpecimenException.class)
@@ -114,7 +114,7 @@ class ReflectorTest {
         @Test
         void catchSecurityException() {
             var mockedField = Mockito.mock(Field.class);
-            var sut = new Reflector<>("");
+            var sut = new Reflector<>("", new SpecimenType<>(){});
             doThrow(new SecurityException("expected")).when(mockedField).setAccessible(true);
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.setField(mockedField, ""));
@@ -124,7 +124,7 @@ class ReflectorTest {
         @Test
         void catchInaccessibleObjectException() {
             var mockedField = Mockito.mock(Field.class);
-            var sut = new Reflector<>("");
+            var sut = new Reflector<>("", new SpecimenType<>(){});
             doThrow(new InaccessibleObjectException("expected")).when(mockedField).setAccessible(true);
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.setField(mockedField, ""));
@@ -136,7 +136,7 @@ class ReflectorTest {
 
         @Test
         void returnsSizeAnnotationOnPrivateField() {
-            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotations());
+            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotations(), new SpecimenType<>(){});
 
             var field = sut.getDeclaredFields().filter(x -> x.getName().equals("withMinMaxAnnotation")).findFirst().get();
 
@@ -148,7 +148,7 @@ class ReflectorTest {
 
         @Test
         void returnsSizeAnnotationOnGetter() {
-            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotationsOnMethod());
+            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotationsOnMethod(), new SpecimenType<>(){});
 
             var field = sut.getDeclaredFields().filter(x -> x.getName().equals("withMinMaxAnnotation")).findFirst().get();
 
@@ -160,7 +160,7 @@ class ReflectorTest {
 
         @Test
         void returnsSizeAnnotationOnFieldIfGetterThrowsIntrospectionException() {
-            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotations());
+            var sut = new Reflector<>(new TestObjectWithJakartaValidationAnnotations(), new SpecimenType<>(){});
             var expected = sut.getDeclaredFields().filter(x -> x.getName().equals("withMinMaxAnnotation")).findFirst().get().getAnnotations();
 
             var throwingField = mock(Field.class);

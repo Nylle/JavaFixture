@@ -50,7 +50,7 @@ public class AbstractSpecimen<T> implements ISpecimen<T> {
 
         try {
             var result = (T) context.cached(type, instanceFactory.proxy(type));
-            var reflector = new Reflector<>(result, type.asClass()).validateCustomization(customizationContext, type);
+            var reflector = new Reflector<>(result, type).validateCustomization(customizationContext);
             reflector.getDeclaredFields()
                     .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))
                     .forEach(field -> reflector.setField(field,

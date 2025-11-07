@@ -18,19 +18,15 @@ import static java.util.stream.Collectors.toList;
 
 public class Reflector<T> {
     private final T instance;
-    private final Class<?> clazz;
+    private final SpecimenType<T> type;
 
-    public Reflector(T instance) {
-        this(instance, instance.getClass());
-    }
-
-    public Reflector(T instance, Class<?> clazz) {
+    public Reflector(T instance, SpecimenType<T> type) {
         this.instance = instance;
-        this.clazz = clazz;
+        this.type = type;
     }
 
-    public Reflector<T> validateCustomization(CustomizationContext customizationContext, SpecimenType<T> type) {
-        var declaredFields = getDeclaredFields(clazz).map(field -> field.getName()).collect(toList());
+    public Reflector<T> validateCustomization(CustomizationContext customizationContext) {
+        var declaredFields = getDeclaredFields(type.asClass()).map(field -> field.getName()).collect(toList());
 
         var missingDeclaredField = Stream.concat(customizationContext.getCustomFields().keySet().stream(), customizationContext.getIgnoredFields().stream())
                 .map(entry -> entry.replaceAll("\\..+", ""))
@@ -41,7 +37,7 @@ public class Reflector<T> {
             throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
 
-        var duplicateField = getDeclaredFields(clazz)
+        var duplicateField = getDeclaredFields(type.asClass())
                 .collect(groupingBy(field -> field.getName()))
                 .entrySet()
                 .stream()
@@ -52,7 +48,7 @@ public class Reflector<T> {
                 .findFirst();
 
         if (duplicateField.isPresent()) {
-            throw new SpecimenException(format("Cannot customize field '%s'. Duplicate field names found: \n%s",
+            throw new SpecimenException(format("Cannot customize field '%s'. Duplicate field names found: %n%s",
                     duplicateField.get().getKey(),
                     duplicateField.get().getValue().stream().map(x -> x.toString()).collect(joining("\n"))));
         }
@@ -61,12 +57,12 @@ public class Reflector<T> {
     }
 
     public Stream<Field> getDeclaredFields() {
-        return getDeclaredFields(clazz);
+        return getDeclaredFields(type.asClass());
     }
 
     public Annotation[] getFieldAnnotations(Field field) {
         try {
-            return Stream.concat(Arrays.stream(Introspector.getBeanInfo(clazz).getPropertyDescriptors())
+            return Stream.concat(Arrays.stream(Introspector.getBeanInfo(type.asClass()).getPropertyDescriptors())
                     .filter(property -> !Modifier.isStatic(field.getModifiers()))
                     .filter(property -> property.getName().equals(field.getName()))
                     .flatMap(propertyDescriptor -> Stream.of(propertyDescriptor.getReadMethod(), propertyDescriptor.getWriteMethod())
@@ -82,9 +78,9 @@ public class Reflector<T> {
             field.setAccessible(true);
             field.set(instance, value);
         } catch (SecurityException e) {
-            throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), clazz.getName()), e);
+            throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), type.getName()), e);
         } catch (IllegalAccessException | InaccessibleObjectException e) {
-            throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), clazz.getName()), e);
+            throw new SpecimenException(format("Unable to set field %s on object of type %s", field.getName(), type.getName()), e);
         }
     }
 

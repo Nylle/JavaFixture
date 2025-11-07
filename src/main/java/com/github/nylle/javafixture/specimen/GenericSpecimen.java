@@ -72,7 +72,7 @@ public class GenericSpecimen<T> implements ISpecimen<T> {
 
     private T populate(CustomizationContext customizationContext) {
         var result = context.cached(type, instanceFactory.instantiate(type));
-        var reflector = new Reflector<>(result).validateCustomization(customizationContext, type);
+        var reflector = new Reflector<>(result, type).validateCustomization(customizationContext);
         try {
             reflector.getDeclaredFields()
                     .filter(field -> !customizationContext.getIgnoredFields().contains(field.getName()))

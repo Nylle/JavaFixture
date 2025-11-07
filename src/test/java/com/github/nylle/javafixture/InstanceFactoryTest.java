@@ -47,6 +47,7 @@ import java.util.concurrent.TransferQueue;
 
 import static com.github.nylle.javafixture.CustomizationContext.noContext;
 import static com.github.nylle.javafixture.SpecimenType.fromClass;
+import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -72,9 +73,9 @@ class InstanceFactoryTest {
 
             assertThatExceptionOfType(SpecimenException.class)
                     .isThrownBy(() -> sut.construct(type, context))
-                    .withMessageContaining("Cannot customize fields because no suitable constructor was found. Candidates are:\n")
-                    .withMessageContaining("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0,arg1) (Missing fields: [missingCustomization, missingExclusion])\n")
-                    .withMessageContaining("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0) (Missing fields: [missingCustomization, arg1, missingExclusion])");
+                    .withMessageContaining(format("Cannot customize fields because no suitable constructor was found. Candidates are:%n"))
+                    .withMessageContaining(format("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0,arg1) (Missing fields: [missingCustomization, missingExclusion])%n"))
+                    .withMessageContaining(format("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0) (Missing fields: [missingCustomization, arg1, missingExclusion])"));
         }
 
         @Test
@@ -217,6 +218,18 @@ class InstanceFactoryTest {
             TestObject result = sut.construct(fromClass(TestObject.class), customizationContext);
 
             assertThat(result.getValue()).isEqualTo("customized");
+        }
+
+        @Test
+        @DisplayName("nested arguments can be customized")
+        void nestedArgumentsCanBeCustomized() {
+            var sut = new InstanceFactory(new SpecimenFactory(new Context(Configuration.configure())));
+
+            var customizationContext = new CustomizationContext(List.of("arg1.arg1"), Map.of("arg1.arg0", "customized"), true);
+            TestObjectWithConstructedField result = sut.construct(fromClass(TestObjectWithConstructedField.class), customizationContext);
+
+            assertThat(result.getTestObjectWithGenericConstructor().getInteger()).isNull();
+            assertThat(result.getTestObjectWithGenericConstructor().getValue()).isEqualTo("customized");
         }
 
         @Test

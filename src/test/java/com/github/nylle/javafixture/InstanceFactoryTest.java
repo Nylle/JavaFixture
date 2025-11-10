@@ -71,7 +71,7 @@ class InstanceFactoryTest {
                     "arg1.nested", new Object(),
                     "missingCustomization", new Object()), false);
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.construct(type, context))
                     .withMessageContaining(format("Cannot customize fields because no suitable constructor was found. Candidates are:%n"))
                     .withMessageContaining(format("  com.github.nylle.javafixture.testobjects.withconstructor.TestObjectWithTwoConstructors(arg0,arg1) (Missing fields: [missingCustomization, missingExclusion])%n"))

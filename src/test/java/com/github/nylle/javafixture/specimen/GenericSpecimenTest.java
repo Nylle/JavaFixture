@@ -3,7 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.CustomizationException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
@@ -265,7 +265,7 @@ class GenericSpecimenTest {
                     "fieldIn3Classes", "foo",
                     "fieldIn2Classes", 100.0);
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization, false), new Annotation[0]));
         }
 
@@ -278,7 +278,7 @@ class GenericSpecimenTest {
                     "fieldIn3Classes",
                     "fieldIn2Classes");
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of(), false), new Annotation[0]));
         }
     }

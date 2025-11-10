@@ -3,7 +3,7 @@ package com.github.nylle.javafixture.specimen;
 import com.github.nylle.javafixture.Configuration;
 import com.github.nylle.javafixture.Context;
 import com.github.nylle.javafixture.CustomizationContext;
-import com.github.nylle.javafixture.SpecimenException;
+import com.github.nylle.javafixture.CustomizationException;
 import com.github.nylle.javafixture.SpecimenFactory;
 import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.annotations.testcases.TestCase;
@@ -132,7 +132,18 @@ class ObjectSpecimenTest {
 
         var customizationContext = new CustomizationContext(List.of(), Map.of("nonExistingField", "foo"), false);
 
-        assertThatExceptionOfType(Exception.class)
+        assertThatExceptionOfType(CustomizationException.class)
+                .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
+                .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
+                .withNoCause();
+    }
+
+    @Test
+    void cannotSetNonExistingNestedField() {
+        var sut = new ObjectSpecimen<WithTestObject>(SpecimenType.fromClass(WithTestObject.class), context, specimenFactory);
+        var customizationContext = new CustomizationContext(List.of(), Map.of("testObject.nonExistingField", "42"), false);
+
+        assertThatExceptionOfType(CustomizationException.class)
                 .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
                 .withNoCause();
@@ -144,7 +155,18 @@ class ObjectSpecimenTest {
 
         var customizationContext = new CustomizationContext(List.of("nonExistingField"), Map.of(), false);
 
-        assertThatExceptionOfType(Exception.class)
+        assertThatExceptionOfType(CustomizationException.class)
+                .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
+                .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
+                .withNoCause();
+    }
+
+    @Test
+    void cannotOmitNonExistingNestedField() {
+        var sut = new ObjectSpecimen<WithTestObject>(SpecimenType.fromClass(WithTestObject.class), context, specimenFactory);
+        var customizationContext = new CustomizationContext(List.of("testObject.nonExistingField"), Map.of(), false);
+
+        assertThatExceptionOfType(CustomizationException.class)
                 .isThrownBy(() -> sut.create(customizationContext, new Annotation[0]))
                 .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.TestObject'.")
                 .withNoCause();
@@ -225,7 +247,7 @@ class ObjectSpecimenTest {
                     "fieldIn3Classes", "foo",
                     "fieldIn2Classes", 100.0);
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.create(new CustomizationContext(List.of(), customization, false), new Annotation[0]));
         }
 
@@ -238,7 +260,7 @@ class ObjectSpecimenTest {
                     "fieldIn3Classes",
                     "fieldIn2Classes");
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.create(new CustomizationContext(omitting, Map.of(), false), new Annotation[0]));
         }
     }

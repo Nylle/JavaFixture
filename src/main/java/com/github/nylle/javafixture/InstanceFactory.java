@@ -253,7 +253,7 @@ public class InstanceFactory {
         var result = candidates.stream().filter(x -> x.getValue().isEmpty()).map(x -> x.getKey()).collect(toList());
 
         if (result.isEmpty()) {
-            throw new SpecimenException(Stream.concat(
+            throw new CustomizationException(Stream.concat(
                             Stream.of("Cannot customize fields because no suitable constructor was found. Candidates are:"),
                             candidates.stream().map(x -> String.format("  %s(%s) (Missing fields: %s)",
                                     x.getKey().getName(),

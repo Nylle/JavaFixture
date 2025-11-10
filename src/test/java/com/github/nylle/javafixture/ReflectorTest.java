@@ -52,7 +52,7 @@ class ReflectorTest {
 
             var invalidCustomisation = new CustomizationContext(List.of(), Map.of("nonExistingField.subField", "foo"), false);
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation))
                     .withMessage("Cannot customize field 'nonExistingField': Field not found in class 'com.github.nylle.javafixture.testobjects.inheritance.GenericChild<java.lang.String>'.")
                     .withNoCause();
@@ -68,7 +68,7 @@ class ReflectorTest {
 
             var invalidCustomisation = new CustomizationContext(List.of(), customization, false);
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation))
                     .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
                     .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")
@@ -86,7 +86,7 @@ class ReflectorTest {
 
             var invalidCustomisation = new CustomizationContext(omitting, Map.of(), false);
 
-            assertThatExceptionOfType(SpecimenException.class)
+            assertThatExceptionOfType(CustomizationException.class)
                     .isThrownBy(() -> sut.validateCustomization(invalidCustomisation))
                     .withMessageContaining("Cannot customize field 'fieldIn2Classes'. Duplicate field names found:")
                     .withMessageContaining("private java.lang.Double com.github.nylle.javafixture.testobjects.inheritance.GenericParent.fieldIn2Classes")

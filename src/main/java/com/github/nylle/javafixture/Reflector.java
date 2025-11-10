@@ -34,7 +34,7 @@ public class Reflector<T> {
                 .findFirst();
 
         if (missingDeclaredField.isPresent()) {
-            throw new SpecimenException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
+            throw new CustomizationException(format("Cannot customize field '%s': Field not found in class '%s'.", missingDeclaredField.get(), type.getName()));
         }
 
         var duplicateField = getDeclaredFields(type.asClass())
@@ -48,7 +48,7 @@ public class Reflector<T> {
                 .findFirst();
 
         if (duplicateField.isPresent()) {
-            throw new SpecimenException(format("Cannot customize field '%s'. Duplicate field names found: %n%s",
+            throw new CustomizationException(format("Cannot customize field '%s'. Duplicate field names found: %n%s",
                     duplicateField.get().getKey(),
                     duplicateField.get().getValue().stream().map(x -> x.toString()).collect(joining("\n"))));
         }

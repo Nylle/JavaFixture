@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,7 +25,7 @@ public class Context {
         }
 
         this.configuration = configuration;
-        this.cache = new ConcurrentHashMap<>(predefinedInstances);
+        this.cache = new HashMap<>(predefinedInstances);
     }
 
     public Configuration getConfiguration() {

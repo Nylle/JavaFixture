@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -15,7 +14,7 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     private final List<Consumer<T>> functions = new LinkedList<>();
     private final List<String> ignoredFields = new LinkedList<>();
     private final Map<String, Object> customFields = new HashMap<>();
-    private final Map<SpecimenType<?>, Object> predefinedInstances = new ConcurrentHashMap<>();
+    private final Map<SpecimenType<?>, Object> predefinedInstances = new HashMap<>();
 
     private final SpecimenType<T> type;
     private final Configuration configuration;
@@ -126,6 +125,12 @@ public class SpecimenBuilder<T> implements ISpecimenBuilder<T> {
     @Override
     public ISpecimenBuilder<T> without(final String fieldName) {
         ignoredFields.add(fieldName);
+        return this;
+    }
+
+    @Override
+    public <U> ISpecimenBuilder<T> without(Class<U> fieldName) {
+        predefinedInstances.put(SpecimenType.fromClass(fieldName), null);
         return this;
     }
 

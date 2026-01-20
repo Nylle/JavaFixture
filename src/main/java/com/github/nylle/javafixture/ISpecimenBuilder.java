@@ -22,5 +22,7 @@ public interface ISpecimenBuilder<T> {
     <U> ISpecimenBuilder<T> with(SpecimenType<U> type, U value);
 
     ISpecimenBuilder<T> without(String fieldName);
+
+    <U> ISpecimenBuilder<T> without(Class<U> fieldName);
 }
 

@@ -162,6 +162,18 @@ TestDto:
 - myPrivateField: String: null
 - myPublicField: int: 0
 
+### Omit all fields for type
+```java
+var result = fixture.build(TestDto.class)
+                          .without(String.class)
+                          .without(int.class)
+                          .create();
+```
+#### Sample Result
+TestDto:
+- myPrivateField: String: null
+- myPublicField: int: 0
+
 #### Note
 Primitives will receive their default-value, classes will be `null`.
 

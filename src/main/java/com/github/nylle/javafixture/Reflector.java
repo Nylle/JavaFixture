@@ -75,8 +75,10 @@ public class Reflector<T> {
 
     public void setField(Field field, Object value) {
         try {
-            field.setAccessible(true);
-            field.set(instance, value);
+            if (!field.getType().isPrimitive() || value != null) {
+                field.setAccessible(true);
+                field.set(instance, value);
+            }
         } catch (SecurityException e) {
             throw new SpecimenException(format("Unable to access field %s on object of type %s", field.getName(), type.getName()), e);
         } catch (IllegalAccessException | InaccessibleObjectException e) {

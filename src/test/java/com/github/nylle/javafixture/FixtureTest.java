@@ -221,9 +221,12 @@ class FixtureTest {
         void canOmitFieldsOfClassByType() {
             var fixture = new Fixture(configuration);
 
-            TestPrimitive result = fixture.build(TestPrimitive.class).without(String.class).create();
+            TestPrimitive result = fixture.build(TestPrimitive.class).without(String.class)
+                    .without(int.class).create();
 
             assertThat(result.getHello()).isNull();
+            assertThat(result.getInteger()).isNotNull();
+            assertThat(result.getPrimitive()).isZero();
         }
 
         @Test

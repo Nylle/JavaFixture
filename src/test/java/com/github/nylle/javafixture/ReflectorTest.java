@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -99,10 +100,55 @@ class ReflectorTest {
     @DisplayName("when setting a field via reflection")
     class SetField {
 
+        private String stringField;
+        private int primitiveField;
+
+        @DisplayName("an Object field can be set")
+        @Test
+        void setObject() throws Exception {
+            var field = this.getClass().getDeclaredField("stringField");
+            var sut = new Reflector<>(this, new SpecimenType<>(){});
+            sut.setField(field, "new value");
+
+            assertThat(stringField).isEqualTo("new value");
+        }
+
+        @DisplayName("an Object field can be set to null")
+        @Test
+        void setObjectToNull() throws Exception {
+            stringField = "before";
+            var field = this.getClass().getDeclaredField("stringField");
+            var sut = new Reflector<>(this, new SpecimenType<>(){});
+            sut.setField(field, null);
+
+            assertThat(stringField).isNull();
+        }
+
+        @DisplayName("a primitive field can be set")
+        @Test
+        void setPrimitiveField() throws Exception {
+            var field = this.getClass().getDeclaredField("primitiveField");
+            var sut = new Reflector<>(this, new SpecimenType<>(){});
+            sut.setField(field, 4);
+
+            assertThat(primitiveField).isEqualTo(4);
+        }
+
+        @DisplayName("setting a primitive field to null keeps the default value")
+        @Test
+        void setPrimitiveFieldToNull() throws Exception {
+            var field = this.getClass().getDeclaredField("primitiveField");
+            var sut = new Reflector<>(this, new SpecimenType<>(){});
+            sut.setField(field, null);
+
+            assertThat(primitiveField).isEqualTo(0);
+        }
+
         @DisplayName("an IllegalAccessException is turned into a SpecimenException")
         @Test
         void catchIllegalAccessException() throws Exception {
             var mockedField = Mockito.mock(Field.class);
+            doReturn(this.getClass()).when(mockedField).getType();
             var sut = new Reflector<>("", new SpecimenType<>(){});
             doThrow(new IllegalAccessException("expected")).when(mockedField).set(any(), any());
 
@@ -114,6 +160,7 @@ class ReflectorTest {
         @Test
         void catchSecurityException() {
             var mockedField = Mockito.mock(Field.class);
+            doReturn(this.getClass()).when(mockedField).getType();
             var sut = new Reflector<>("", new SpecimenType<>(){});
             doThrow(new SecurityException("expected")).when(mockedField).setAccessible(true);
             assertThatExceptionOfType(SpecimenException.class)
@@ -124,6 +171,7 @@ class ReflectorTest {
         @Test
         void catchInaccessibleObjectException() {
             var mockedField = Mockito.mock(Field.class);
+            doReturn(this.getClass()).when(mockedField).getType();
             var sut = new Reflector<>("", new SpecimenType<>(){});
             doThrow(new InaccessibleObjectException("expected")).when(mockedField).setAccessible(true);
             assertThatExceptionOfType(SpecimenException.class)

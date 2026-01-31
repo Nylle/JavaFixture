@@ -142,6 +142,17 @@ class CollectionSpecimenTest {
     }
 
     @Test
+    void createSetWhenObjectIsCreatedWithConstructor() {
+        var sut = new CollectionSpecimen<>(new SpecimenType<Set<Throwable>>() {}, context, specimenFactory);
+
+        var actual = sut.create(noContext(), new Annotation[0]);
+
+        assertThat(actual).isInstanceOf(HashSet.class);
+        assertThat(actual.stream().allMatch(x -> x.getClass().equals(Throwable.class))).isTrue();
+        assertThat(actual.size()).isEqualTo(2);
+    }
+
+    @Test
     void createLinkedBlockingDequeFromBlockingDequeInterface() {
         var sut = new CollectionSpecimen<>(new SpecimenType<BlockingDeque<String>>() {}, context, specimenFactory);
 

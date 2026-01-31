@@ -68,7 +68,7 @@ public class ObjectSpecimen<T> implements ISpecimen<T> {
                                             .build(SpecimenType.fromClass(field.getGenericType()))
                                             .create(customizationContext.newForField(field.getName()), reflector.getFieldAnnotations(field)))));
         } catch (SpecimenException ex) {
-            return context.overwrite(type, instanceFactory.construct(type, customizationContext));
+            context.overwrite(type, instanceFactory.construct(type, customizationContext));
         }
         return context.remove(type);
     }

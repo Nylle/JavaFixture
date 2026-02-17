@@ -18,7 +18,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.14.0</version>
+    <version>2.15.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -317,7 +317,17 @@ Due to Java's limited annotation design, the following rules apply:
   be of type `int` and so on.
 - The current implementation only supports up to 6 arguments per test method.
 
-### Parameterized Tests With Random Injected Values
+#### Enums Are Supported
+```java
+@TestWithCases
+@TestCase(str1 = "VALUE1", str2 = "VALUE1")
+@TestCase(str1 = "VALUE2", str2 = "VALUE2")
+void canCreateEnumFromString(TestEnum testEnum, String string) {
+        assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
+}
+```
+
+#### Random Injected Values
 If you are using `@TestWithFixture` and want to make the test parameterized, you can do so by using the annotation `@Fixture` inline:
 ```java
 @TestWithCases
@@ -330,4 +340,4 @@ void testStringLength(String input, @Fixture TestDto fixture) {
 ```
 The test will be run for every `@TestCase`-annotation injecting the provided and the randomly generated values into the test's arguments.
 
-**The random values will be identical for all test-cases!**
+The random values will be identical for all test-cases.

@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class ReflectedTestCaseTest {
 
     @Test
-    void getTestCaseValueFor_ThrowsIfTwoDifferentValuesAreCustomized() {
+    void throwsIfTwoDifferentValuesAreCustomized() {
         var testCaseWithDuplicateCustomizationsAt_1_2_3_4_6 = createCustomTestCase(
                 "foo", true,
                 2.0f, 2L,
@@ -146,6 +147,25 @@ class ReflectedTestCaseTest {
         assertThat(actual.getTestCaseValueFor(Byte.class, 3)).isZero();
         assertThat(actual.getTestCaseValueFor(Byte.class, 4)).isZero();
         assertThat(actual.getTestCaseValueFor(Byte.class, 5)).isZero();
+    }
+
+    @Test
+    void createsEnumFromString() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("VALUE3", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var actual = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        assertThat(actual.getTestCaseValueFor(TestEnum.class, 0)).isEqualTo(TestEnum.VALUE3);
+    }
+
+    @Test
+    void throwsForInvalidEnumValue() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("INVALID", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var actual = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> actual.getTestCaseValueFor(TestEnum.class, 0))
+                .withMessage("No enum constant com.github.nylle.javafixture.testobjects.TestEnum.INVALID");
     }
 
     private static TestCase createDefaultTestCase() {

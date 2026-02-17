@@ -1,5 +1,6 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import com.github.nylle.javafixture.testobjects.TestEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 
@@ -36,6 +37,13 @@ class TestCaseTest {
     @TestCase(class1 = HashSet.class, class2 = NavigableSet.class, bool3 = false)
     void testClassIsAssignable(Class type, Class interfaceType, boolean expected) {
         assertThat(interfaceType.isAssignableFrom(type)).isEqualTo(expected);
+    }
+
+    @TestWithCases
+    @TestCase(str1 = "VALUE1", str2 = "VALUE1")
+    @TestCase(str1 = "VALUE2", str2 = "VALUE2")
+    void canCreateEnumFromString(TestEnum testEnum, String string) {
+        assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
     }
 
     @Nested

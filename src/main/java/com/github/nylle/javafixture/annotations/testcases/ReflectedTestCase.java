@@ -38,6 +38,9 @@ public class ReflectedTestCase {
     @SuppressWarnings("unchecked")
     public <T> T getTestCaseValueFor(Class<T> type, int i) {
         validate(type, i);
+        if(type.isEnum()) {
+            return (T) Enum.valueOf((Class<Enum>) type, (String)matrix.get(asPrimitive(String.class)).get(i));
+        }
         return (T) matrix.get(asPrimitive(type)).get(i);
     }
 
@@ -79,6 +82,9 @@ public class ReflectedTestCase {
         }
         if (nonDefaultValues.size() > 1) {
             return true;
+        }
+        if(type.isEnum()) {
+            return false;
         }
         return asPrimitive(type) != asPrimitive(nonDefaultValues.get(0).getClass());
     }

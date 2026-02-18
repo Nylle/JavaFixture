@@ -31,15 +31,15 @@ public class ReflectedTestCase {
 
     public ReflectedTestCase(TestCase testCase) {
         stream(TestCase.class.getDeclaredMethods())
-                .sorted(Comparator.comparing(Method::getName))
+                .sorted(Comparator.comparing(method -> method.getName()))
                 .forEachOrdered(m -> matrix.compute(m.getReturnType(), (k, v) -> addTo(v, invoke(m, testCase))));
     }
 
     @SuppressWarnings("unchecked")
     public <T> T getTestCaseValueFor(Class<T> type, int i) {
         validate(type, i);
-        if(type.isEnum()) {
-            return (T) Enum.valueOf((Class<Enum>) type, (String)matrix.get(asPrimitive(String.class)).get(i));
+        if (type.isEnum()) {
+            return (T) Enum.valueOf((Class<Enum>) type, (String) matrix.get(asPrimitive(String.class)).get(i));
         }
         return (T) matrix.get(asPrimitive(type)).get(i);
     }
@@ -83,23 +83,22 @@ public class ReflectedTestCase {
         if (nonDefaultValues.size() > 1) {
             return true;
         }
-        if(type.isEnum()) {
+        if (type.isEnum()) {
             return false;
         }
         return asPrimitive(type) != asPrimitive(nonDefaultValues.get(0).getClass());
     }
 
     private static Class<?> asPrimitive(Class<?> type) {
-        Map<Class<?>, Class<?>> primitiveWrapperMap = Map.of(
-                Boolean.class, Boolean.TYPE,
-                Character.class, Character.TYPE,
-                Byte.class, Byte.TYPE,
-                Short.class, Short.TYPE,
-                Integer.class, Integer.TYPE,
-                Long.class, Long.TYPE,
-                Float.class, Float.TYPE,
-                Double.class, Double.TYPE
-        );
-        return primitiveWrapperMap.getOrDefault(type, type);
+        return Map.<Class<?>, Class<?>>of(
+                        Boolean.class, Boolean.TYPE,
+                        Character.class, Character.TYPE,
+                        Byte.class, Byte.TYPE,
+                        Short.class, Short.TYPE,
+                        Integer.class, Integer.TYPE,
+                        Long.class, Long.TYPE,
+                        Float.class, Float.TYPE,
+                        Double.class, Double.TYPE)
+                .getOrDefault(type, type);
     }
 }

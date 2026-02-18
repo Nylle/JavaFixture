@@ -14,6 +14,4 @@ class TestCaseExceptionTest {
         assertThat(sut.getCause()).isInstanceOf(NullPointerException.class);
         assertThat(sut.getCause().getMessage()).isEqualTo("null");
     }
-
-
 }

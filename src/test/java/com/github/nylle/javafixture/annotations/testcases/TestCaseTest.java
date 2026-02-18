@@ -46,6 +46,14 @@ class TestCaseTest {
         assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
     }
 
+    @TestWithCases
+    @TestCase(str1 = "VALUE1", str2 = "VALUE1")
+    @TestCase(str1 = "VALUE2", str2 = "VALUE2")
+    @TestCase(str1 = "VALUE3", str2 = "VALUE3")
+    void succeedsWhenAllValuesOfStrictEnumAreCoveredByCases(@Strict TestEnum testEnum, String string) {
+        assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
+    }
+
     @Nested
     @DisplayName("verify that primitive wrapper classes are supported as method arguments")
     class PrimitiveAutoboxing {

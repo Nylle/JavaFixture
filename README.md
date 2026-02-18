@@ -18,7 +18,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -325,6 +325,22 @@ Due to Java's limited annotation design, the following rules apply:
 void canCreateEnumFromString(TestEnum testEnum, String string) {
         assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
 }
+```
+
+#### Enums can be Strictly Validated
+Adding the `@Strict`-annotation in front of an Enum will ensure that all enum-values are covered by `@TestCase`s.
+```java
+@TestWithCases
+@TestCase(str1 = "VALUE1", str2 = "VALUE1")
+@TestCase(str1 = "VALUE3", str2 = "VALUE3")
+void canCreateEnumFromString(@Strict TestEnum testEnum, String string) {
+        assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
+}
+```
+This test will fail with a message similar to:
+```text
+@Strict requires all Enum values to be covered by test-cases. Missing values for arg0:
+  TestEnum.VALUE2
 ```
 
 #### Random Injected Values

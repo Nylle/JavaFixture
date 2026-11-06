@@ -1,14 +1,21 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import com.github.nylle.javafixture.SpecimenType;
+import com.github.nylle.javafixture.instantiation.Primitive;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -24,34 +31,50 @@ public class ReflectedTestCase {
             Integer.class, 0,
             Long.class, 0L,
             Float.class, 0.0f,
-            Double.class, 0.0d
-    );
+            Double.class, 0.0d);
 
     private final Map<Class<?>, List<?>> matrix = new HashMap<>();
 
     public ReflectedTestCase(TestCase testCase) {
-        stream(TestCase.class.getDeclaredMethods())
+        Arrays.stream(TestCase.class.getDeclaredMethods())
                 .sorted(Comparator.comparing(method -> method.getName()))
                 .forEachOrdered(m -> matrix.compute(m.getReturnType(), (k, v) -> addTo(v, invoke(m, testCase))));
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getTestCaseValueFor(Class<T> type, int i) {
-        validate(type, i);
-        if (type.isEnum()) {
-            return (T) Enum.valueOf((Class<Enum>) type, (String) matrix.get(asPrimitive(String.class)).get(i));
-        }
-        return (T) matrix.get(asPrimitive(type)).get(i);
+        return getTestCaseValueFor(SpecimenType.fromClass(type), i);
     }
 
-    private <T> void validate(Class<T> type, int i) {
+    public <T> T getTestCaseValueFor(Type type, int i) {
+        return getTestCaseValueFor(SpecimenType.fromClass(type), i);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getTestCaseValueFor(SpecimenType<T> type, int i) {
+        validate(type, i);
+        if (type.isEnum()) {
+            return (T) Enum.valueOf((Class<Enum>) type.asClass(), (String) matrix.get(Primitive.fromBoxed(String.class)).get(i));
+        }
+        if (type.isCollection()) {
+            var value = (String) matrix.get(Primitive.fromBoxed(String.class)).get(i);
+            var items = value.isBlank() ? Stream.of() : Arrays.stream(value.split(","))
+                    .map(x -> x.strip())
+                    .map(x -> Primitive.parse(x, type.getGenericTypeArgument(0).asClass()));
+            return type.asClass().isAssignableFrom(Set.class)
+                    ? (T) items.collect(Collectors.toSet())
+                    : (T) items.collect(Collectors.toList());
+        }
+        return (T) matrix.get(Primitive.fromBoxed(type.asClass())).get(i);
+    }
+
+    private <T> void validate(SpecimenType<T> type, int i) {
         var nonDefaultValues = defaults.keySet().stream()
-                .map(key -> matrix.get(asPrimitive(key)).get(i))
+                .map(key -> matrix.get(Primitive.fromBoxed(key)).get(i))
                 .filter(value -> !defaults.get(value.getClass()).equals(value))
                 .collect(toList());
 
         if (isInvalid(type, nonDefaultValues)) {
-            throw new TestCaseException(String.format("Duplicate customisation found for argument at position %d, wanted: %s, found: %s",
+            throw new TestCaseException(String.format("Invalid customisation found for argument at position %d, wanted: %s, found: %s",
                     i + 1,
                     type.getName(),
                     nonDefaultValues.stream().map(x -> x.getClass().getName()).collect(joining(", "))));
@@ -76,8 +99,8 @@ public class ReflectedTestCase {
         return list;
     }
 
-    private static <T> boolean isInvalid(Class<T> type, List<?> nonDefaultValues) {
-        if (nonDefaultValues.size() < 1) {
+    private static <T> boolean isInvalid(SpecimenType<T> type, List<?> nonDefaultValues) {
+        if (nonDefaultValues.isEmpty()) {
             return false;
         }
         if (nonDefaultValues.size() > 1) {
@@ -86,19 +109,11 @@ public class ReflectedTestCase {
         if (type.isEnum()) {
             return false;
         }
-        return asPrimitive(type) != asPrimitive(nonDefaultValues.get(0).getClass());
-    }
-
-    private static Class<?> asPrimitive(Class<?> type) {
-        return Map.<Class<?>, Class<?>>of(
-                        Boolean.class, Boolean.TYPE,
-                        Character.class, Character.TYPE,
-                        Byte.class, Byte.TYPE,
-                        Short.class, Short.TYPE,
-                        Integer.class, Integer.TYPE,
-                        Long.class, Long.TYPE,
-                        Float.class, Float.TYPE,
-                        Double.class, Double.TYPE)
-                .getOrDefault(type, type);
+        if (type.isCollection()) {
+            return !(type.getGenericTypeArguments().length != 1
+                     || Primitive.fromBoxed(type.asClass()) != Primitive.fromBoxed(nonDefaultValues.get(0).getClass())
+                     || type.getGenericTypeArgument(0).asClass().isAssignableFrom(String.class));
+        }
+        return Primitive.fromBoxed(type.asClass()) != Primitive.fromBoxed(nonDefaultValues.get(0).getClass());
     }
 }

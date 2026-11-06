@@ -1,10 +1,14 @@
 package com.github.nylle.javafixture.annotations.testcases;
 
+import com.github.nylle.javafixture.SpecimenType;
 import com.github.nylle.javafixture.testobjects.TestEnum;
 import com.github.nylle.javafixture.testobjects.TestObject;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -23,52 +27,52 @@ class ReflectedTestCaseTest {
         var sut = new ReflectedTestCase(testCaseWithDuplicateCustomizationsAt_1_2_3_4_6);
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(String.class, 0))
-                .withMessageContaining("Duplicate customisation found for argument at position 1, wanted: java.lang.String, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 1, wanted: java.lang.String, found: ")
                 .withMessageContaining("java.lang.Boolean")
                 .withMessageContaining("java.lang.String");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Boolean.class, 0))
-                .withMessageContaining("Duplicate customisation found for argument at position 1, wanted: java.lang.Boolean, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 1, wanted: java.lang.Boolean, found: ")
                 .withMessageContaining("java.lang.Boolean")
                 .withMessageContaining("java.lang.String");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Float.class, 1))
-                .withMessageContaining("Duplicate customisation found for argument at position 2, wanted: java.lang.Float, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 2, wanted: java.lang.Float, found: ")
                 .withMessageContaining("java.lang.Float")
                 .withMessageContaining("java.lang.Long");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Long.class, 1))
-                .withMessageContaining("Duplicate customisation found for argument at position 2, wanted: java.lang.Long, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 2, wanted: java.lang.Long, found: ")
                 .withMessageContaining("java.lang.Float")
                 .withMessageContaining("java.lang.Long");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(TestObject.class.getClass(), 2))
-                .withMessageContaining("Duplicate customisation found for argument at position 3, wanted: java.lang.Class, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 3, wanted: java.lang.Class, found: ")
                 .withMessageContaining("java.lang.Class")
                 .withMessageContaining("java.lang.Integer");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Integer.class, 2))
-                .withMessageContaining("Duplicate customisation found for argument at position 3, wanted: java.lang.Integer, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 3, wanted: java.lang.Integer, found: ")
                 .withMessageContaining("java.lang.Class")
                 .withMessageContaining("java.lang.Integer");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Short.class, 3))
-                .withMessageContaining("Duplicate customisation found for argument at position 4, wanted: java.lang.Short, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 4, wanted: java.lang.Short, found: ")
                 .withMessageContaining("java.lang.Short")
                 .withMessageContaining("java.lang.Character");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Character.class, 3))
-                .withMessageContaining("Duplicate customisation found for argument at position 4, wanted: java.lang.Character, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 4, wanted: java.lang.Character, found: ")
                 .withMessageContaining("java.lang.Short")
                 .withMessageContaining("java.lang.Character");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Byte.class, 5))
-                .withMessageContaining("Duplicate customisation found for argument at position 6, wanted: java.lang.Byte, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 6, wanted: java.lang.Byte, found: ")
                 .withMessageContaining("java.lang.Byte")
                 .withMessageContaining("java.lang.Double");
 
         assertThatExceptionOfType(TestCaseException.class).isThrownBy(() -> sut.getTestCaseValueFor(Double.class, 5))
-                .withMessageContaining("Duplicate customisation found for argument at position 6, wanted: java.lang.Double, found: ")
+                .withMessageContaining("Invalid customisation found for argument at position 6, wanted: java.lang.Double, found: ")
                 .withMessageContaining("java.lang.Byte")
                 .withMessageContaining("java.lang.Double");
     }
@@ -166,6 +170,70 @@ class ReflectedTestCaseTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> actual.getTestCaseValueFor(TestEnum.class, 0))
                 .withMessage("No enum constant com.github.nylle.javafixture.testobjects.TestEnum.INVALID");
+    }
+
+    @Test
+    void createsListFromString() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("1,2,3", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var sut = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        var actual = (List<Integer>) sut.getTestCaseValueFor(new SpecimenType<List<Integer>>() {}.asParameterizedType(), 0);
+
+        assertThat(actual).containsExactly(1, 2, 3);
+    }
+
+    @Test
+    void createsEmptyListFromEmptyString() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var sut = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        var actual = (List<Integer>) sut.getTestCaseValueFor(new SpecimenType<List<Integer>>() {}.asParameterizedType(), 0);
+
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void throwsForNonPrimitiveListItems() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("1,2,3", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var sut = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> sut.getTestCaseValueFor(new SpecimenType<List<Optional<String>>>() {}.asParameterizedType(), 0))
+                .withMessage("Unsupported type: class java.util.Optional");
+    }
+
+    @Test
+    void createsSetFromString() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("1,1,2,,,3,3", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var sut = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        var actual = (Set<String>) sut.getTestCaseValueFor(new SpecimenType<Set<String>>() {}.asParameterizedType(), 0);
+
+        assertThat(actual).containsExactly("", "1", "2", "3");
+    }
+
+    @Test
+    void createsEmptySetFromEmptyString() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var sut = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        var actual = (Set<String>) sut.getTestCaseValueFor(new SpecimenType<Set<String>>() {}.asParameterizedType(), 0);
+
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void throwsForNonPrimitiveSetItems() {
+        var testCaseWithStringOnPosition0 = createCustomTestCase("1,2,3", false, 0.0f, 0L, Object.class, 0, (short) 0, Character.MIN_VALUE, (byte) 0, 0.0d);
+
+        var sut = new ReflectedTestCase(testCaseWithStringOnPosition0);
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> sut.getTestCaseValueFor(new SpecimenType<Set<Optional<String>>>() {}.asParameterizedType(), 0))
+                .withMessage("Unsupported type: class java.util.Optional");
     }
 
     private static TestCase createDefaultTestCase() {

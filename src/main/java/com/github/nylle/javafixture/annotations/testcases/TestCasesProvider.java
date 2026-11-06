@@ -36,7 +36,7 @@ class TestCasesProvider implements ArgumentsProvider, AnnotationConsumer<TestWit
 
         var parameterTypes = testMethod.parameters()
                 .filter(parameter -> parameter.getAnnotation(Fixture.class) == null)
-                .map(parameter -> parameter.getType())
+                .map(parameter -> parameter.getParameterizedType())
                 .collect(toList());
 
         return testMethod.declaredAnnotations(TestCases.class)

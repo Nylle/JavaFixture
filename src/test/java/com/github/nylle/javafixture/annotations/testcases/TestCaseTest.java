@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,21 @@ class TestCaseTest {
     @TestCase(str1 = "VALUE2", str2 = "VALUE2")
     void canCreateEnumFromString(TestEnum testEnum, String string) {
         assertThat(testEnum).isEqualTo(TestEnum.valueOf(string));
+    }
+
+    @TestWithCases
+    @TestCase(str1 = "1,2,33333", int2 = 1)
+    @TestCase(str1 = "5,4,77", int2 = 4)
+    void canCreateListFromString(List<Integer> proband, int expectedMin) {
+        assertThat(proband).hasSize(3);
+        assertThat(proband.stream().min(Comparator.comparingInt(x -> x))).contains(expectedMin);
+    }
+
+    @TestWithCases
+    @TestCase(str1 = "foo, bar ,baz, bar")
+    @TestCase(str1 = "hello, world ,world, foo")
+    void canCreateSetFromString(Set<String> proband) {
+        assertThat(proband).hasSize(3).contains("foo");
     }
 
     @TestWithCases

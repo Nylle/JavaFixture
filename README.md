@@ -18,7 +18,7 @@ The purpose of this project is to generate full object graphs for use in test su
 <dependency>
     <groupId>com.github.nylle</groupId>
     <artifactId>javafixture</artifactId>
-    <version>2.16.0</version>
+    <version>2.17.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -341,6 +341,17 @@ This test will fail with a message similar to:
 ```text
 @Strict requires all Enum values to be covered by test-cases. Missing values for arg0:
   TestEnum.VALUE2
+```
+
+#### Collections Are Supported
+```java
+@TestWithCases
+@TestCase(str1 = "foo,,bar", str2 = "1,2")
+@TestCase(str1 = ",hello,world", str2 = "3,3,4,4")
+void canCreateEnumFromString(List<String> stringList, Set<Integer> intSet) {
+        assertThat(stringList).hasSize(3);
+        assertThat(intSet).hasSize(2);
+}
 ```
 
 #### Random Injected Values
